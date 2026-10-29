@@ -1,7 +1,7 @@
 // Assembles the single-page app from src/web into app/index.html (desktop, offline fonts)
 // and dist/stackwise-web.html (browser version, Google Fonts). Run: npm run build-web
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-const r = p => readFileSync(new URL('../src/web/' + p, import.meta.url), 'utf8');
+const r = p => readFileSync(new URL('../src/web/' + p, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const tpl = r('app.template.html');
 const head = tpl.slice(0, tpl.indexOf('</style>'));
 let page = head + r('extra.css') + '</style>\n\n' + r('body.html');
