@@ -1,0 +1,1575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="fonts.css">
+<style>[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0}</style>
+</head>
+<body>
+<title>Stackwise</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: instrument workspace — library rail, sequence bench, fluid grid of analysis panes */
+:root {
+  --bg: #f3f4f8; --panel: #ffffff; --sunk: #eceef5; --line: #dcdfea; --line-strong: #c3c8d8;
+  --fg: #1a1c27; --muted: #5d6275; --faint: #8a8fa3;
+  --accent: #5b3fc4; --accent-soft: #ece8fb; --accent-fg: #ffffff;
+  --ok: #2b8a3e; --ok-soft: #e3f4e6; --warn: #b26a00; --warn-soft: #fdf0d9; --bad: #c92a2a; --bad-soft: #fde4e4;
+  --bA: #2b9a44; --bC: #1f6fd1; --bG: #1d1e24; --bT: #d42f2f;
+  --pair: #8c92a8;
+  --f-display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+  --f-ui: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12131a; --panel: #1a1c25; --sunk: #14151d; --line: #2b2e3b; --line-strong: #3b3f50;
+  --fg: #e7e8ef; --muted: #a2a6b8; --faint: #6f7489;
+  --accent: #a995f5; --accent-soft: #2a2442; --accent-fg: #15121f;
+  --ok: #69db7c; --ok-soft: #17301d; --warn: #f2b84b; --warn-soft: #33270f; --bad: #ff8787; --bad-soft: #3a1a1c;
+  --bA: #5fd37a; --bC: #6aa8ff; --bG: #f0c95a; --bT: #ff7070; --pair: #6c7187; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12131a; --panel: #1a1c25; --sunk: #14151d; --line: #2b2e3b; --line-strong: #3b3f50;
+  --fg: #e7e8ef; --muted: #a2a6b8; --faint: #6f7489;
+  --accent: #a995f5; --accent-soft: #2a2442; --accent-fg: #15121f;
+  --ok: #69db7c; --ok-soft: #17301d; --warn: #f2b84b; --warn-soft: #33270f; --bad: #ff8787; --bad-soft: #3a1a1c;
+  --bA: #5fd37a; --bC: #6aa8ff; --bG: #f0c95a; --bT: #ff7070; --pair: #6c7187; color-scheme: dark }
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--f-ui); font-size: 14px; line-height: 1.45; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--f-mono); }
+
+/* Top bar */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 10px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.brand svg { flex: none; }
+.brand b { font-family: var(--f-display); font-size: 20px; letter-spacing: -0.01em; }
+.brand span { color: var(--faint); font-size: 12px; }
+.cond { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.field { display: flex; align-items: center; gap: 6px; background: var(--sunk); border: 1px solid var(--line); border-radius: 8px; padding: 3px 4px 3px 9px; }
+.field label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; white-space: nowrap; }
+.field input { width: 54px; border: 0; background: transparent; text-align: right; padding: 3px 0; font-family: var(--f-mono); font-size: 13px; }
+.field input:focus { outline: none; }
+.field:focus-within { border-color: var(--accent); }
+.field i { font-style: normal; font-size: 11px; color: var(--faint); padding-right: 4px; }
+.seg { display: inline-flex; background: var(--sunk); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+
+/* Shell */
+.shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px 40px; max-width: 1640px; margin: 0 auto; }
+@media (max-width: 900px) { .shell { grid-template-columns: minmax(0, 1fr); } }
+
+/* Library rail */
+.rail { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.rail-head { display: flex; align-items: center; justify-content: space-between; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.lib { display: flex; flex-direction: column; gap: 4px; max-height: 70vh; overflow: auto; }
+@media (max-width: 900px) { .lib { flex-direction: row; overflow-x: auto; max-height: none; padding-bottom: 4px; } .lib .item { min-width: 190px; } }
+.item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; border: 1px solid transparent; background: transparent; text-align: left; cursor: pointer; width: 100%; }
+.item:hover { background: var(--panel); border-color: var(--line); }
+.item[aria-current="true"] { background: var(--panel); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.item .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .sub { grid-column: 2 / 4; font-family: var(--f-mono); font-size: 11px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.role { font-family: var(--f-mono); font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 5px; display: grid; place-items: center; background: var(--sunk); color: var(--muted); border: 1px solid var(--line); }
+.role.F { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.role.R { background: var(--sunk); color: var(--fg); border-color: var(--line-strong); }
+.tmchip { font-family: var(--f-mono); font-size: 11px; padding: 1px 6px; border-radius: 99px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-strong); background: var(--panel); padding: 6px 11px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+.btn.ghost:hover { color: var(--fg); background: var(--sunk); }
+.btn.danger { color: var(--bad); }
+.btn:focus-visible, .item:focus-visible, .seg button:focus-visible, .pane-h button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rail-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.note { font-size: 12px; color: var(--faint); }
+
+/* Bench */
+.main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
+.bench { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.bench-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.name-in { flex: 1 1 200px; min-width: 0; font-size: 18px; font-weight: 700; border: 0; background: transparent; padding: 2px 0; border-bottom: 1px dashed transparent; }
+.name-in:hover, .name-in:focus { border-bottom-color: var(--line-strong); outline: none; }
+.rolesel select { border: 1px solid var(--line); background: var(--sunk); border-radius: 8px; padding: 5px 8px; font-size: 13px; }
+textarea.seq { width: 100%; min-height: 64px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; background: var(--sunk); padding: 10px 12px; font-family: var(--f-mono); font-size: 14px; letter-spacing: 0.04em; line-height: 1.6; }
+textarea.seq:focus { outline: none; border-color: var(--accent); }
+.msg { font-size: 12px; color: var(--warn); }
+.strip { font-family: var(--f-mono); font-size: 15px; line-height: 2.1; letter-spacing: 0.02em; display: flex; flex-wrap: wrap; gap: 0 14px; padding: 4px 2px 0; }
+.blk { position: relative; white-space: nowrap; }
+.blk::before { content: attr(data-pos); position: absolute; top: -12px; left: 0; font-size: 9px; color: var(--faint); letter-spacing: 0; line-height: 1; }
+.bA { color: var(--bA); } .bC { color: var(--bC); } .bG { color: var(--bG); } .bT { color: var(--bT); }
+.end3 { background: var(--accent-soft); border-radius: 3px; }
+.ends { font-family: var(--f-mono); font-size: 11px; color: var(--faint); align-self: center; }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border-top: 1px solid var(--line); }
+.m { padding: 10px 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); min-width: 0; }
+.m .k { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+.m .v { font-family: var(--f-mono); font-size: 16px; font-weight: 600; white-space: nowrap; }
+.m .v small { font-size: 11px; color: var(--faint); font-weight: 400; margin-left: 2px; }
+.m.hero { grid-column: span 2; background: var(--accent-soft); }
+.m.hero .v { font-family: var(--f-display); font-size: 30px; line-height: 1.1; color: var(--accent); }
+.m.hero .v small { font-family: var(--f-ui); }
+.counts span { margin-right: 6px; }
+
+/* Panes */
+.panes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 1180px) { .panes { grid-template-columns: minmax(0, 1fr); } }
+.pane.wide { grid-column: 1 / -1; }
+.pane.drag-over { outline: 2px dashed var(--accent); outline-offset: 2px; }
+.pane-h { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 14px; border-bottom: 1px solid var(--line); }
+.pane.closed .pane-h { border-bottom-color: transparent; }
+.pane-h h2 { font-family: var(--f-display); font-size: 15px; margin: 0; font-weight: 700; }
+.pane-h .grip { cursor: grab; color: var(--faint); display: grid; place-items: center; }
+.pane-h .sum { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.pane-h button { border: 0; background: transparent; color: var(--faint); cursor: pointer; padding: 4px; border-radius: 6px; display: grid; place-items: center; }
+.pane-h button:hover { color: var(--fg); background: var(--sunk); }
+.pane-b { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+.pane.closed .pane-b { display: none; }
+
+.pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.neutral { background: var(--sunk); color: var(--muted); }
+
+.struct { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.struct.ok { border-left: 3px solid var(--ok); } .struct.warn { border-left: 3px solid var(--warn); } .struct.bad { border-left: 3px solid var(--bad); }
+.struct-h { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding: 7px 10px; background: var(--sunk); font-size: 12px; color: var(--muted); }
+.struct-h b { font-family: var(--f-mono); color: var(--fg); font-size: 13px; }
+.duplex { font-family: var(--f-mono); font-size: 13px; line-height: 1.35; padding: 8px 10px; overflow-x: auto; white-space: pre; margin: 0; }
+.duplex .pr { color: var(--pair); }
+.duplex .lab { color: var(--faint); }
+.duplex .hot { background: var(--bad-soft); border-radius: 2px; }
+.empty { color: var(--muted); font-size: 13px; padding: 4px 0; }
+
+table.kv { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.kv td { padding: 5px 0; border-bottom: 1px solid var(--line); }
+table.kv td:last-child { text-align: right; font-family: var(--f-mono); }
+table.kv tr:last-child td { border-bottom: 0; }
+
+.chart { width: 100%; height: auto; display: block; }
+.chart text { font-family: var(--f-mono); font-size: 10px; fill: var(--faint); }
+.chart .ax { stroke: var(--line-strong); stroke-width: 1; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+
+.checks { display: flex; flex-direction: column; }
+.chk { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.chk:last-child { border-bottom: 0; }
+.chk .d { color: var(--muted); font-size: 12px; }
+.chk .val { font-family: var(--f-mono); font-size: 12px; text-align: right; }
+
+.partner { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.partner select { border: 1px solid var(--line); background: var(--sunk); border-radius: 8px; padding: 5px 8px; max-width: 100%; }
+
+/* Modal */
+.scrim { position: fixed; inset: 0; background: rgb(10 10 20 / 0.45); z-index: 50; display: grid; place-items: center; padding: 16px; }
+.dialog { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; width: min(560px, 100%); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.dialog h3 { margin: 0; font-family: var(--f-display); }
+.toast { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 13px; z-index: 60; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
+@media (prefers-reduced-motion: no-preference) { .pane, .struct { transition: border-color .15s; } }
+[hidden] { display: none !important; }
+
+/* ---------- v2: strands, selection, fragments ---------- */
+:root { --rev: #0b7f86; --rev-fg: #ffffff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --rev: #4fd1c5; --rev-fg: #0b1a1a; } }
+:root[data-theme="dark"] { --rev: #4fd1c5; --rev-fg: #0b1a1a; }
+.sp { flex: 1; }
+.lib .grp { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint); padding: 10px 10px 2px; }
+.lib .grp:first-child { padding-top: 0; }
+@media (max-width: 900px) { .lib .grp { align-self: center; padding: 0 4px; writing-mode: vertical-rl; transform: rotate(180deg); } }
+.role.ds { background: var(--sunk); color: var(--fg); border-color: var(--line-strong); font-size: 9px; }
+.seqcard { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.statrow { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--muted); }
+.statrow b { font-family: var(--f-mono); color: var(--fg); font-weight: 600; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.field input.wide { width: 190px; text-align: left; }
+.field.grow { flex: 1 1 220px; }
+.field.grow input { width: 100%; text-align: left; font-family: var(--f-ui); }
+.field input[type="number"] { width: 70px; }
+.hint { font-size: 12px; color: var(--muted); }
+
+.map { position: relative; font-family: var(--f-mono); font-size: 13.5px; line-height: 1; overflow-x: auto; padding: 2px 0 4px; user-select: none; -webkit-user-select: none; }
+.map .probe { position: absolute; visibility: hidden; white-space: pre; font: inherit; }
+.row { display: grid; grid-template-columns: var(--pw) 3ch max-content 3ch var(--pw); padding: 4px 0 8px; border-bottom: 1px dashed var(--line); content-visibility: auto; contain-intrinsic-size: auto 84px; }
+.row:last-child { border-bottom: 0; }
+.row .af { grid-area: 1 / 3; position: relative; }
+.row .ru { grid-area: 2 / 3; position: relative; height: 13px; }
+.row .ru span { position: absolute; bottom: 1px; transform: translateX(-100%); font-size: 9.5px; color: var(--faint); }
+.row .st { white-space: pre; height: 20px; line-height: 20px; }
+.row .st.up { grid-area: 3 / 3; }
+.row .st.dn { grid-area: 4 / 3; }
+.row .ar { grid-area: 5 / 3; position: relative; }
+.row .pl { grid-area: 3 / 1; text-align: right; color: var(--faint); font-size: 11px; line-height: 20px; padding-right: 0.5ch; }
+.row .e1 { grid-area: 3 / 2; } .row .e2 { grid-area: 3 / 4; } .row .e3 { grid-area: 4 / 2; } .row .e4 { grid-area: 4 / 4; }
+.row .e1, .row .e2, .row .e3, .row .e4 { color: var(--faint); font-size: 10px; line-height: 20px; text-align: center; }
+.row .pr { grid-area: 3 / 5; color: var(--faint); font-size: 11px; line-height: 20px; padding-left: 0.5ch; }
+.map.live .st { cursor: text; }
+.st i { font-style: normal; }
+.st.dn i { opacity: 0.82; }
+.st i.hit { background: var(--warn-soft); box-shadow: inset 0 -2px 0 var(--warn); }
+.st i.sel { background: var(--accent-soft); opacity: 1; }
+.st i.sels { background: var(--accent); color: var(--accent-fg); opacity: 1; }
+.bar { position: absolute; height: 14px; border: 0; border-radius: 3px; padding: 0 5px; font-family: var(--f-ui); font-size: 10px; font-weight: 600; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; text-align: left; }
+.bar.fwd { background: var(--accent); color: var(--accent-fg); }
+.bar.rev { background: var(--rev); color: var(--rev-fg); }
+.bar.fwd.h3 { clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 50%, calc(100% - 7px) 100%, 0 100%); padding-right: 9px; }
+.bar.rev.h3 { clip-path: polygon(7px 0, 100% 0, 100% 100%, 7px 100%, 0 50%); padding-left: 9px; }
+.bar:focus-visible { outline: 2px solid var(--fg); outline-offset: 1px; }
+.map.static .row { border-bottom: 0; padding-bottom: 2px; }
+
+.selbar { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 15; background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; box-shadow: 0 10px 28px rgb(20 16 50 / 0.18); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.selbar .row2 { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.selbar .sq { font-family: var(--f-mono); font-size: 13px; overflow-x: auto; white-space: nowrap; padding: 2px 0; }
+.selbar .lab { color: var(--faint); }
+.dir { font-family: var(--f-mono); font-weight: 700; font-size: 12px; white-space: nowrap; }
+.dir.fwd { color: var(--accent); } .dir.rev { color: var(--rev); }
+
+.tablewrap { overflow-x: auto; }
+table.frag { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.frag th { text-align: left; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.frag td { padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.frag td.n, table.frag th.n { text-align: right; font-family: var(--f-mono); }
+table.frag tbody tr:hover td { background: var(--sunk); }
+table.frag .nm { font-weight: 600; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+.amp { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.amp div { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.banner { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; background: var(--accent-soft); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.origin { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; color: var(--muted); }
+.origin b { color: var(--fg); }
+
+.item.draft { border: 1px dashed var(--warn); }
+.item.draft[aria-current="true"] { border-style: dashed; box-shadow: none; background: var(--panel); }
+.bar.dr { opacity: 0.55; outline: 1px dashed var(--fg); outline-offset: 1px; }
+.draftbar { background: var(--warn-soft); }
+.draftbar .dtext { flex: 1 1 260px; }
+.draftbar .nudge, .draftbar .dact { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.draftbar .nudge .btn { padding: 4px 9px; font-family: var(--f-mono); }
+</style>
+
+<header class="top">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="2" y="5" width="22" height="3" rx="1.5" fill="var(--bA)"/><rect x="2" y="11.5" width="22" height="3" rx="1.5" fill="var(--bC)"/><rect x="2" y="18" width="22" height="3" rx="1.5" fill="var(--bT)"/><rect x="7" y="3" width="2.4" height="20" rx="1.2" fill="var(--accent)"/><rect x="16.6" y="3" width="2.4" height="20" rx="1.2" fill="var(--accent)"/></svg>
+    <div><b>Stackwise</b><br><span>Oligo thermodynamics bench</span></div>
+  </div>
+  <div class="cond" id="cond">
+    <div class="field"><label for="c-na">Na⁺</label><input id="c-na" type="number" step="1" min="0" value="50"><i>mM</i></div>
+    <div class="field"><label for="c-mg">Mg²⁺</label><input id="c-mg" type="number" step="0.1" min="0" value="1.5"><i>mM</i></div>
+    <div class="field"><label for="c-dntp">dNTP</label><input id="c-dntp" type="number" step="0.05" min="0" value="0.2"><i>mM</i></div>
+    <div class="field"><label for="c-oligo">Oligo</label><input id="c-oligo" type="number" step="10" min="1" value="250"><i>nM</i></div>
+    <div class="field"><label for="c-temp">ΔG at</label><input id="c-temp" type="number" step="1" value="37"><i>°C</i></div>
+    <div class="seg" role="group" aria-label="Salt correction">
+      <button id="m-sl" aria-pressed="true" title="SantaLucia 1998 entropy correction (Primer3 default)">SantaLucia</button>
+      <button id="m-ow" aria-pressed="false" title="Owczarzy 2004/2008 Tm correction">Owczarzy</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="rail-head"><span class="eyebrow">Library</span><span class="note" id="lib-count"></span></div>
+    <div class="lib" id="lib" aria-label="Library"></div>
+    <div class="rail-actions">
+      <button class="btn primary" id="new-seq">+ Sequence</button>
+      <button class="btn" id="new">+ Oligo</button>
+      <button class="btn" id="import">Paste</button>
+      <button class="btn" id="open">Open file</button>
+      <input type="file" id="file" accept=".fa,.fasta,.fna,.fas,.txt,.seq,.gb,.gbk,.genbank" multiple hidden>
+      <button class="btn ghost" id="export">Copy as FASTA</button>
+    </div>
+    <p class="note">Saved in this browser. Items marked “ex” are examples.</p>
+  </aside>
+
+  <main class="main">
+    <!-- Sequence (double-stranded) view -->
+    <div id="seqview" class="main" hidden>
+      <section class="card seqcard">
+        <div class="bench-row">
+          <input class="name-in" id="s-name" aria-label="Sequence name" spellcheck="false">
+          <button class="btn" id="s-editbtn">Edit sequence</button>
+        </div>
+        <div class="statrow" id="s-stats"></div>
+        <textarea class="seq" id="s-seq" spellcheck="false" autocomplete="off" aria-label="Top strand, 5′ to 3′" placeholder="Paste a DNA strand 5′→3′ (plain, FASTA or GenBank). The complementary strand is drawn underneath." hidden></textarea>
+        <div class="msg" id="s-msg" hidden></div>
+        <div class="tools">
+          <div class="field"><label for="s-find">Find</label><input id="s-find" class="wide" spellcheck="false" autocomplete="off" placeholder="primer or motif"></div>
+          <span class="hint" id="s-hits"></span>
+          <button class="btn ghost" id="s-next" hidden>Next match</button>
+          <span class="sp"></span>
+          <div class="field"><label for="s-from">From</label><input id="s-from" type="number" min="1"></div>
+          <div class="field"><label for="s-to">To</label><input id="s-to" type="number" min="1"></div>
+          <div class="seg" role="group" aria-label="Strand">
+            <button id="s-plus" aria-pressed="true">Top →</button>
+            <button id="s-minus" aria-pressed="false">← Bottom</button>
+          </div>
+          <button class="btn" id="s-selrange">Select</button>
+        </div>
+        <div class="map live" id="s-map"></div>
+        <div class="bench-row">
+          <span class="hint">Drag across bases on either strand to select (touch: tap the first base, then the last). Shift-click extends.</span>
+          <span class="sp"></span>
+          <button class="btn ghost" id="s-copy">Copy top strand</button>
+          <button class="btn ghost" id="s-copyrc">Copy bottom strand</button>
+          <button class="btn ghost" id="s-flip">Flip strands</button>
+          <button class="btn ghost danger" id="s-del">Delete</button>
+        </div>
+      </section>
+      <section class="selbar" id="selbar" hidden></section>
+      <section class="card">
+        <div class="pane-h"><h2>Oligos on this sequence</h2><span class="sum" id="frag-sum"></span></div>
+        <div class="pane-b" id="frag-body"></div>
+      </section>
+    </div>
+
+    <!-- Oligo bench -->
+    <div id="oligoview" class="main" hidden>
+      <section class="card">
+        <div class="bench">
+          <div class="bench-row">
+            <input class="name-in" id="name" aria-label="Oligo name" spellcheck="false">
+            <label class="rolesel"><span class="eyebrow" style="margin-right:6px">Role</span>
+              <select id="role"><option value="F">Forward</option><option value="R">Reverse</option><option value="P">Probe</option><option value="">Other</option></select></label>
+          </div>
+          <div class="banner draftbar" id="o-draft" hidden></div>
+          <div class="origin" id="o-origin" hidden></div>
+          <textarea class="seq" id="seq" spellcheck="false" autocomplete="off" aria-label="Sequence, 5′ to 3′" placeholder="Paste or type a DNA sequence 5′→3′"></textarea>
+          <div class="msg" id="msg" hidden></div>
+          <div class="banner" id="o-banner" hidden></div>
+          <div class="map static" id="o-map"></div>
+          <div class="bench-row">
+            <button class="btn" id="rc">Reverse complement</button>
+            <button class="btn ghost" id="comp">Complement</button>
+            <button class="btn ghost" id="rev">Reverse</button>
+            <button class="btn ghost" id="copyseq">Copy sequence</button>
+            <span class="sp"></span>
+            <button class="btn ghost" id="report">Copy report</button>
+            <button class="btn ghost danger" id="del">Delete</button>
+          </div>
+        </div>
+        <div class="metrics" id="metrics"></div>
+      </section>
+      <div class="panes" id="panes"></div>
+    </div>
+  </main>
+</div>
+
+<div class="scrim" id="imp" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="imp-t">
+    <h3 id="imp-t">Paste sequences</h3>
+    <p class="note" id="imp-note" style="margin:0">FASTA, GenBank, a plain strand, or a primer list (one per line, optionally “name, sequence”). Anything longer than 80 nt opens as a double-stranded sequence.</p>
+    <textarea class="seq" id="imp-txt" style="min-height:160px" placeholder="&gt;GAPDH-F&#10;GAAGGTGAAGGTCGGAGTCA&#10;&gt;GAPDH-R&#10;TTGAGGTCAATGAAGGGGTC"></textarea>
+    <div class="bench-row" style="justify-content:flex-end"><button class="btn ghost" id="imp-x">Close</button><button class="btn primary" id="imp-go">Add to library</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+window.STACKWISE_PARAMS = {"st":{"AA_TT":[-7900.0,-22.2],"AC_TG":[-8400.0,-22.4],"AG_TC":[-7800.0,-21.0],"AT_TA":[-7200.0,-20.4],"CA_GT":[-8500.0,-22.7],"CC_GG":[-8000.0,-19.9],"CG_GC":[-10600.0,-27.2],"CT_GA":[-7800.0,-21.0],"GA_CT":[-8200.0,-22.2],"GC_CG":[-9800.0,-24.4],"GG_CC":[-8000.0,-19.9],"GT_CA":[-8400.0,-22.4],"TA_AT":[-7200.0,-21.3],"TC_AG":[-8200.0,-22.2],"TG_AC":[-8500.0,-22.7],"TT_AA":[-7900.0,-22.2],"AA_AT":[4700.0,12.9],"AA_CT":[7600.0,20.2],"AA_GT":[3000.0,7.4],"AA_TA":[1200.0,1.7],"AA_TC":[2300.0,4.6],"AA_TG":[-600.0,-2.3],"AC_AG":[-2900.0,-9.8],"AC_CG":[-700.0,-3.8],"AC_GG":[500.0,3.2],"AC_TA":[5300.0,14.6],"AC_TC":[0.0,-4.4],"AC_TT":[700.0,0.2],"AG_AC":[-900.0,-4.2],"AG_CC":[600.0,-0.6],"AG_GC":[-4000.0,-13.2],"AG_TA":[-700.0,-2.3],"AG_TG":[-3100.0,-9.5],"AG_TT":[1000.0,0.9],"AT_AA":[1200.0,1.7],"AT_CA":[5300.0,14.6],"AT_GA":[-700.0,-2.3],"AT_TC":[-1200.0,-6.2],"AT_TG":[-2500.0,-8.3],"AT_TT":[-2700.0,-10.8],"CA_AT":[3400.0,8.0],"CA_CT":[6100.0,16.4],"CA_GA":[-900.0,-4.2],"CA_GC":[1900.0,3.7],"CA_GG":[-700.0,-2.3],"CA_TT":[1000.0,0.7],"CC_AG":[5200.0,14.2],"CC_CG":[3600.0,8.9],"CC_GA":[600.0,-0.6],"CC_GC":[-1500.0,-7.2],"CC_GT":[-800.0,-4.5],"CC_TG":[5200.0,13.5],"CG_AC":[1900.0,3.7],"CG_CC":[-1500.0,-7.2],"CG_GA":[-4000.0,-13.2],"CG_GG":[-4900.0,-15.3],"CG_GT":[-4100.0,-11.7],"CG_TC":[-1500.0,-6.1],"CT_AA":[2300.0,4.6],"CT_CA":[0.0,-4.4],"CT_GC":[-1500.0,-6.1],"CT_GG":[-2800.0,-8.0],"CT_GT":[-5000.0,-15.8],"CT_TA":[-1200.0,-6.2],"GA_AT":[700.0,0.7],"GA_CA":[-2900.0,-9.8],"GA_CC":[5200.0,14.2],"GA_CG":[-600.0,-1.0],"GA_GT":[1600.0,3.6],"GA_TT":[-1300.0,-5.3],"GC_AG":[-600.0,-1.0],"GC_CA":[-700.0,-3.8],"GC_CC":[3600.0,8.9],"GC_CT":[2300.0,5.4],"GC_GG":[-6000.0,-15.8],"GC_TG":[-4400.0,-12.3],"GG_AC":[-700.0,-2.3],"GG_CA":[500.0,3.2],"GG_CG":[-6000.0,-15.8],"GG_CT":[3300.0,10.4],"GG_GC":[-4900.0,-15.3],"GG_TC":[-2800.0,-8.0],"GG_TT":[5800.0,16.3],"GT_AA":[-600.0,-2.3],"GT_CC":[5200.0,13.5],"GT_CG":[-4400.0,-12.3],"GT_CT":[-2200.0,-8.4],"GT_GA":[-3100.0,-9.5],"GT_TA":[-2500.0,-8.3],"GT_TG":[4100.0,9.5],"TA_AA":[4700.0,12.9],"TA_AC":[3400.0,8.0],"TA_AG":[700.0,0.7],"TA_CT":[1200.0,0.7],"TA_GT":[-100.0,-1.7],"TA_TT":[200.0,-1.5],"TC_AA":[7600.0,20.2],"TC_AC":[6100.0,16.4],"TC_AT":[1200.0,0.7],"TC_CG":[2300.0,5.4],"TC_GG":[3300.0,10.4],"TC_TG":[-2200.0,-8.4],"TG_AA":[3000.0,7.4],"TG_AG":[1600.0,3.6],"TG_AT":[-100.0,-1.7],"TG_CC":[-800.0,-4.5],"TG_GC":[-4100.0,-11.7],"TG_GT":[-1400.0,-6.2],"TG_TC":[-5000.0,-15.8],"TT_AC":[1000.0,0.7],"TT_AG":[-1300.0,-5.3],"TT_AT":[200.0,-1.5],"TT_CA":[700.0,0.2],"TT_GA":[1000.0,0.9],"TT_GG":[5800.0,16.3],"TT_TA":[-2700.0,-10.8]},"tm":{"AA_AT":[-2500.0,-6.3],"AA_CT":[-2700.0,-7.0],"AA_GT":[-2400.0,-5.8],"AA_TA":[-3100.0,-7.8],"AA_TC":[-1600.0,-4.0],"AA_TG":[-1900.0,-4.4],"AA_TT":[-5000.0,-13.5],"AC_AG":[-8000.0,-22.5],"AC_CG":[-3200.0,-7.1],"AC_GG":[-4600.0,-11.4],"AC_TA":[-1800.0,-3.8],"AC_TC":[-100.0,-0.5],"AC_TG":[-6000.0,-16.1],"AC_TT":[-900.0,-1.7],"AG_AC":[-4300.0,-10.7],"AG_CC":[-2700.0,-6.0],"AG_GC":[-6000.0,-15.5],"AG_TA":[-2500.0,-5.9],"AG_TC":[-6000.0,-16.1],"AG_TG":[-1100.0,-2.1],"AG_TT":[-3200.0,-8.7],"AT_AA":[-3100.0,-7.8],"AT_CA":[-1800.0,-3.8],"AT_GA":[-2500.0,-5.9],"AT_TA":[-5000.0,-13.6],"AT_TC":[-2300.0,-6.3],"AT_TG":[-3500.0,-9.4],"AT_TT":[-2400.0,-6.5],"CA_AT":[-2300.0,-5.9],"CA_CT":[-700.0,-1.3],"CA_GA":[-4300.0,-10.7],"CA_GC":[-2600.0,-5.9],"CA_GG":[-3900.0,-9.6],"CA_GT":[-6000.0,-16.1],"CA_TT":[-700.0,-1.2],"CC_AG":[-5000.0,-13.8],"CC_CG":[-3900.0,-10.6],"CC_GA":[-2700.0,-6.0],"CC_GC":[-2100.0,-5.1],"CC_GG":[-7000.0,-19.3],"CC_GT":[-3200.0,-8.0],"CC_TG":[-3000.0,-7.8],"CG_AC":[-2600.0,-5.9],"CG_CC":[-2100.0,-5.1],"CG_GA":[-6000.0,-15.5],"CG_GC":[-7000.0,-19.3],"CG_GG":[-3800.0,-9.5],"CG_GT":[-3800.0,-9.0],"CG_TC":[-3900.0,-10.6],"CT_AA":[-1600.0,-4.0],"CT_CA":[-100.0,-0.5],"CT_GA":[-6000.0,-16.1],"CT_GC":[-3900.0,-10.6],"CT_GG":[-6600.0,-18.7],"CT_GT":[-6100.0,-16.9],"CT_TA":[-2300.0,-6.3],"GA_AT":[-2000.0,-4.7],"GA_CA":[-8000.0,-22.5],"GA_CC":[-5000.0,-13.8],"GA_CG":[-4300.0,-11.1],"GA_CT":[-6000.0,-16.1],"GA_GT":[-1100.0,-2.7],"GA_TT":[-3600.0,-9.8],"GC_AG":[-4300.0,-11.1],"GC_CA":[-3200.0,-7.1],"GC_CC":[-3900.0,-10.6],"GC_CG":[-7000.0,-19.3],"GC_CT":[-4900.0,-13.5],"GC_GG":[-700.0,-19.2],"GC_TG":[-5900.0,-16.1],"GG_AC":[-3900.0,-9.6],"GG_CA":[-4600.0,-11.4],"GG_CC":[-7000.0,-19.3],"GG_CG":[-700.0,-19.2],"GG_CT":[-5700.0,-15.9],"GG_GC":[-3800.0,-9.5],"GG_TC":[-6600.0,-18.7],"GT_AA":[-1900.0,-4.4],"GT_CA":[-6000.0,-16.1],"GT_CC":[-3000.0,-7.8],"GT_CG":[-5900.0,-16.1],"GT_CT":[-7400.0,-21.2],"GT_GA":[-1100.0,-2.1],"GT_TA":[-3500.0,-9.4],"TA_AA":[-2500.0,-6.3],"TA_AC":[-2300.0,-5.9],"TA_AG":[-2000.0,-4.7],"TA_AT":[-5000.0,-14.2],"TA_CT":[-2500.0,-6.3],"TA_GT":[-3900.0,-10.5],"TA_TT":[-3200.0,-8.9],"TC_AA":[-2700.0,-7.0],"TC_AC":[-700.0,-1.3],"TC_AG":[-6000.0,-16.1],"TC_AT":[-2500.0,-6.3],"TC_CG":[-4900.0,-13.5],"TC_GG":[-5700.0,-15.9],"TC_TG":[-7400.0,-21.2],"TG_AA":[-2400.0,-5.8],"TG_AC":[-6000.0,-16.1],"TG_AG":[-1100.0,-2.7],"TG_AT":[-3900.0,-10.5],"TG_CC":[-3200.0,-8.0],"TG_GC":[-3800.0,-9.0],"TG_TC":[-6100.0,-16.9],"TT_AA":[-5000.0,-13.5],"TT_AC":[-700.0,-1.2],"TT_AG":[-3600.0,-9.8],"TT_AT":[-3200.0,-8.9],"TT_CA":[-900.0,-1.7],"TT_GA":[-3200.0,-8.7],"TT_TA":[-2400.0,-6.5]},"tmh":{"AA_AT":[-2500.0,-6.3],"AA_CT":[-2700.0,-7.0],"AA_GT":[-2400.0,-5.8],"AA_TA":[-3100.0,-7.8],"AA_TC":[-1600.0,-4.0],"AA_TG":[-1900.0,-4.4],"AC_AG":[-8000.0,-22.5],"AC_CG":[-3200.0,-7.1],"AC_GG":[-4600.0,-11.4],"AC_TA":[-1800.0,-3.8],"AC_TC":[-100.0,-0.5],"AC_TT":[-900.0,-1.7],"AG_AC":[-4300.0,-10.7],"AG_CC":[-2700.0,-6.0],"AG_GC":[-6000.0,-15.5],"AG_TA":[-2500.0,-5.9],"AG_TG":[-1100.0,-2.1],"AG_TT":[-3200.0,-8.7],"AT_AA":[-3100.0,-7.8],"AT_CA":[-1800.0,-3.8],"AT_GA":[-2500.0,-5.9],"AT_TC":[-2300.0,-6.3],"AT_TG":[-3500.0,-9.4],"AT_TT":[-2400.0,-6.5],"CA_AT":[-2300.0,-5.9],"CA_CT":[-700.0,-1.3],"CA_GA":[-4300.0,-10.7],"CA_GC":[-2600.0,-5.9],"CA_GG":[-3900.0,-9.6],"CA_TT":[-700.0,-1.2],"CC_AG":[-5000.0,-13.8],"CC_CG":[-3900.0,-10.6],"CC_GA":[-2700.0,-6.0],"CC_GC":[-2100.0,-5.1],"CC_GT":[-3200.0,-8.0],"CC_TG":[-3000.0,-7.8],"CG_AC":[-2600.0,-5.9],"CG_CC":[-2100.0,-5.1],"CG_GA":[-6000.0,-15.5],"CG_GG":[-3800.0,-9.5],"CG_GT":[-3800.0,-9.0],"CG_TC":[-3900.0,-10.6],"CT_AA":[-1600.0,-4.0],"CT_CA":[-100.0,-0.5],"CT_GC":[-3900.0,-10.6],"CT_GG":[-6600.0,-18.7],"CT_GT":[-6100.0,-16.9],"CT_TA":[-2300.0,-6.3],"GA_AT":[-2000.0,-4.7],"GA_CA":[-8000.0,-22.5],"GA_CC":[-5000.0,-13.8],"GA_CG":[-4300.0,-11.1],"GA_GT":[-1100.0,-2.7],"GA_TT":[-3600.0,-9.8],"GC_AG":[-4300.0,-11.1],"GC_CA":[-3200.0,-7.1],"GC_CC":[-3900.0,-10.6],"GC_CT":[-4900.0,-13.5],"GC_GG":[-700.0,-19.2],"GC_TG":[-5900.0,-16.1],"GG_AC":[-3900.0,-9.6],"GG_CA":[-4600.0,-11.4],"GG_CG":[-700.0,-19.2],"GG_CT":[-5700.0,-15.9],"GG_GC":[-3800.0,-9.5],"GG_TC":[-6600.0,-18.7],"GT_AA":[-1900.0,-4.4],"GT_CC":[-3000.0,-7.8],"GT_CG":[-5900.0,-16.1],"GT_CT":[-7400.0,-21.2],"GT_GA":[-1100.0,-2.1],"GT_TA":[-3500.0,-9.4],"TA_AA":[-2500.0,-6.3],"TA_AC":[-2300.0,-5.9],"TA_AG":[-2000.0,-4.7],"TA_CT":[-2500.0,-6.3],"TA_GT":[-3900.0,-10.5],"TA_TT":[-3200.0,-8.9],"TC_AA":[-2700.0,-7.0],"TC_AC":[-700.0,-1.3],"TC_AT":[-2500.0,-6.3],"TC_CG":[-4900.0,-13.5],"TC_GG":[-5700.0,-15.9],"TC_TG":[-7400.0,-21.2],"TG_AA":[-2400.0,-5.8],"TG_AG":[-1100.0,-2.7],"TG_AT":[-3900.0,-10.5],"TG_CC":[-3200.0,-8.0],"TG_GC":[-3800.0,-9.0],"TG_TC":[-6100.0,-16.9],"TT_AC":[-700.0,-1.2],"TT_AG":[-3600.0,-9.8],"TT_AT":[-3200.0,-8.9],"TT_CA":[-900.0,-1.7],"TT_GA":[-3200.0,-8.7],"TT_TA":[-2400.0,-6.5]},"dg":{"AA_T":[-500.0,-1.1],"AC_T":[4700.0,14.2],"AG_T":[-4100.0,-13.1],"AT_T":[-3800.0,-12.6],"CA_G":[-5900.0,-16.5],"CC_G":[-2600.0,-7.4],"CG_G":[-3200.0,-10.4],"CT_G":[-5200.0,-15.0],"GA_C":[-2100.0,-3.9],"GC_C":[-200.0,-0.1],"GG_C":[-3900.0,-11.2],"GT_C":[-4400.0,-13.1],"TA_A":[-700.0,-0.8],"TC_A":[4400.0,14.9],"TG_A":[-1600.0,-3.6],"TT_A":[2900.0,10.4],"A_TA":[-2900.0,-7.6],"A_TC":[-4100.0,-13.0],"A_TG":[-4200.0,-15.0],"A_TT":[-200.0,-0.5],"C_GA":[-3700.0,-10.0],"C_GC":[-4000.0,-11.9],"C_GG":[-3900.0,-10.9],"C_GT":[-4900.0,-13.8],"G_CA":[-6300.0,-17.1],"G_CC":[-4400.0,-12.6],"G_CG":[-5100.0,-14.0],"G_CT":[-4000.0,-10.9],"T_AA":[200.0,2.3],"T_AC":[600.0,3.3],"T_AG":[-1100.0,-1.6],"T_AT":[-6900.0,-20.0]},"loops":{"int":[-1.0,-1.0,-10.31,-11.6,-12.89,-14.18,-14.83,-15.47,-15.79,-15.79,-16.26,-16.76,-17.15,-17.41,-17.74,-18.05,-18.34,-18.7,-18.96,-19.02,-19.25,-19.48,-19.7,-19.9,-20.31,-20.5,-20.68,-20.86,-21.03,-21.28],"bul":[-12.89,-9.35,-9.99,-10.31,-10.64,-11.28,-11.92,-12.57,-13.21,-13.86,-14.32,-14.5,-14.89,-15.47,-15.81,-16.12,-16.41,-16.76,-17.02,-17.08,-17.32,-17.55,-17.76,-17.97,-18.05,-18.24,-18.42,-18.6,-18.77,-19.02],"hp":[-1.0,-1.0,-11.28,-11.28,-10.64,-12.89,-13.54,-13.86,-14.5,-14.83,-15.29,-16.12,-16.5,-16.44,-16.77,-17.08,-17.38,-17.73,-17.99,-18.37,-18.61,-18.84,-19.05,-19.26,-19.66,-19.85,-20.04,-20.21,-20.38,-20.31]}};
+</script>
+<script>
+// Stackwise thermodynamics engine — SantaLucia 1998 unified nearest-neighbor model
+(function (root) {
+  const R = 1.98720425864083; // cal/(mol·K)
+  const K0 = 273.15;
+  const COMP = { A: 'T', T: 'A', G: 'C', C: 'G' };
+  // ΔH kcal/mol, ΔS cal/(mol·K), keyed by top strand 5'XY3'
+  const NN = {
+    AA: [-7.9, -22.2], TT: [-7.9, -22.2], AT: [-7.2, -20.4], TA: [-7.2, -21.3],
+    CA: [-8.5, -22.7], TG: [-8.5, -22.7], GT: [-8.4, -22.4], AC: [-8.4, -22.4],
+    CT: [-7.8, -21.0], AG: [-7.8, -21.0], GA: [-8.2, -22.2], TC: [-8.2, -22.2],
+    CG: [-10.6, -27.2], GC: [-9.8, -24.4], GG: [-8.0, -19.9], CC: [-8.0, -19.9]
+  };
+  const INIT_GC = [0.1, -2.8], INIT_AT = [2.3, 4.1], SYM_S = -1.4;
+
+  const clean = s => (s || '').toUpperCase().replace(/U/g, 'T').replace(/[^ACGT]/g, '');
+  const revcomp = s => s.split('').reverse().map(b => COMP[b] || 'N').join('');
+  const isComp = (a, b) => COMP[a] === b;
+  const gcFrac = s => s.length ? (s.match(/[GC]/g) || []).length / s.length : 0;
+
+  function naEqM(c) { // von Ahsen 2001 monovalent equivalent, mol/L
+    const free = Math.max(0, c.mg - c.dntp);
+    return (c.na + 120 * Math.sqrt(free)) / 1000;
+  }
+  function saltDS(c, phosphates) { // SantaLucia 1998 entropy salt correction
+    const na = naEqM(c);
+    return na > 0 ? 0.368 * phosphates * Math.log(na) : 0;
+  }
+
+  // Raw duplex (1 M NaCl) for a fully complementary top strand
+  function duplexRaw(s) {
+    let dH = 0, dS = 0;
+    for (let i = 0; i < s.length - 1; i++) { const p = NN[s.substr(i, 2)]; dH += p[0]; dS += p[1]; }
+    for (const end of [s[0], s[s.length - 1]]) {
+      const p = (end === 'G' || end === 'C') ? INIT_GC : INIT_AT; dH += p[0]; dS += p[1];
+    }
+    const sym = s === revcomp(s);
+    if (sym) dS += SYM_S;
+    return { dH, dS, sym };
+  }
+
+  function owczarzyTm(tm1, s, c) {
+    const na = c.na / 1000, mg = Math.max(0, c.mg - c.dntp) / 1000;
+    const f = gcFrac(s), n = s.length, inv1 = 1 / (tm1 + K0);
+    const mono = () => {
+      if (na <= 0) return tm1;
+      const ln = Math.log(na);
+      return 1 / (inv1 + (4.29 * f - 3.95) * 1e-5 * ln + 9.40e-6 * ln * ln) - K0;
+    };
+    if (mg <= 0) return mono();
+    const ratio = na > 0 ? Math.sqrt(mg) / na : Infinity;
+    if (ratio < 0.22) return mono();
+    let a = 3.92e-5, b = -9.11e-6, cc = 6.26e-5, d = 1.42e-5, e = -4.82e-4, ff = 5.25e-4, g = 8.31e-5;
+    if (ratio < 6) {
+      const ln = Math.log(na);
+      a = 3.92e-5 * (0.843 - 0.352 * Math.sqrt(na) * ln);
+      d = 1.42e-5 * (1.279 - 4.03e-3 * ln - 8.03e-3 * ln * ln);
+      g = 8.31e-5 * (0.486 - 0.258 * ln + 5.25e-3 * ln * ln * ln);
+    }
+    const lm = Math.log(mg);
+    const inv = inv1 + a + b * lm + f * (cc + d * lm) + (1 / (2 * (n - 1))) * (e + ff * lm + g * lm * lm);
+    return 1 / inv - K0;
+  }
+
+  // Full oligo thermodynamics against its perfect complement
+  function thermo(s, c) {
+    if (s.length < 2) return null;
+    const raw = duplexRaw(s);
+    const dS = raw.dS + saltDS(c, s.length - 1);
+    const ct = c.oligo * 1e-9;
+    const x = raw.sym ? 1 : 4;
+    const tmSL = (raw.dH * 1000) / (dS + R * Math.log(ct / x)) - K0;
+    let tm = tmSL;
+    if (c.method === 'owczarzy') {
+      const tm1 = (raw.dH * 1000) / (raw.dS + R * Math.log(ct / x)) - K0;
+      tm = owczarzyTm(tm1, s, c);
+    }
+    const T = c.temp + K0;
+    return {
+      dH: raw.dH, dS, dS1M: raw.dS, sym: raw.sym, tm, tmSL,
+      dG: raw.dH - T * dS / 1000, dG37: raw.dH - 310.15 * dS / 1000
+    };
+  }
+
+  function basicTm(s) {
+    const n = s.length, gc = (s.match(/[GC]/g) || []).length, at = n - gc;
+    return n < 14 ? 2 * at + 4 * gc : 64.9 + 41 * (gc - 16.4) / n;
+  }
+
+  // Molecular weight (anhydrous, 5'-OH, ssDNA) and nearest-neighbor ε260
+  const MWB = { A: 313.21, T: 304.2, C: 289.18, G: 329.21 };
+  const EPS1 = { A: 15.4, C: 7.4, G: 11.5, T: 8.7 };
+  const EPS2 = { AA: 27.4, AC: 21.2, AG: 25.0, AT: 22.8, CA: 21.2, CC: 14.6, CG: 18.0, CT: 15.2,
+    GA: 25.2, GC: 17.6, GG: 21.6, GT: 20.0, TA: 23.4, TC: 16.2, TG: 19.0, TT: 16.8 };
+  function physical(s) {
+    const n = s.length; let mw = -61.96; for (const b of s) mw += MWB[b];
+    let eps = 0;
+    if (n === 1) eps = EPS1[s];
+    else { for (let i = 0; i < n - 1; i++) eps += EPS2[s.substr(i, 2)]; for (let i = 1; i < n - 1; i++) eps -= EPS1[s[i]]; }
+    eps *= 1000;
+    const counts = { A: 0, C: 0, G: 0, T: 0 }; for (const b of s) counts[b]++;
+    return { n, mw, eps, counts, gc: gcFrac(s) * 100, nmolPerOD: 1e6 / eps, ugPerOD: mw / eps * 1000 };
+  }
+
+  // ΔG of every 5-nt window (stacks only, 1 M + salt), for the stability profile
+  function windows(s, c, w = 5) {
+    const out = [], T = c.temp + K0;
+    for (let i = 0; i + w <= s.length; i++) {
+      let dH = 0, dS = 0; const sub = s.substr(i, w);
+      for (let k = 0; k < w - 1; k++) { const p = NN[sub.substr(k, 2)]; dH += p[0]; dS += p[1]; }
+      dS += saltDS(c, w - 1);
+      out.push(dH - T * dS / 1000);
+    }
+    return out;
+  }
+
+  function meltCurve(s, c, t0, t1, step = 0.5) {
+    const raw = duplexRaw(s);
+    const dS = raw.dS + saltDS(c, s.length - 1);
+    const ct = c.oligo * 1e-9, pts = [];
+    for (let t = t0; t <= t1 + 1e-9; t += step) {
+      const T = t + K0, K = Math.exp(-(raw.dH * 1000 - T * dS) / (R * T));
+      let th;
+      if (raw.sym) { const kc = K * ct; th = (4 * kc + 1 - Math.sqrt(8 * kc + 1)) / (4 * kc); }
+      else { const kc = K * ct / 2; th = (2 * kc + 1 - Math.sqrt(4 * kc + 1)) / (2 * kc); }
+      pts.push([t, th]);
+    }
+    return pts;
+  }
+
+  function repeats(s) {
+    const runs = [], di = [];
+    for (const m of s.matchAll(/([ACGT])\1{3,}/g)) runs.push({ at: m.index, seq: m[0] });
+    for (const m of s.matchAll(/([ACGT]{2})\1{3,}/g)) if (m[1][0] !== m[1][1]) di.push({ at: m.index, seq: m[0] });
+    return { runs, di };
+  }
+
+  root.Stackwise = { clean, revcomp, thermo, basicTm, physical, windows, meltCurve, repeats, gcFrac, naEqM, NN, R };
+  if (typeof module !== 'undefined') module.exports = root.Stackwise;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+// Stackwise secondary-structure engine: nearest-neighbor DP for dimers and hairpins
+(function (root) {
+  const P = root.STACKWISE_PARAMS;
+  const WCP = { AT: 1, TA: 1, GC: 1, CG: 1 };
+  const wc = (x, y) => WCP[x + y] === 1;
+  const INIT = [200, -5.7], ATP = [2200, 6.9];
+  const MAXLOOP = 16;
+  const isAT = (x, y) => (x + y === 'AT' || x + y === 'TA');
+  const g = (h, s, T) => h - T * s;
+  const lk = (t, k) => t[k];
+
+  function ctx(c) {
+    const T = c.temp + 273.15;
+    const free = Math.max(0, c.mg - c.dntp);
+    const na = (c.na + 120 * Math.sqrt(free)) / 1000;
+    return { T, salt: na > 0 ? 0.368 * Math.log(na) : 0 };
+  }
+  function add(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+  function atp(x, y) { return isAT(x, y) ? ATP : [0, 0]; }
+
+  // generic interior transition from inner/left pair (p,q) to (i,j) on strands X (top) and Y (bottom, 3'->5')
+  function link(X, Y, p, q, i, j, K) {
+    const a = i - p - 1, b = j - q - 1;
+    let e;
+    if (a === 0 && b === 0) e = lk(P.st, X[p] + X[i] + '_' + Y[q] + Y[j]);
+    else if (a === 1 && b === 1) {
+      if (wc(X[p + 1], Y[q + 1])) return null;
+      const e1 = lk(P.st, X[p] + X[p + 1] + '_' + Y[q] + Y[q + 1]), e2 = lk(P.st, X[p + 1] + X[i] + '_' + Y[q + 1] + Y[j]);
+      e = e1 && e2 ? add(e1, e2) : null;
+    } else if (a === 0 || b === 0) {
+      const k = a + b, ls = P.loops.bul[k - 1];
+      if (ls == null) return null;
+      e = [0, ls];
+      if (k === 1) { const s = lk(P.st, X[p] + X[i] + '_' + Y[q] + Y[j]); if (!s) return null; e = add(e, s); }
+      else e = add(add(e, atp(X[p], Y[q])), atp(X[i], Y[j]));
+    } else {
+      const ls = P.loops.int[a + b - 1];
+      if (ls == null) return null;
+      e = [0, ls];
+      if (wc(X[p + 1], Y[q + 1]) || wc(X[i - 1], Y[j - 1])) return null; // loop must open and close on mismatches
+      const t1 = lk(P.tmh, Y[q + 1] + Y[q] + '_' + X[p + 1] + X[p]);
+      const t2 = lk(P.tmh, X[i - 1] + X[i] + '_' + Y[j - 1] + Y[j]);
+      if (t1) e = add(e, t1); if (t2) e = add(e, t2);
+    }
+    return e ? [e[0], e[1] + K.salt] : null;
+  }
+
+  function leftEnd(X, Y, i, j) {
+    const hx = i > 0, hy = j > 0;
+    if (hx && hy) return lk(P.tm, X[i - 1] + X[i] + '_' + Y[j - 1] + Y[j]) || [0, 0];
+    if (hx) return lk(P.dg, Y[j] + '_' + X[i] + X[i - 1]) || [0, 0];
+    if (hy) return lk(P.dg, Y[j] + Y[j - 1] + '_' + X[i]) || [0, 0];
+    return [0, 0];
+  }
+  function rightEnd(X, Y, i, j) {
+    const hx = i < X.length - 1, hy = j < Y.length - 1;
+    if (hx && hy) return lk(P.tm, Y[j + 1] + Y[j] + '_' + X[i + 1] + X[i]) || [0, 0];
+    if (hx) return lk(P.dg, X[i] + X[i + 1] + '_' + Y[j]) || [0, 0];
+    if (hy) return lk(P.dg, X[i] + '_' + Y[j] + Y[j + 1]) || [0, 0];
+    return [0, 0];
+  }
+
+  // Bimolecular duplex between A (5'→3') and B (5'→3'); returns best structures
+  function dimer(A, B, c, opts = {}) {
+    const K = ctx(c), Y = B.split('').reverse().join(''), n = A.length, m = Y.length;
+    const best = Array.from({ length: n }, () => new Array(m).fill(null));
+    for (let i = 0; i < n; i++) for (let j = 0; j < m; j++) {
+      if (!wc(A[i], Y[j])) continue;
+      let cur = add(add(INIT, atp(A[i], Y[j])), leftEnd(A, Y, i, j)), from = null;
+      for (let p = Math.max(0, i - MAXLOOP - 1); p < i; p++) for (let q = Math.max(0, j - MAXLOOP - 1); q < j; q++) {
+        const prev = best[p][q]; if (!prev) continue;
+        if ((i - p - 1) + (j - q - 1) > MAXLOOP) continue;
+        const e = link(A, Y, p, q, i, j, K); if (!e) continue;
+        const cand = add(prev.e, e);
+        if (g(cand[0], cand[1], K.T) < g(cur[0], cur[1], K.T)) { cur = cand; from = [p, q]; }
+      }
+      best[i][j] = { e: cur, from };
+    }
+    const finals = [];
+    for (let i = 0; i < n; i++) for (let j = 0; j < m; j++) {
+      const b = best[i][j]; if (!b) continue;
+      const e = add(add(b.e, rightEnd(A, Y, i, j)), atp(A[i], Y[j]));
+      const pairs = []; let cur = [i, j];
+      while (cur) { pairs.unshift(cur); cur = best[cur[0]][cur[1]].from; }
+      if (pairs.length < 2) continue;
+      finals.push({ dH: e[0] / 1000, dS: e[1], dG: g(e[0], e[1], K.T) / 1000, pairs });
+    }
+    finals.sort((x, y) => x.dG - y.dG);
+    // keep distinct structures (different first pair)
+    const out = [], seen = new Set();
+    for (const f of finals) {
+      const k = f.pairs[0].join() ; const k2 = f.pairs[f.pairs.length - 1].join();
+      if (seen.has(k) || seen.has('e' + k2)) continue;
+      seen.add(k); seen.add('e' + k2);
+      const ct = c.oligo * 1e-9;
+      f.tm = f.dH * 1000 / (f.dS + 1.98720425864083 * Math.log(ct / 4)) - 273.15;
+      f.end3A = f.pairs.some(([i]) => i === n - 1);
+      f.end3B = f.pairs.some(([, j]) => j === 0);
+      f.A = A; f.Y = Y;
+      out.push(f); if (out.length >= (opts.limit || 6)) break;
+    }
+    return out;
+  }
+
+  // Unimolecular hairpins on S
+  function hairpin(S, c, opts = {}) {
+    const K = ctx(c), n = S.length;
+    const H = Array.from({ length: n }, () => new Array(n).fill(null));
+    // Y view for link(): treat pair (i,j) as X=S at i, Y=S at j with Y read 3'->5' going inward => indices reversed
+    const R = S.split('').reverse().join('');
+    for (let span = 4; span < n; span++) for (let i = 0; i + span < n; i++) {
+      const j = i + span; if (!wc(S[i], S[j])) continue;
+      const L = j - i - 1;
+      let cur = null, inner = null;
+      if (L >= 3 && P.loops.hp[L - 1] != null) {
+        let e = [0, P.loops.hp[L - 1]];
+        if (L === 3) e = add(e, atp(S[i], S[j]));
+        else { const t = lk(P.tm, S[j - 1] + S[j] + '_' + S[i + 1] + S[i]); if (t) e = add(e, t); }
+        cur = e;
+      }
+      // inner closing pairs (p,q), i<p<q<j
+      for (let p = i + 1; p <= Math.min(i + MAXLOOP + 1, j - 4); p++) for (let q = j - 1; q >= Math.max(p + 4, j - MAXLOOP - 1); q--) {
+        const prev = H[p][q]; if (!prev) continue;
+        if ((p - i - 1) + (j - q - 1) > MAXLOOP) continue;
+        // map to dimer coordinates: outer pair (i, n-1-j) precedes inner pair (p, n-1-q)
+        const e = link(S, R, i, n - 1 - j, p, n - 1 - q, K); if (!e) continue;
+        const cand = add(prev.e, e);
+        if (!cur || g(cand[0], cand[1], K.T) < g(cur[0], cur[1], K.T)) { cur = cand; inner = [p, q]; }
+      }
+      if (cur) H[i][j] = { e: cur, inner };
+    }
+    const finals = [];
+    for (let i = 0; i < n; i++) for (let j = i + 4; j < n; j++) {
+      const h = H[i][j]; if (!h) continue;
+      let e = add(h.e, atp(S[i], S[j]));
+      const hl = i > 0, hr = j < n - 1;
+      let t = null;
+      if (hl && hr) t = lk(P.tm, S[i - 1] + S[i] + '_' + S[j + 1] + S[j]);
+      else if (hl) t = lk(P.dg, S[j] + '_' + S[i] + S[i - 1]);
+      else if (hr) t = lk(P.dg, S[j] + S[j + 1] + '_' + S[i]);
+      if (t) e = add(e, t);
+      const pairs = []; let cur = [i, j];
+      while (cur) { pairs.push(cur); cur = H[cur[0]][cur[1]].inner; }
+      if (pairs.length < 2) continue;
+      const dG = g(e[0], e[1], K.T) / 1000;
+      finals.push({ dH: e[0] / 1000, dS: e[1], dG, tm: e[1] < 0 ? e[0] / e[1] - 273.15 : NaN, pairs, end3: pairs[0][1] >= n - 3 });
+    }
+    finals.sort((x, y) => x.dG - y.dG);
+    const out = [], seen = new Set();
+    for (const f of finals) {
+      const last = f.pairs[f.pairs.length - 1].join();
+      if (seen.has(last)) continue; seen.add(last);
+      out.push(f); if (out.length >= (opts.limit || 6)) break;
+    }
+    return out;
+  }
+
+  root.StackwiseStruct = { dimer, hairpin };
+  if (typeof module !== 'undefined') module.exports = root.StackwiseStruct;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+(function () {
+const S = window.Stackwise, St = window.StackwiseStruct;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fx = (v, d = 1) => (v == null || !isFinite(v)) ? '—' : (Math.abs(v) < 0.5 * Math.pow(10, -d) ? 0 : v).toFixed(d).replace('-', '−');
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('stackwise:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('stackwise:' + k, JSON.stringify(v)); } catch (e) {} }
+};
+const uid = () => Math.random().toString(36).slice(2, 9);
+const LONG = 80, STRUCT_MAX = 160;
+const COMP = { A: 'T', T: 'A', G: 'C', C: 'G' };
+const reduceMotion = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+/* ---------- examples & state ---------- */
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function makeExamples() {
+  const rnd = mulberry(20261029); let s = '';
+  while (s.length < 720) s += 'ACGT'[Math.floor(rnd() * 4)];
+  const F = 'GAAGGTGAAGGTCGGAGTCA', R = 'TTGAGGTCAATGAAGGGGTC';
+  s = s.slice(0, 40) + F + s.slice(60, 640) + S.revcomp(R) + s.slice(660);
+  return [
+    { id: 'exT', kind: 'seq', name: 'Example template (synthetic)', seq: s, ex: true },
+    { id: 'exF', kind: 'oligo', name: 'Example F 41–60', seq: F, role: 'F', ex: true, parent: 'exT', start: 41, end: 60, strand: '+' },
+    { id: 'exR', kind: 'oligo', name: 'Example R 641–660', seq: R, role: 'R', ex: true, parent: 'exT', start: 641, end: 660, strand: '-' }
+  ];
+}
+const OLIGO_EX = [
+  { id: 'ex1', kind: 'oligo', name: 'M13 forward (−20)', seq: 'GTAAAACGACGGCCAGT', role: 'F', ex: true },
+  { id: 'ex2', kind: 'oligo', name: 'M13 reverse', seq: 'CAGGAAACAGCTATGAC', role: 'R', ex: true },
+  { id: 'ex3', kind: 'oligo', name: 'T7 promoter', seq: 'TAATACGACTCACTATAGGG', role: 'F', ex: true },
+  { id: 'ex4', kind: 'oligo', name: 'Self-complementary test', seq: 'GCTAGCTTAGGCCTAAGC', role: '', ex: true }
+];
+let lib = store.get('lib', null);
+let sel = store.get('sel', null);
+if (!Array.isArray(lib) || !lib.length) { lib = makeExamples().concat(OLIGO_EX); sel = 'exT'; }
+else {
+  lib.forEach(o => { if (!o.kind) o.kind = (o.seq || '').length > LONG ? 'seq' : 'oligo'; });
+  if (store.get('v', 1) < 2 && !lib.some(o => o.kind === 'seq')) { lib = makeExamples().concat(lib); sel = 'exT'; }
+}
+store.set('v', 2);
+let partner = store.get('partner', null);
+let cond = Object.assign({ na: 50, mg: 1.5, dntp: 0.2, oligo: 250, temp: 37, method: 'santalucia' }, store.get('cond', {}));
+const PANES = [
+  { id: 'melt', title: 'Melting & thermodynamics' },
+  { id: 'checks', title: 'Primer checks' },
+  { id: 'hairpin', title: 'Hairpins' },
+  { id: 'self', title: 'Self-dimers' },
+  { id: 'cross', title: 'Cross-dimer & pair' },
+  { id: 'stab', title: '3′ stability profile' }
+];
+let order = store.get('order', PANES.map(p => p.id)).filter(id => PANES.some(p => p.id === id));
+PANES.forEach(p => { if (!order.includes(p.id)) order.push(p.id); });
+let closed = new Set(store.get('closed', []));
+let wide = new Set(store.get('wide', ['stab']));
+const DRAFT = '__draft';
+let draft = null;
+const save = () => { store.set('lib', lib); store.set('sel', sel === DRAFT ? ((draft && draft.parent) || (lib[0] && lib[0].id)) : sel); store.set('partner', partner); store.set('cond', cond); store.set('order', order); store.set('closed', [...closed]); store.set('wide', [...wide]); };
+const cur = () => (sel === DRAFT && draft) || lib.find(o => o.id === sel) || lib[0];
+const byId = id => id === DRAFT ? draft : lib.find(o => o.id === id);
+
+/* ---------- severity rules ---------- */
+const rateStruct = (dG, end3, kind) => {
+  const lim = kind === 'hairpin' ? (end3 ? [-2, -4] : [-3, -6]) : (end3 ? [-5, -8] : [-6, -9]);
+  return dG > lim[0] ? 'ok' : dG > lim[1] ? 'warn' : 'bad';
+};
+const tmClass = tm => tm >= 52 && tm <= 65 ? 'ok' : tm >= 45 && tm <= 72 ? 'warn' : 'bad';
+const pill = (st, t) => `<span class="pill ${st}">${t}</span>`;
+const hpPill = h => h === undefined ? pill('neutral', '—') : h ? pill(rateStruct(h.dG, h.end3, 'hairpin'), fx(h.dG, 2)) : pill('ok', 'none');
+const sdPill = d => d === undefined ? pill('neutral', '—') : d ? pill(rateStruct(d.dG, d.end3A || d.end3B, 'self'), fx(d.dG, 2)) : pill('ok', 'none');
+const colorBase = b => `<span class="b${b}">${b}</span>`;
+const colored = s => s.split('').map(colorBase).join('');
+
+/* quick analysis with cache (used by selection bar and fragment table) */
+const qcache = new Map();
+function quick(seq, withStruct = true) {
+  if (seq.length < 2) return null;
+  const key = seq + '|' + cond.na + cond.mg + cond.dntp + cond.oligo + cond.temp + cond.method + '|' + withStruct;
+  if (qcache.has(key)) return qcache.get(key);
+  const th = S.thermo(seq, cond), w = S.windows(seq, cond, 5);
+  const r = { th, gc: S.gcFrac(seq) * 100, w3: w.length ? w[w.length - 1] : null };
+  if (withStruct && seq.length <= STRUCT_MAX) {
+    r.hp = St.hairpin(seq, cond, { limit: 1 })[0] || false;
+    r.sd = St.dimer(seq, seq, cond, { limit: 1 })[0] || false;
+  }
+  if (qcache.size > 400) qcache.clear();
+  qcache.set(key, r);
+  return r;
+}
+
+/* ---------- where oligos sit on a sequence ---------- */
+function findOn(x, p) {
+  if (!p.seq || x.seq.length < 2) return null;
+  if (x.parent === p.id && x.start) {
+    const a = x.start - 1, b = x.end - 1, want = x.strand === '-' ? S.revcomp(x.seq) : x.seq;
+    if (p.seq.slice(a, b + 1) === want) return { a, b, strand: x.strand || '+' };
+  }
+  if (x.parent !== p.id && x.seq.length < 12) return null;
+  let i = p.seq.indexOf(x.seq);
+  if (i >= 0) return { a: i, b: i + x.seq.length - 1, strand: '+' };
+  const rc = S.revcomp(x.seq); i = p.seq.indexOf(rc);
+  if (i >= 0) return { a: i, b: i + rc.length - 1, strand: '-' };
+  return null;
+}
+function seqAnnots(p) {
+  const out = [];
+  if (!p || !p.seq) return out;
+  for (const x of lib) {
+    if (x.kind !== 'oligo') continue;
+    const h = findOn(x, p);
+    if (h) {
+      if (x.parent === p.id) { x.start = h.a + 1; x.end = h.b + 1; x.strand = h.strand; }
+      out.push(Object.assign({ o: x }, h));
+    }
+  }
+  return out.sort((u, v) => u.a - v.a || u.b - v.b);
+}
+
+/* ---------- double-stranded map ---------- */
+function chWidth(host) {
+  const p = document.createElement('span'); p.className = 'probe'; p.textContent = '0'.repeat(40);
+  host.appendChild(p); const w = p.getBoundingClientRect().width / 40; p.remove();
+  return w > 2 ? w : 8.1;
+}
+function fit(host, n, maxBlocks) {
+  const chPx = chWidth(host), pw = String(Math.max(n, 1)).length + 1;
+  const width = host.clientWidth || 600;
+  const avail = width / chPx - (2 * pw + 6) - 1;
+  return { chPx, pw, blocks: Math.max(1, Math.min(maxBlocks || 10, Math.floor((avail + 1) / 11))) };
+}
+function laneHTML(items, r0, r1, col, cls) {
+  const lanes = [];
+  let html = '';
+  for (const it of items) {
+    const a = Math.max(it.a, r0), b = Math.min(it.b, r1);
+    let L = 0; while (lanes[L] != null && lanes[L] >= a) L++;
+    lanes[L] = b + 1;
+    const fwd = it.strand === '+';
+    const h3 = fwd ? b === it.b : a === it.a;
+    const left = col(a), w = col(b) + 1 - left;
+    html += `<button class="bar ${fwd ? 'fwd' : 'rev'}${h3 ? ' h3' : ''}${it.o.draft ? ' dr' : ''}" data-oid="${it.o.id}" style="left:calc(${left} * var(--chpx));width:calc(${w} * var(--chpx));top:${L * 16 + 1}px" title="${esc(it.o.name)} · ${it.a + 1}–${it.b + 1} ${fwd ? '→' : '←'}">${esc(it.o.name)}</button>`;
+  }
+  return `<div class="${cls}" style="height:${lanes.length ? lanes.length * 16 + 2 : 0}px">${html}</div>`;
+}
+function renderMap(host, seq, opts = {}) {
+  const n = seq.length;
+  if (!n) { host.innerHTML = '<p class="empty">No sequence yet.</p>'; return { top: [], bot: [], blocks: 0 }; }
+  const f = opts.fit || fit(host, n, opts.maxBlocks);
+  const bpr = f.blocks * 10;
+  host.style.setProperty('--pw', f.pw + 'ch');
+  host.style.setProperty('--chpx', f.chPx + 'px');
+  const ann = opts.annots || [];
+  const parts = [];
+  for (let r0 = 0; r0 < n; r0 += bpr) {
+    const r1 = Math.min(n, r0 + bpr) - 1;
+    const col = k => (k - r0) + Math.floor((k - r0) / 10);
+    let top = '', bot = '', ru = '';
+    for (let k = r0; k <= r1; k++) {
+      if (k > r0 && (k - r0) % 10 === 0) { top += ' '; bot += ' '; }
+      const b = seq[k], c = COMP[b];
+      top += `<i class="b${b}" data-i="${k}">${b}</i>`;
+      bot += `<i class="b${c}" data-i="${k}">${c}</i>`;
+      if ((k + 1) % 10 === 0 || k === r1) ru += `<span style="left:calc(${col(k) + 1} * var(--chpx))">${k + 1}</span>`;
+    }
+    const inRow = ann.filter(x => x.b >= r0 && x.a <= r1);
+    parts.push(`<div class="row">${laneHTML(inRow.filter(x => x.strand === '+'), r0, r1, col, 'af')}<div class="ru">${ru}</div>` +
+      `<span class="pl">${r0 + 1}</span><span class="e1">5′</span><div class="st up">${top}</div><span class="e2">3′</span><span class="pr">${r1 + 1}</span>` +
+      `<span class="e3">3′</span><div class="st dn">${bot}</div><span class="e4">5′</span>` +
+      `${laneHTML(inRow.filter(x => x.strand === '-'), r0, r1, col, 'ar')}</div>`);
+  }
+  host.innerHTML = parts.join('');
+  return { top: host.querySelectorAll('.st.up i'), bot: host.querySelectorAll('.st.dn i'), blocks: f.blocks };
+}
+
+/* ---------- duplex text rendering (structures) ---------- */
+function duplexHTML(top, bot, pairs, opts = {}) {
+  const T = [], B = [], M = [];
+  const push = (t, b, m, ti, bi) => { T.push([t, ti]); B.push([b, bi]); M.push(m); };
+  const [i0, j0] = pairs[0];
+  const lead = Math.max(i0, j0);
+  for (let k = 0; k < lead; k++) {
+    const ti = k - (lead - i0), bi = k - (lead - j0);
+    push(ti >= 0 ? top[ti] : ' ', bi >= 0 ? bot[bi] : ' ', ' ', ti >= 0 ? ti : -1, bi >= 0 ? bi : -1);
+  }
+  for (let k = 0; k < pairs.length; k++) {
+    const [i, j] = pairs[k];
+    if (k > 0) {
+      const [p, q] = pairs[k - 1], a = i - p - 1, b = j - q - 1, w = Math.max(a, b);
+      for (let x = 0; x < w; x++) push(x < a ? top[p + 1 + x] : '-', x < b ? bot[q + 1 + x] : '-', ' ', x < a ? p + 1 + x : -1, x < b ? q + 1 + x : -1);
+    }
+    push(top[i], bot[j], '|', i, j);
+  }
+  const [iN, jN] = pairs[pairs.length - 1];
+  if (opts.loop) {
+    const lp = opts.loop, half = Math.ceil(lp.length / 2);
+    for (let x = 0; x < half; x++) push(lp[x] || ' ', lp[lp.length - 1 - x] && (lp.length - 1 - x) >= half ? lp[lp.length - 1 - x] : ' ', ' ', -2, -2);
+  } else {
+    const ta = top.length - 1 - iN, tb = bot.length - 1 - jN, w = Math.max(ta, tb);
+    for (let x = 0; x < w; x++) push(x < ta ? top[iN + 1 + x] : ' ', x < tb ? bot[jN + 1 + x] : ' ', ' ', x < ta ? iN + 1 + x : -1, x < tb ? jN + 1 + x : -1);
+  }
+  const cell = ([c, idx], hot) => c === ' ' || c === '-' ? `<span class="lab">${c}</span>` : `<span class="b${c}${hot && hot.has(idx) ? ' hot' : ''}">${c}</span>`;
+  const L = opts.labels || ['5′', '3′', '3′', '5′'];
+  const tail = opts.loop ? [' ╮', ' │', ' ╯'] : [' ' + L[1], '', ' ' + L[3]];
+  return `<pre class="duplex"><span class="lab">${L[0]} </span>${T.map(c => cell(c, opts.hotTop)).join('')}<span class="lab">${tail[0]}</span>\n<span class="lab">   </span><span class="pr">${M.join('')}</span><span class="lab">${tail[1]}</span>\n<span class="lab">${L[2]} </span>${B.map(c => cell(c, opts.hotBot)).join('')}<span class="lab">${tail[2]}</span></pre>`;
+}
+function dimerCard(d, A, B, kind) {
+  const st = rateStruct(d.dG, d.end3A || d.end3B, kind);
+  const Y = B.split('').reverse().join('');
+  const hotTop = new Set([A.length - 1, A.length - 2, A.length - 3]);
+  const hotBot = new Set([0, 1, 2]);
+  const flags = [];
+  if (d.end3A) flags.push(kind === 'self' ? '3′ end' : '3′ of this oligo');
+  if (d.end3B && kind !== 'self') flags.push('3′ of partner');
+  return `<div class="struct ${st}"><div class="struct-h"><span>ΔG <b>${fx(d.dG, 2)}</b> kcal/mol</span><span>ΔH <b>${fx(d.dH, 1)}</b></span><span>ΔS <b>${fx(d.dS, 1)}</b></span><span>${d.pairs.length} bp</span>${flags.map(f => `<span class="pill bad">${f}</span>`).join('')}<span class="pill ${st}" style="margin-left:auto">${st === 'ok' ? 'Negligible' : st === 'warn' ? 'Moderate' : 'Strong'}</span></div>${duplexHTML(A, Y, d.pairs, { hotTop, hotBot })}</div>`;
+}
+function hairpinCard(h, s) {
+  const st = rateStruct(h.dG, h.end3, 'hairpin');
+  const n = s.length, Y = s.split('').reverse().join('');
+  const pairs = h.pairs.map(([i, j]) => [i, n - 1 - j]);
+  const [iK, jK] = h.pairs[h.pairs.length - 1];
+  const loop = s.slice(iK + 1, jK);
+  return `<div class="struct ${st}"><div class="struct-h"><span>ΔG <b>${fx(h.dG, 2)}</b> kcal/mol</span><span>Tm <b>${fx(h.tm, 1)}</b> °C</span><span>${h.pairs.length} bp stem · ${loop.length} nt loop</span>${h.end3 ? '<span class="pill bad">3′ end in stem</span>' : ''}<span class="pill ${st}" style="margin-left:auto">${st === 'ok' ? 'Negligible' : st === 'warn' ? 'Moderate' : 'Strong'}</span></div>${duplexHTML(s.slice(0, iK + 1), Y.slice(0, n - jK), pairs, { loop, hotBot: new Set([0, 1, 2]), labels: ['5′', '', '3′', ''] })}</div>`;
+}
+
+/* ---------- charts ---------- */
+function meltChart(seq, th) {
+  const W = 520, H = 230, l = 40, r = 14, t = 26, b = 30;
+  const t0 = Math.floor((th.tmSL - 30) / 5) * 5, t1 = t0 + 60;
+  const pts = S.meltCurve(seq, cond, t0, t1, 0.5);
+  const X = v => l + (v - t0) / (t1 - t0) * (W - l - r), Yv = v => t + (1 - v) * (H - t - b);
+  let grid = '';
+  for (let v = 0; v <= 1.0001; v += 0.25) grid += `<line class="grid" x1="${l}" x2="${W - r}" y1="${Yv(v)}" y2="${Yv(v)}"/><text x="${l - 6}" y="${Yv(v) + 3}" text-anchor="end">${Math.round(v * 100)}</text>`;
+  for (let v = t0; v <= t1; v += 10) grid += `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${t}" y2="${H - b}"/><text x="${X(v)}" y="${H - b + 14}" text-anchor="middle">${v}</text>`;
+  const path = pts.map(([x, y], k) => (k ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Yv(y).toFixed(1)).join('');
+  const area = path + `L${X(t1)} ${Yv(0)}L${X(t0)} ${Yv(0)}Z`;
+  const tmx = X(th.tm), showT = th.tm >= t0 && th.tm <= t1;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Fraction of oligo in duplex versus temperature">
+    ${grid}<line class="ax" x1="${l}" x2="${W - r}" y1="${H - b}" y2="${H - b}"/>
+    <path d="${area}" fill="var(--accent)" fill-opacity="0.10"/>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    ${showT ? `<line x1="${tmx}" x2="${tmx}" y1="${t}" y2="${H - b}" stroke="var(--fg)" stroke-dasharray="3 3" stroke-width="1"/><circle cx="${tmx}" cy="${Yv(0.5)}" r="4" fill="var(--panel)" stroke="var(--fg)" stroke-width="1.5"/><text x="${tmx + 7}" y="${t - 8}" style="fill:var(--fg)">Tm ${fx(th.tm, 1)} °C</text>` : ''}
+    <text x="${l}" y="${H - 4}">°C</text><text x="${l - 6}" y="12" text-anchor="end">%</text><text x="${l + 4}" y="12">fraction in duplex</text></svg>`;
+}
+function stabChart(seq) {
+  const w = S.windows(seq, cond, 5);
+  if (!w.length) return '<p class="empty">Needs at least 5 nt.</p>';
+  const W = Math.max(360, w.length * 14 + 60), H = 200, l = 40, r = 10, t = 12, b = 26;
+  const minG = Math.min(-10, ...w), Yv = v => t + (v / minG) * (H - t - b);
+  const bw = (W - l - r) / w.length;
+  let g = '';
+  for (let v = 0; v >= minG - 0.01; v -= 2) g += `<line class="grid" x1="${l}" x2="${W - r}" y1="${Yv(v)}" y2="${Yv(v)}"/><text x="${l - 6}" y="${Yv(v) + 3}" text-anchor="end">${fx(v, 0)}</text>`;
+  const bars = w.map((v, k) => {
+    const last = k === w.length - 1, col = v < -9 ? 'var(--bad)' : v < -7 ? 'var(--warn)' : 'var(--accent)';
+    return `<rect x="${(l + k * bw + 1.5).toFixed(1)}" y="${Yv(0)}" width="${Math.max(2, bw - 3).toFixed(1)}" height="${(Yv(v) - Yv(0)).toFixed(1)}" rx="2" fill="${col}" fill-opacity="${last ? 1 : 0.55}"><title>${k + 1}–${k + 5}: ${seq.substr(k, 5)} ΔG ${fx(v, 2)} kcal/mol</title></rect>`;
+  }).join('');
+  const ticks = w.map((v, k) => (k % 5 === 0 || k === w.length - 1) ? `<text x="${l + k * bw + bw / 2}" y="${H - b + 14}" text-anchor="middle">${k + 1}</text>` : '').join('');
+  const lim = `<line x1="${l}" x2="${W - r}" y1="${Yv(-9)}" y2="${Yv(-9)}" stroke="var(--bad)" stroke-dasharray="4 3"/><text x="${W - r}" y="${Yv(-9) - 4}" text-anchor="end" style="fill:var(--bad)">−9 limit</text>`;
+  return `<div style="overflow-x:auto"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 560)}px" role="img" aria-label="Pentamer duplex stability along the sequence">${g}${bars}${lim}<line class="ax" x1="${l}" x2="${W - r}" y1="${Yv(0)}" y2="${Yv(0)}"/>${ticks}</svg></div>`;
+}
+
+/* ---------- oligo analysis ---------- */
+function analyze(o) {
+  const seq = o.seq, res = { seq };
+  if (seq.length < 2) return res;
+  res.th = S.thermo(seq, cond);
+  res.alt = S.thermo(seq, Object.assign({}, cond, { method: cond.method === 'santalucia' ? 'owczarzy' : 'santalucia' }));
+  res.ph = S.physical(seq);
+  res.basic = S.basicTm(seq);
+  res.win = S.windows(seq, cond, 5);
+  res.rep = S.repeats(seq);
+  if (seq.length <= STRUCT_MAX) { res.hp = St.hairpin(seq, cond, { limit: 4 }); res.sd = St.dimer(seq, seq, cond, { limit: 4 }); }
+  return res;
+}
+function checks(o, r) {
+  const s = o.seq, out = [], n = s.length;
+  const add = (st, name, detail, val) => out.push({ st, name, detail, val });
+  add(n >= 18 && n <= 30 ? 'ok' : n >= 15 && n <= 35 ? 'warn' : 'bad', 'Length', '18–30 nt for PCR primers', n + ' nt');
+  const gc = r.ph.gc;
+  add(gc >= 40 && gc <= 60 ? 'ok' : gc >= 30 && gc <= 70 ? 'warn' : 'bad', 'GC content', '40–60 %', fx(gc, 1) + ' %');
+  add(tmClass(r.th.tm), 'Melting temperature', '52–65 °C (nearest-neighbor)', fx(r.th.tm, 1) + ' °C');
+  const gc5 = (s.slice(-5).match(/[GC]/g) || []).length, endGC = /[GC]$/.test(s);
+  add(gc5 > 3 ? 'warn' : endGC ? 'ok' : 'warn', 'GC clamp', 'G or C at the 3′ end, at most 3 G/C in the last 5', `${gc5}/5, ends ${s.slice(-1)}`);
+  const w3 = r.win.length ? r.win[r.win.length - 1] : 0;
+  add(w3 > -9 ? 'ok' : 'warn', '3′ end stability', 'ΔG of the 3′ pentamer above −9 kcal/mol', fx(w3, 2));
+  add(r.rep.runs.length ? 'warn' : 'ok', 'Single-base runs', 'No run of 4 or more of one base', r.rep.runs.length ? r.rep.runs.map(x => x.seq).join(', ') : 'none');
+  add(r.rep.di.length ? 'warn' : 'ok', 'Dinucleotide repeats', 'No dinucleotide repeated 4 or more times', r.rep.di.length ? r.rep.di.map(x => x.seq).join(', ') : 'none');
+  if (r.hp) { const h = r.hp[0]; add(h ? rateStruct(h.dG, h.end3, 'hairpin') : 'ok', 'Hairpins', 'ΔG above −2 (3′) / −3 kcal/mol (internal)', h ? fx(h.dG, 2) : 'none'); }
+  if (r.sd) { const d = r.sd[0]; add(d ? rateStruct(d.dG, d.end3A || d.end3B, 'self') : 'ok', 'Self-dimers', 'ΔG above −5 (3′) / −6 kcal/mol (internal)', d ? fx(d.dG, 2) : 'none'); }
+  return out;
+}
+
+/* ---------- library ---------- */
+function renderLib() {
+  const seqs = lib.filter(o => o.kind === 'seq'), oligos = lib.filter(o => o.kind !== 'seq');
+  const seqItem = o => {
+    const nOl = seqAnnots(o).length;
+    return `<button class="item" aria-current="${o.id === sel}" data-id="${o.id}">
+      <span class="role ds">ds</span><span class="nm">${esc(o.name || 'Untitled')}</span>
+      <span class="tmchip num pill neutral">${o.seq.length ? fx(S.gcFrac(o.seq) * 100, 0) + '% GC' : '—'}</span>
+      <span class="sub">${o.ex ? 'ex · ' : ''}${o.seq.length.toLocaleString('en-US')} bp · ${nOl} oligo${nOl === 1 ? '' : 's'}</span></button>`;
+  };
+  const oligoItem = o => {
+    const th = o.seq.length >= 2 ? S.thermo(o.seq, cond) : null;
+    const p = o.parent && byId(o.parent);
+    const sub = p && o.start ? `from ${esc(p.name)} ${o.start}–${o.end} ${o.strand === '-' ? '←' : '→'}` : `${o.seq.length} nt · ${esc(o.seq.slice(0, 22))}${o.seq.length > 22 ? '…' : ''}`;
+    return `<button class="item" aria-current="${o.id === sel}" data-id="${o.id}">
+      <span class="role ${o.role || ''}">${o.role || '·'}</span><span class="nm">${esc(o.name || 'Untitled')}</span>
+      <span class="tmchip num pill ${th ? tmClass(th.tm) : 'neutral'}">${th ? fx(th.tm, 1) + '°' : '—'}</span>
+      <span class="sub">${o.ex ? 'ex · ' : ''}${sub}</span></button>`;
+  };
+  const draftItem = draft ? (() => {
+    const p = draft.parent && byId(draft.parent);
+    const sub = p && draft.start ? `from ${esc(p.name)} ${draft.start}–${draft.end} ${draft.strand === '-' ? '←' : '→'}` : `${draft.seq.length} nt`;
+    return `<button class="item draft" aria-current="${sel === DRAFT}" data-id="${DRAFT}"><span class="role ${draft.role || ''}">${draft.role || '·'}</span><span class="nm">${esc(draft.name || 'Untitled')}</span><span class="tmchip pill warn">unsaved</span><span class="sub">${sub}</span></button>`;
+  })() : '';
+  $('lib').innerHTML = (seqs.length ? '<div class="grp">Sequences</div>' + seqs.map(seqItem).join('') : '') +
+    (oligos.length || draft ? '<div class="grp">Oligos</div>' + draftItem + oligos.map(oligoItem).join('') : '');
+  $('lib-count').textContent = `${seqs.length} seq · ${oligos.length} oligo${oligos.length === 1 ? '' : 's'}`;
+}
+
+/* ================= SEQUENCE VIEW ================= */
+const SV = { sel: null, anchor: null, dragging: false, touchPending: false, hits: [], hitIdx: -1, editing: false, nameDirty: false, pick: '+', pending: null };
+let mapEls = { top: [], bot: [], blocks: 0 }, painted = null, paintedHits = [], mapKey = '';
+
+function hashSeq(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
+function renderSeqMap(force) {
+  const o = cur(), host = $('s-map');
+  const ann = seqAnnots(o);
+  if (draft && draft.parent === o.id) { const h = findOn(draft, o); if (h) ann.push(Object.assign({ o: draft }, h)); ann.sort((u, v) => u.a - v.a); }
+  const f = o.seq.length ? fit(host, o.seq.length, 10) : null;
+  const key = [o.id, o.seq.length, hashSeq(o.seq), f && f.blocks, f && f.chPx.toFixed(2), ann.map(x => x.o.id + ':' + x.a + ':' + x.b + x.strand + x.o.name).join()].join('|');
+  if (!force && key === mapKey) return ann;
+  mapKey = key;
+  mapEls = renderMap(host, o.seq, { annots: ann, fit: f });
+  painted = null; paintedHits = [];
+  paintSel(); paintHits();
+  return ann;
+}
+function paintSel() {
+  const { top, bot } = mapEls;
+  if (painted) for (let k = painted.a; k <= painted.b; k++) { if (top[k]) top[k].classList.remove('sel', 'sels'); if (bot[k]) bot[k].classList.remove('sel', 'sels'); }
+  painted = SV.sel ? Object.assign({}, SV.sel) : null;
+  if (painted) for (let k = painted.a; k <= painted.b; k++) {
+    if (top[k]) top[k].classList.add(painted.strand === '+' ? 'sels' : 'sel');
+    if (bot[k]) bot[k].classList.add(painted.strand === '-' ? 'sels' : 'sel');
+  }
+}
+function paintHits() {
+  paintedHits.forEach(el => el.classList.remove('hit'));
+  paintedHits = [];
+  for (const h of SV.hits) for (let k = h.a; k <= h.b; k++) {
+    const el = (h.strand === '+' ? mapEls.top : mapEls.bot)[k];
+    if (el) { el.classList.add('hit'); paintedHits.push(el); }
+  }
+}
+function fragName(o, s) { const short = (o.name || 'Seq').split(/[\s(,]/)[0].slice(0, 16) || 'Seq'; return `${short} ${s.strand === '+' ? 'F' : 'R'} ${s.a + 1}–${s.b + 1}`; }
+function selSeq() { const o = cur(), s = SV.sel, f = o.seq.slice(s.a, s.b + 1); return s.strand === '+' ? f : S.revcomp(f); }
+function setPick(st) { SV.pick = st; $('s-plus').setAttribute('aria-pressed', st === '+'); $('s-minus').setAttribute('aria-pressed', st === '-'); }
+function setSel(a, b, strand) {
+  const n = cur().seq.length; if (!n) return;
+  const lo = Math.max(0, Math.min(a, b)), hi = Math.min(n - 1, Math.max(a, b));
+  const prev = SV.sel;
+  if (!prev || prev.a !== lo || prev.b !== hi || prev.strand !== strand) SV.nameDirty = false;
+  SV.sel = { a: lo, b: hi, strand };
+  $('s-from').value = lo + 1; $('s-to').value = hi + 1; setPick(strand);
+  paintSel(); renderSelBar(false);
+}
+function clearSel() { SV.sel = null; SV.touchPending = false; paintSel(); renderSelBar(); }
+function scrollToSel() {
+  const s = SV.sel; if (!s) return;
+  const el = mapEls.top[s.a]; if (el) el.scrollIntoView({ block: 'center', behavior: reduceMotion() ? 'auto' : 'smooth' });
+}
+
+function renderSelBar(full) {
+  const bar = $('selbar'), s = SV.sel;
+  if (!s) { bar.hidden = true; bar.innerHTML = ''; return; }
+  const o = cur(), q = selSeq(), n = q.length;
+  const r = n >= 2 ? quick(q, !!full) : null;
+  let struct = '';
+  if (r && full && n <= STRUCT_MAX) struct = `<span class="hint">Hairpin</span>${hpPill(r.hp)}<span class="hint">Self-dimer</span>${sdPill(r.sd)}`;
+  else if (n > STRUCT_MAX) struct = `<span class="hint">Structure search runs up to ${STRUCT_MAX} nt</span>`;
+  const defName = fragName(o, s);
+  const prevInput = $('sel-name');
+  const nameVal = SV.nameDirty && prevInput ? prevInput.value : defName;
+  const shown = n > 70 ? colored(q.slice(0, 32)) + '<span class="lab"> … </span>' + colored(q.slice(-32)) : colored(q);
+  const fwd = s.strand === '+';
+  bar.hidden = false;
+  bar.innerHTML = `<div class="row2"><span class="dir ${fwd ? 'fwd' : 'rev'}">${fwd ? '→ Top strand' : '← Bottom strand'}</span>
+      <b class="mono num">${s.a + 1}–${s.b + 1}</b><span class="hint">${n} nt</span>
+      ${r ? pill(tmClass(r.th.tm), 'Tm ' + fx(r.th.tm, 1) + ' °C') + pill('neutral', 'GC ' + fx(r.gc, 0) + ' %') + pill('neutral', 'ΔG ' + fx(r.th.dG, 2)) : '<span class="hint">Select at least 2 bases</span>'}
+      ${struct}<span class="sp"></span>${SV.touchPending ? '<span class="hint">Tap the last base</span>' : ''}<button class="btn ghost" data-sb="clear">Clear</button></div>
+    <div class="sq"><span class="lab">5′-</span>${shown}<span class="lab">-3′</span></div>
+    <div class="row2"><div class="field grow"><label for="sel-name">Name</label><input id="sel-name" value="${esc(nameVal)}" spellcheck="false"></div>
+      <button class="btn" data-sb="flip">Other strand</button>
+      <button class="btn" data-sb="copy">Copy</button>
+      <button class="btn" data-sb="save">Save oligo</button>
+      <button class="btn primary" data-sb="analyze">Analyze</button></div>`;
+}
+
+function saveSel(open) {
+  const o = cur(), s = SV.sel; if (!s) return;
+  const q = selSeq();
+  if (q.length < 2) { toast('Select at least 2 bases'); return; }
+  const name = ($('sel-name') && $('sel-name').value.trim()) || fragName(o, s);
+  let item = lib.find(x => x.kind === 'oligo' && x.parent === o.id && x.start === s.a + 1 && x.end === s.b + 1 && x.strand === s.strand);
+  if (!item) { item = { id: uid(), kind: 'oligo', name, seq: q, role: s.strand === '+' ? 'F' : 'R', parent: o.id, start: s.a + 1, end: s.b + 1, strand: s.strand }; lib.push(item); toast('Saved ' + name); }
+  else toast('Already saved as ' + item.name);
+  save();
+  if (open) { sel = item.id; renderAll(true); window.scrollTo(0, 0); return; }
+  SV.sel = null; renderSelBar(); renderSeqMap(); renderFragments(); renderLib();
+}
+
+function openDraftFromSel() {
+  const o = cur(), s = SV.sel; if (!s) return;
+  const q = selSeq(); if (q.length < 2) { toast('Select at least 2 bases'); return; }
+  const name = ($('sel-name') && $('sel-name').value.trim()) || fragName(o, s);
+  draft = { id: DRAFT, kind: 'oligo', draft: true, name, seq: q, role: s.strand === '+' ? 'F' : 'R', parent: o.id, start: s.a + 1, end: s.b + 1, strand: s.strand };
+  sel = DRAFT; renderAll(true); window.scrollTo(0, 0);
+}
+function saveDraft() {
+  if (!draft) return;
+  const p = draft.parent && byId(draft.parent);
+  const dup = p && lib.find(x => x.kind === 'oligo' && x.parent === p.id && x.start === draft.start && x.end === draft.end && x.strand === draft.strand && x.seq === draft.seq);
+  if (dup) { draft = null; sel = dup.id; save(); renderAll(true); toast('Already saved as ' + dup.name); return; }
+  const item = Object.assign({}, draft, { id: uid() }); delete item.draft;
+  lib.push(item); draft = null; sel = item.id; save(); renderAll(true); toast('Saved ' + item.name);
+}
+function nudge(end, d) {
+  const o = draft, p = o && byId(o.parent); if (!p) return;
+  let a = o.start - 1, b = o.end - 1; const plus = o.strand === '+';
+  if ((end === 5) === plus) a -= d; else b += d;
+  if (a < 0 || b >= p.seq.length) { toast('Reached the end of the sequence'); return; }
+  if (b - a + 1 < 5) { toast('Oligo must stay at least 5 nt'); return; }
+  const f = p.seq.slice(a, b + 1);
+  if (/ [FR] \d+–\d+$/.test(o.name)) o.name = fragName(p, { a, b, strand: o.strand });
+  o.seq = plus ? f : S.revcomp(f); o.start = a + 1; o.end = b + 1;
+  renderAll(true);
+}
+function renderFragments() {
+  const o = cur(), list = seqAnnots(o);
+  $('frag-sum').innerHTML = list.length ? pill('neutral', list.length + ' oligo' + (list.length === 1 ? '' : 's')) : '';
+  if (!list.length) {
+    $('frag-body').innerHTML = '<p class="empty">No oligos here yet. Select a stretch on the map and save it. Primers already in your library show up here automatically when they match either strand (12 nt or longer).</p>';
+    return;
+  }
+  const rows = list.map(x => {
+    const r = quick(x.o.seq), fwd = x.strand === '+';
+    return `<tr><td class="nm" title="${esc(x.o.name)}">${esc(x.o.name)}</td>
+      <td class="n">${x.a + 1}–${x.b + 1}</td><td><span class="dir ${fwd ? 'fwd' : 'rev'}">${fwd ? '→ top' : '← bottom'}</span></td>
+      <td class="n">${x.o.seq.length}</td><td>${pill(tmClass(r.th.tm), fx(r.th.tm, 1))}</td><td class="n">${fx(r.gc, 1)}</td>
+      <td class="n">${fx(r.th.dG, 2)}</td><td>${hpPill(r.hp)}</td><td>${sdPill(r.sd)}</td>
+      <td>${pill(r.w3 > -9 ? 'ok' : 'warn', fx(r.w3, 2))}</td>
+      <td><button class="btn ghost" data-fa="show" data-oid="${x.o.id}">Show</button><button class="btn ghost" data-fa="open" data-oid="${x.o.id}">Analyze</button></td></tr>`;
+  }).join('');
+  const F = list.filter(x => x.strand === '+'), R = list.filter(x => x.strand === '-'), amps = [];
+  for (const f of F) for (const r of R) if (r.b > f.b && r.a > f.a) amps.push({ f, r, size: r.b - f.a + 1 });
+  amps.sort((u, v) => u.size - v.size);
+  const ampHTML = amps.slice(0, 8).map(({ f, r, size }) => {
+    const tf = quick(f.o.seq).th.tm, tr = quick(r.o.seq).th.tm, d = Math.abs(tf - tr);
+    let cd = '';
+    if (f.o.seq.length <= STRUCT_MAX && r.o.seq.length <= STRUCT_MAX) { const x = St.dimer(f.o.seq, r.o.seq, cond, { limit: 1 })[0]; cd = 'Cross-dimer ' + (x ? pill(rateStruct(x.dG, x.end3A || x.end3B, 'cross'), fx(x.dG, 2)) : pill('ok', 'none')); }
+    return `<div><b>${esc(f.o.name)}</b><span class="hint">×</span><b>${esc(r.o.name)}</b><span class="mono num">${size.toLocaleString('en-US')} bp</span>${pill(d <= 2 ? 'ok' : d <= 5 ? 'warn' : 'bad', 'ΔTm ' + fx(d, 1) + ' °C')}${cd}</div>`;
+  }).join('');
+  $('frag-body').innerHTML = `<div class="tablewrap"><table class="frag"><thead><tr><th>Name</th><th class="n">Position</th><th>Strand</th><th class="n">nt</th><th>Tm °C</th><th class="n">GC %</th><th class="n">ΔG ${cond.temp}°</th><th>Hairpin</th><th>Self-dimer</th><th>3′ ΔG</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` +
+    (amps.length ? `<div class="amp"><span class="eyebrow">Products (forward × reverse)</span>${ampHTML}</div>` : '');
+}
+
+function seqStats(o) {
+  const s = o.seq, n = s.length;
+  if (!n) return '<span>Paste a strand to begin.</span>';
+  const gc = S.gcFrac(s) * 100, c = { A: 0, C: 0, G: 0, T: 0 }; for (const b of s) c[b]++;
+  const tmLong = n >= 2 ? 81.5 + 16.6 * Math.log10(S.naEqM(cond)) + 0.41 * gc - 600 / n : NaN;
+  const mw = n >= 2 ? (S.physical(s).mw + S.physical(S.revcomp(s)).mw) : NaN;
+  return `<span>Length <b>${n.toLocaleString('en-US')}</b> bp</span><span>GC <b>${fx(gc, 1)}</b> %</span>
+    <span>Tm (long duplex, salt-adjusted) <b>${fx(tmLong, 1)}</b> °C</span><span>MW dsDNA <b>${(mw / 1000).toFixed(1)}</b> kDa</span>
+    <span><b class="bA">A ${c.A}</b> · <b class="bC">C ${c.C}</b> · <b class="bG">G ${c.G}</b> · <b class="bT">T ${c.T}</b></span>`;
+}
+
+function renderSeqView(sync) {
+  const o = cur();
+  if (sync) {
+    $('s-name').value = o.name; $('s-seq').value = o.seq;
+    SV.sel = null; SV.hits = []; SV.hitIdx = -1; SV.touchPending = false; SV.editing = !o.seq;
+    $('s-find').value = ''; $('s-hits').textContent = ''; $('s-next').hidden = true; $('s-msg').hidden = true;
+    $('s-from').value = ''; $('s-to').value = '';
+    $('s-del').textContent = 'Delete'; $('s-del').dataset.armed = '';
+    mapKey = '';
+  }
+  if (SV.sel && SV.sel.b >= o.seq.length) SV.sel = null;
+  $('s-seq').hidden = !SV.editing; $('s-editbtn').textContent = SV.editing ? 'Done editing' : 'Edit sequence';
+  $('s-stats').innerHTML = seqStats(o);
+  renderSeqMap(false);
+  renderFragments();
+  if (SV.pending) { const p = SV.pending; SV.pending = null; setSel(p.a, p.b, p.strand); renderSelBar(true); requestAnimationFrame(scrollToSel); }
+  else renderSelBar(true);
+}
+
+function computeHits() {
+  const q = S.clean($('s-find').value), p = cur().seq;
+  SV.hits = []; SV.hitIdx = -1;
+  if (q.length >= 3) {
+    const rc = S.revcomp(q);
+    for (const [pat, strand] of [[q, '+'], [rc, '-']]) {
+      if (strand === '-' && rc === q) continue;
+      let i = p.indexOf(pat);
+      while (i >= 0 && SV.hits.length < 1000) { SV.hits.push({ a: i, b: i + pat.length - 1, strand }); i = p.indexOf(pat, i + 1); }
+    }
+    SV.hits.sort((u, v) => u.a - v.a);
+  }
+  paintHits();
+  const nt = SV.hits.filter(h => h.strand === '+').length, nb = SV.hits.length - nt;
+  $('s-hits').textContent = !q.length ? '' : q.length < 3 ? 'Type at least 3 bases' : SV.hits.length ? `${SV.hits.length} match${SV.hits.length > 1 ? 'es' : ''}: ${nt} top, ${nb} bottom` : 'No match on either strand';
+  $('s-next').hidden = !SV.hits.length;
+}
+
+/* ================= OLIGO BENCH ================= */
+function renderMetrics(r) {
+  if (!r.th) { $('metrics').innerHTML = '<div class="m"><div class="k">Enter at least 2 nt</div></div>'; return; }
+  const ph = r.ph, th = r.th, c = ph.counts;
+  const m = (k, v, u = '', cls = '') => `<div class="m ${cls}"><div class="k">${k}</div><div class="v num">${v}${u ? `<small>${u}</small>` : ''}</div></div>`;
+  $('metrics').innerHTML =
+    m(`Tm · ${cond.method === 'owczarzy' ? 'Owczarzy' : 'SantaLucia'}`, fx(th.tm, 1), '°C', 'hero') +
+    m('Length', ph.n, 'nt') + m('GC', fx(ph.gc, 1), '%') +
+    m(`ΔG ${cond.temp}°`, fx(th.dG, 2), 'kcal/mol') + m('ΔH', fx(th.dH, 1), 'kcal/mol') + m('ΔS', fx(th.dS, 1), 'cal/K·mol') +
+    m('MW', ph.mw.toFixed(1), 'g/mol') + m('ε260', Math.round(ph.eps).toLocaleString('en-US'), 'L/mol·cm') +
+    m('nmol / OD', fx(ph.nmolPerOD, 2)) + m('µg / OD', fx(ph.ugPerOD, 2)) +
+    `<div class="m"><div class="k">Composition</div><div class="v num counts" style="font-size:13px"><span class="bA">A${c.A}</span><span class="bC">C${c.C}</span><span class="bG">G${c.G}</span><span class="bT">T${c.T}</span></div></div>`;
+}
+function paneBody(id, o, r) {
+  if (!r.th) return '<p class="empty">Enter a sequence to analyze.</p>';
+  const tooLong = o.seq.length > STRUCT_MAX ? `<p class="empty">Structure search runs on sequences up to ${STRUCT_MAX} nt.</p>` : '';
+  if (id === 'melt') {
+    const th = r.th, alt = r.alt, other = cond.method === 'santalucia' ? 'Owczarzy' : 'SantaLucia';
+    return meltChart(o.seq, th) + `<table class="kv">
+      <tr><td>Tm, ${cond.method === 'santalucia' ? 'SantaLucia 1998 salt correction' : 'Owczarzy 2004/2008 salt correction'}</td><td>${fx(th.tm, 2)} °C</td></tr>
+      <tr><td>Tm, ${other} salt correction</td><td>${fx(alt.tm, 2)} °C</td></tr>
+      <tr><td>Tm, basic (Wallace / GC formula)</td><td>${fx(r.basic, 1)} °C</td></tr>
+      <tr><td>ΔH° (nearest-neighbor sum)</td><td>${fx(th.dH, 1)} kcal/mol</td></tr>
+      <tr><td>ΔS° (1 M NaCl → salt-corrected)</td><td>${fx(th.dS1M, 1)} → ${fx(th.dS, 1)} cal/K·mol</td></tr>
+      <tr><td>ΔG° at ${cond.temp} °C</td><td>${fx(th.dG, 2)} kcal/mol</td></tr>
+      <tr><td>ΔG° at 37 °C</td><td>${fx(th.dG37, 2)} kcal/mol</td></tr>
+      <tr><td>Equivalent Na⁺ (Na⁺ + 120·√free Mg²⁺)</td><td>${fx(S.naEqM(cond) * 1000, 1)} mM</td></tr>
+      <tr><td>Self-complementary</td><td>${th.sym ? 'yes (Ct used, not Ct/4)' : 'no'}</td></tr></table>`;
+  }
+  if (id === 'checks') {
+    return `<div class="checks">${checks(o, r).map(c => `<div class="chk"><span class="pill ${c.st}">${c.st === 'ok' ? 'Pass' : c.st === 'warn' ? 'Check' : 'Fail'}</span><div><div>${c.name}</div><div class="d">${c.detail}</div></div><div class="val">${esc(c.val)}</div></div>`).join('')}</div>`;
+  }
+  if (id === 'hairpin') {
+    if (!r.hp) return tooLong;
+    return r.hp.length ? r.hp.map(h => hairpinCard(h, o.seq)).join('') : '<p class="empty">No hairpin with a stem of 2 bp or more and a loop of 3 nt or more.</p>';
+  }
+  if (id === 'self') {
+    if (!r.sd) return tooLong;
+    return r.sd.length ? r.sd.map(d => dimerCard(d, o.seq, o.seq, 'self')).join('') : '<p class="empty">No self-dimer found.</p>';
+  }
+  if (id === 'cross') {
+    const others = lib.filter(x => x.kind === 'oligo' && x.id !== o.id && x.seq.length >= 2);
+    if (!others.length) return '<p class="empty">Add a second oligo to the library to check a primer pair.</p>';
+    let p = others.find(x => x.id === partner);
+    if (!p) p = others.find(x => o.role === 'F' ? x.role === 'R' : o.role === 'R' ? x.role === 'F' : false) || others[0];
+    const opts = others.map(x => `<option value="${x.id}" ${x.id === p.id ? 'selected' : ''}>${esc(x.name || 'Untitled')} (${x.seq.length} nt)</option>`).join('');
+    const pt = S.thermo(p.seq, cond), dTm = Math.abs(r.th.tm - pt.tm);
+    let body = `<div class="partner"><label class="eyebrow" for="partner">Partner</label><select id="partner">${opts}</select>
+      <span class="pill ${dTm <= 2 ? 'ok' : dTm <= 5 ? 'warn' : 'bad'}">ΔTm ${fx(dTm, 1)} °C</span>
+      <span class="note">${fx(r.th.tm, 1)} vs ${fx(pt.tm, 1)} °C</span></div>`;
+    if (o.seq.length > STRUCT_MAX || p.seq.length > STRUCT_MAX) return body + tooLong;
+    const cd = St.dimer(o.seq, p.seq, cond, { limit: 4 });
+    return body + (cd.length ? cd.map(d => dimerCard(d, o.seq, p.seq, 'cross')).join('') : '<p class="empty">No cross-dimer found.</p>');
+  }
+  if (id === 'stab') return `<p class="note" style="margin:0">ΔG of each 5-nt window paired with its complement, at ${cond.temp} °C. The solid bar is the 3′ pentamer; a very stable 3′ end raises the risk of mispriming.</p>` + stabChart(o.seq);
+  return '';
+}
+function paneSummary(id, r) {
+  if (!r.th) return '';
+  if (id === 'melt') return pill(tmClass(r.th.tm), 'Tm ' + fx(r.th.tm, 1) + ' °C');
+  if (id === 'checks') { const cs = checks(cur(), r), w = cs.filter(c => c.st !== 'ok').length; return pill(w ? (cs.some(c => c.st === 'bad') ? 'bad' : 'warn') : 'ok', w ? w + ' to review' : 'All pass'); }
+  if (id === 'hairpin' && r.hp) return hpPill(r.hp[0] || false);
+  if (id === 'self' && r.sd) return sdPill(r.sd[0] || false);
+  if (id === 'stab' && r.win.length) { const v = r.win[r.win.length - 1]; return pill(v > -9 ? 'ok' : 'warn', '3′ ' + fx(v, 2)); }
+  return '';
+}
+const ICON = {
+  grip: '<svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><g fill="currentColor"><circle cx="3" cy="3" r="1.4"/><circle cx="9" cy="3" r="1.4"/><circle cx="3" cy="8" r="1.4"/><circle cx="9" cy="8" r="1.4"/><circle cx="3" cy="13" r="1.4"/><circle cx="9" cy="13" r="1.4"/></g></svg>',
+  wide: '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12M2 8l3-3M2 8l3 3M14 8l-3-3M14 8l-3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  fold: '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  unfold: '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+};
+let lastRes = null;
+function renderPanes(o, r) {
+  const scroll = window.scrollY;
+  $('panes').innerHTML = order.map(id => {
+    const p = PANES.find(x => x.id === id), c = closed.has(id), w = wide.has(id);
+    return `<section class="card pane ${c ? 'closed' : ''} ${w ? 'wide' : ''}" data-pane="${id}">
+      <div class="pane-h"><span class="grip" draggable="true" title="Drag to reorder">${ICON.grip}</span><h2>${p.title}</h2>
+        <span class="sum">${paneSummary(id, r)}</span>
+        <button data-act="wide" aria-pressed="${w}" title="${w ? 'Half width' : 'Full width'}" aria-label="Toggle width">${ICON.wide}</button>
+        <button data-act="fold" aria-expanded="${!c}" aria-label="${c ? 'Expand' : 'Collapse'} ${p.title}">${c ? ICON.unfold : ICON.fold}</button></div>
+      <div class="pane-b">${c ? '' : paneBody(id, o, r)}</div></section>`;
+  }).join('');
+  try { window.scrollTo(0, scroll); } catch (e) {}
+}
+function renderOrigin(o) {
+  const spots = [];
+  if (o.draft && o.parent) { $('o-origin').hidden = true; $('o-origin').innerHTML = ''; return; }
+  for (const p of lib) if (p.kind === 'seq') { const h = findOn(o, p); if (h) spots.push({ p, h }); }
+  const el = $('o-origin');
+  if (!spots.length) { el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  el.innerHTML = spots.slice(0, 4).map(({ p, h }) => `<span>On <b>${esc(p.name)}</b> · <span class="mono num">${h.a + 1}–${h.b + 1}</span> · <span class="dir ${h.strand === '+' ? 'fwd' : 'rev'}">${h.strand === '+' ? '→ top strand' : '← bottom strand'}</span></span><button class="btn ghost" data-goto="${p.id}" data-a="${h.a}" data-b="${h.b}" data-s="${h.strand}">Show in sequence</button>`).join('');
+}
+function renderOligoView(sync) {
+  const o = cur();
+  if (sync) { $('name').value = o.name; $('seq').value = o.seq; $('role').value = o.role || ''; $('msg').hidden = true; }
+  $('del').textContent = 'Delete'; $('del').dataset.armed = '';
+  $('del').hidden = !!o.draft;
+  const db = $('o-draft');
+  if (o.draft) {
+    const p = o.parent && byId(o.parent), at = p && findOn(o, p);
+    const exact = at && o.start && at.a === o.start - 1 && at.b === o.end - 1 && at.strand === o.strand;
+    db.hidden = false;
+    db.innerHTML = `<div class="dtext"><b>Not saved yet.</b> ${p ? `Selection from ${esc(p.name)}, <span class="mono num">${o.start}–${o.end}</span> ${o.strand === '+' ? '→ top strand' : '← bottom strand'}.` : 'Scratch oligo.'} Save it once it looks good.</div>
+      ${exact ? `<div class="nudge"><span class="hint">5′ end</span><button class="btn" data-nudge="5,-1" title="Trim one base at the 5′ end">−1</button><button class="btn" data-nudge="5,1" title="Add one base at the 5′ end">+1</button>
+        <span class="hint">3′ end</span><button class="btn" data-nudge="3,-1" title="Trim one base at the 3′ end">−1</button><button class="btn" data-nudge="3,1" title="Add one base at the 3′ end">+1</button></div>` : ''}
+      <div class="dact">${p ? '<button class="btn ghost" data-dr="back">Back to sequence</button>' : ''}<button class="btn ghost" data-dr="discard">Discard</button><button class="btn primary" data-dr="save">Save to library</button></div>`;
+  } else { db.hidden = true; db.innerHTML = ''; }
+  renderOrigin(o);
+  const ban = $('o-banner');
+  if (o.seq.length > LONG) { ban.hidden = false; ban.innerHTML = `<span>${o.seq.length.toLocaleString('en-US')} nt looks like a template rather than a primer. Open it as a sequence to see both strands and save primers from it.</span><button class="btn primary" id="to-seq">Open as sequence</button>`; }
+  else { ban.hidden = true; ban.innerHTML = ''; }
+  renderMap($('o-map'), o.seq, { maxBlocks: 10 });
+  const r = analyze(o);
+  lastRes = r;
+  renderMetrics(r);
+  renderPanes(o, r);
+}
+
+/* ================= shared ================= */
+function renderAll(sync) {
+  const o = cur(); if (!o) return;
+  sel = o.id;
+  const isSeq = o.kind === 'seq';
+  $('seqview').hidden = !isSeq; $('oligoview').hidden = isSeq;
+  if (isSeq) renderSeqView(sync); else renderOligoView(sync);
+  renderLib();
+}
+let timer = null;
+const schedule = (ms = 90) => { clearTimeout(timer); timer = setTimeout(() => { save(); renderAll(false); }, ms); };
+function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 1900); }
+async function copy(text, done) {
+  try { await navigator.clipboard.writeText(text); toast(done); }
+  catch (e) { $('imp').hidden = false; $('imp-t').textContent = 'Copy this text'; $('imp-note').hidden = true; $('imp-go').hidden = true; const ta = $('imp-txt'); ta.value = text; ta.select(); }
+}
+function readSeqInput(raw, o, msgEl, nameEl) {
+  let body = raw, header = null;
+  if (/^LOCUS/m.test(raw) && /^ORIGIN/m.test(raw)) { header = (raw.match(/^LOCUS\s+(\S+)/m) || [])[1]; body = (raw.split(/^ORIGIN.*$/m)[1] || '').split('//')[0].replace(/\d/g, ''); }
+  else { const fa = raw.match(/^>(.+)$/m); if (fa) header = fa[1].trim(); body = raw.split('\n').filter(l => !l.startsWith('>')).join(''); }
+  const bad = body.toUpperCase().replace(/[\sACGTU0-9]/g, '');
+  o.seq = S.clean(body); delete o.ex;
+  if (header && (!o.name || /^New (oligo|sequence)$/.test(o.name))) { o.name = header; nameEl.value = header; }
+  if (bad) { msgEl.hidden = false; msgEl.textContent = `Ignored ${bad.length} character${bad.length > 1 ? 's' : ''} (${[...new Set(bad)].slice(0, 8).join(' ')}). Only A, C, G, T and U are kept; N and other IUPAC codes are removed, which shifts positions after them.`; }
+  else msgEl.hidden = true;
+}
+function parseText(txt, fallback) {
+  const out = [];
+  txt = txt.replace(/\r/g, '');
+  if (/^LOCUS/m.test(txt) && /^ORIGIN/m.test(txt)) {
+    txt.split(/^\/\/\s*$/m).forEach(rec => {
+      if (!/^ORIGIN/m.test(rec)) return;
+      const name = (rec.match(/^LOCUS\s+(\S+)/m) || [])[1] || fallback;
+      const s = S.clean((rec.split(/^ORIGIN.*$/m)[1] || '').replace(/\d/g, ''));
+      if (s) out.push({ name, seq: s });
+    });
+    return out;
+  }
+  if (/^>/m.test(txt)) {
+    txt.split(/^>/m).filter(x => x.trim()).forEach(rec => { const [h, ...rest] = rec.split('\n'); const s = S.clean(rest.join('')); if (s) out.push({ name: h.trim() || fallback, seq: s }); });
+    return out;
+  }
+  const lines = txt.split('\n').map(l => l.trim()).filter(Boolean);
+  const listy = lines.some(l => /[\t,;]/.test(l));
+  const wrapped = !listy && lines.length > 1 && lines.slice(0, -1).every(l => l.length === lines[0].length) && lines[0].length >= 50;
+  if (lines.length === 1 || wrapped) { const s = S.clean(lines.join('')); if (s) out.push({ name: fallback, seq: s }); return out; }
+  lines.forEach((l, k) => { const parts = l.split(/[\t,;]+/).map(x => x.trim()).filter(Boolean); const s = S.clean(parts[parts.length - 1]); if (s) out.push({ name: parts.length > 1 ? parts[0] : `${fallback} ${k + 1}`, seq: s }); });
+  return out;
+}
+function addParsed(recs) {
+  const added = recs.map(r => {
+    const kind = r.seq.length > LONG ? 'seq' : 'oligo';
+    const o = { id: uid(), kind, name: r.name, seq: r.seq };
+    if (kind === 'oligo') o.role = /(^|[\s_-])(f|fw|fwd|forward)$/i.test(r.name) ? 'F' : /(^|[\s_-])(r|rv|rev|reverse)$/i.test(r.name) ? 'R' : '';
+    return o;
+  });
+  if (!added.length) { toast('No DNA sequence found'); return false; }
+  lib = added.filter(o => o.kind === 'seq').concat(lib, added.filter(o => o.kind === 'oligo'));
+  sel = added[0].id; save(); renderAll(true);
+  toast(`Added ${added.length} item${added.length > 1 ? 's' : ''}`);
+  return true;
+}
+
+/* ---------- events: sequence view ---------- */
+$('s-name').addEventListener('input', e => { cur().name = e.target.value; clearTimeout(timer); timer = setTimeout(() => { save(); renderLib(); renderSelBar(true); mapKey = ''; renderSeqMap(); }, 250); });
+$('s-seq').addEventListener('input', e => { readSeqInput(e.target.value, cur(), $('s-msg'), $('s-name')); if (SV.hits.length || $('s-find').value) SV.hits = []; schedule(cur().seq.length > 20000 ? 400 : 160); });
+$('s-editbtn').onclick = () => { SV.editing = !SV.editing; renderSeqView(false); if (SV.editing) $('s-seq').focus(); };
+$('s-find').addEventListener('input', computeHits);
+$('s-find').addEventListener('keydown', e => { if (e.key === 'Enter' && SV.hits.length) { e.preventDefault(); $('s-next').click(); } });
+$('s-next').onclick = () => { if (!SV.hits.length) return; SV.hitIdx = (SV.hitIdx + 1) % SV.hits.length; const h = SV.hits[SV.hitIdx]; setSel(h.a, h.b, h.strand); renderSelBar(true); scrollToSel(); };
+$('s-plus').onclick = () => { setPick('+'); if (SV.sel) { setSel(SV.sel.a, SV.sel.b, '+'); renderSelBar(true); } };
+$('s-minus').onclick = () => { setPick('-'); if (SV.sel) { setSel(SV.sel.a, SV.sel.b, '-'); renderSelBar(true); } };
+$('s-selrange').onclick = () => {
+  const n = cur().seq.length, a = parseInt($('s-from').value, 10), b = parseInt($('s-to').value, 10);
+  if (!n || !isFinite(a) || !isFinite(b)) { toast('Enter both positions'); return; }
+  if (a < 1 || b < 1 || a > n || b > n) { toast(`Positions must be between 1 and ${n}`); return; }
+  setSel(a - 1, b - 1, SV.pick); renderSelBar(true); scrollToSel();
+};
+['s-from', 's-to'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('s-selrange').click(); }));
+$('s-copy').onclick = () => copy(cur().seq, 'Top strand copied (5′→3′)');
+$('s-copyrc').onclick = () => copy(S.revcomp(cur().seq), 'Bottom strand copied (5′→3′)');
+$('s-flip').onclick = () => { const o = cur(); o.seq = S.revcomp(o.seq); delete o.ex; $('s-seq').value = o.seq; SV.sel = null; SV.hits = []; save(); renderAll(false); computeHits(); toast('Strands flipped; positions now count from the other end'); };
+$('s-del').onclick = e => {
+  const b = e.currentTarget;
+  if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Confirm delete'; return; }
+  const id = sel; lib = lib.filter(o => o.id !== id);
+  lib.forEach(o => { if (o.parent === id) delete o.parent; });
+  if (!lib.length) lib.push({ id: uid(), kind: 'seq', name: 'New sequence', seq: '' });
+  sel = lib[0].id; save(); renderAll(true);
+};
+
+// map selection: drag with mouse/pen, two taps on touch
+const map = $('s-map');
+let lastPointer = 'mouse';
+const baseAt = (x, y) => { const el = document.elementFromPoint(x, y); return el && el.closest ? el.closest('#s-map .st i') : null; };
+map.addEventListener('pointerdown', e => {
+  lastPointer = e.pointerType;
+  const el = e.target.closest('.st i'); if (!el || e.pointerType === 'touch' || e.button !== 0) return;
+  const i = +el.dataset.i, strand = el.parentElement.classList.contains('dn') ? '-' : '+';
+  if (e.shiftKey && SV.sel) { setSel(SV.anchor != null ? SV.anchor : SV.sel.a, i, SV.sel.strand); renderSelBar(true); return; }
+  e.preventDefault();
+  SV.anchor = i; SV.dragging = true; SV.touchPending = false;
+  setSel(i, i, strand);
+  try { map.setPointerCapture(e.pointerId); } catch (x) {}
+});
+map.addEventListener('pointermove', e => {
+  if (!SV.dragging) return;
+  const el = baseAt(e.clientX, e.clientY);
+  if (el) setSel(SV.anchor, +el.dataset.i, SV.sel.strand);
+});
+const endDrag = () => { if (!SV.dragging) return; SV.dragging = false; renderSelBar(true); };
+map.addEventListener('pointerup', endDrag);
+map.addEventListener('pointercancel', endDrag);
+map.addEventListener('click', e => {
+  const bar = e.target.closest('.bar');
+  if (bar) { sel = bar.dataset.oid; save(); renderAll(true); window.scrollTo(0, 0); return; }
+  if (lastPointer !== 'touch') return;
+  const el = e.target.closest('.st i'); if (!el) return;
+  const i = +el.dataset.i, strand = el.parentElement.classList.contains('dn') ? '-' : '+';
+  if (SV.touchPending && SV.sel) { SV.touchPending = false; setSel(SV.anchor, i, SV.sel.strand); renderSelBar(true); }
+  else { SV.anchor = i; SV.touchPending = true; setSel(i, i, strand); }
+});
+$('selbar').addEventListener('input', e => { if (e.target.id === 'sel-name') SV.nameDirty = true; });
+$('selbar').addEventListener('keydown', e => { if (e.target.id === 'sel-name' && e.key === 'Enter') saveSel(false); });
+$('selbar').addEventListener('click', e => {
+  const b = e.target.closest('[data-sb]'); if (!b) return;
+  const act = b.dataset.sb;
+  if (act === 'clear') clearSel();
+  else if (act === 'flip') { setSel(SV.sel.a, SV.sel.b, SV.sel.strand === '+' ? '-' : '+'); renderSelBar(true); }
+  else if (act === 'copy') copy(selSeq(), 'Copied 5′→3′');
+  else if (act === 'save') saveSel(false);
+  else if (act === 'analyze') openDraftFromSel();
+});
+$('frag-body').addEventListener('click', e => {
+  const b = e.target.closest('[data-fa]'); if (!b) return;
+  const x = byId(b.dataset.oid); if (!x) return;
+  if (b.dataset.fa === 'open') { sel = x.id; save(); renderAll(true); window.scrollTo(0, 0); return; }
+  const h = findOn(x, cur()); if (h) { setSel(h.a, h.b, h.strand); renderSelBar(true); scrollToSel(); }
+});
+let roT = null;
+if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(roT); roT = setTimeout(() => { if (!$('seqview').hidden) renderSeqMap(false); else if (cur()) renderMap($('o-map'), cur().seq, { maxBlocks: 10 }); }, 120); }).observe($('s-map'));
+window.addEventListener('resize', () => { clearTimeout(roT); roT = setTimeout(() => { if (!$('seqview').hidden) renderSeqMap(false); else if (cur()) renderMap($('o-map'), cur().seq, { maxBlocks: 10 }); }, 150); });
+
+/* ---------- events: oligo bench ---------- */
+$('seq').addEventListener('input', e => { readSeqInput(e.target.value, cur(), $('msg'), $('name')); schedule(); });
+$('name').addEventListener('input', e => { cur().name = e.target.value; schedule(); });
+$('role').addEventListener('change', e => { cur().role = e.target.value; schedule(); });
+function setSeq(fn) { const o = cur(); o.seq = fn(o.seq); delete o.ex; $('seq').value = o.seq; save(); renderAll(false); }
+$('rc').onclick = () => setSeq(S.revcomp);
+$('comp').onclick = () => setSeq(s => s.split('').map(b => COMP[b]).join(''));
+$('rev').onclick = () => setSeq(s => s.split('').reverse().join(''));
+$('copyseq').onclick = () => copy(cur().seq, 'Sequence copied');
+$('report').onclick = () => {
+  const o = cur(), r = lastRes; if (!r || !r.th) return;
+  const L = [`${o.name} (${o.seq.length} nt)`, `5'-${o.seq}-3'`, '',
+    `Conditions: Na+ ${cond.na} mM, Mg2+ ${cond.mg} mM, dNTP ${cond.dntp} mM, oligo ${cond.oligo} nM; ${cond.method === 'owczarzy' ? 'Owczarzy' : 'SantaLucia'} salt correction`,
+    `Tm ${fx(r.th.tm, 1)} °C | GC ${fx(r.ph.gc, 1)} % | ΔG(${cond.temp} °C) ${fx(r.th.dG, 2)} kcal/mol | ΔH ${fx(r.th.dH, 1)} kcal/mol | ΔS ${fx(r.th.dS, 1)} cal/K·mol`,
+    `MW ${r.ph.mw.toFixed(1)} g/mol | ε260 ${Math.round(r.ph.eps)} L/mol·cm | ${fx(r.ph.nmolPerOD, 2)} nmol/OD | ${fx(r.ph.ugPerOD, 2)} µg/OD`];
+  if (r.hp) L.push(`Strongest hairpin: ${r.hp[0] ? fx(r.hp[0].dG, 2) + ' kcal/mol' : 'none'}`);
+  if (r.sd) L.push(`Strongest self-dimer: ${r.sd[0] ? fx(r.sd[0].dG, 2) + ' kcal/mol' : 'none'}`);
+  L.push('', 'Checks:'); checks(o, r).forEach(c => L.push(`  [${c.st === 'ok' ? 'pass' : c.st === 'warn' ? 'check' : 'fail'}] ${c.name}: ${c.val}`));
+  copy(L.join('\n'), 'Report copied');
+};
+$('del').onclick = e => {
+  const b = e.currentTarget;
+  if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Confirm delete'; return; }
+  const gone = cur(); lib = lib.filter(o => o.id !== gone.id);
+  if (!lib.length) lib.push({ id: uid(), kind: 'oligo', name: 'New oligo', seq: '', role: 'F' });
+  sel = (gone.parent && byId(gone.parent)) ? gone.parent : lib[0].id; save(); renderAll(true);
+};
+$('oligoview').addEventListener('click', e => {
+  if (e.target.id === 'to-seq') {
+    let o = cur();
+    if (o.draft) { o = Object.assign({}, o, { id: uid() }); delete o.draft; delete o.parent; delete o.start; delete o.end; delete o.strand; lib.push(o); draft = null; }
+    o.kind = 'seq'; delete o.role; sel = o.id; save(); renderAll(true); return;
+  }
+  const nb = e.target.closest('[data-nudge]');
+  if (nb) { const [end, d] = nb.dataset.nudge.split(',').map(Number); nudge(end, d); return; }
+  const dr = e.target.closest('[data-dr]');
+  if (dr) {
+    const act = dr.dataset.dr;
+    if (act === 'save') saveDraft();
+    else if (act === 'discard') { const back = draft && draft.parent; draft = null; sel = back && byId(back) ? back : lib[0].id; save(); renderAll(true); }
+    else if (act === 'back') { const p = byId(draft.parent), h = p && findOn(draft, p); if (h) SV.pending = { a: h.a, b: h.b, strand: h.strand }; sel = draft.parent; save(); renderAll(true); }
+    return;
+  }
+  const g = e.target.closest('[data-goto]');
+  if (g) { SV.pending = { a: +g.dataset.a, b: +g.dataset.b, strand: g.dataset.s }; sel = g.dataset.goto; save(); renderAll(true); }
+});
+$('panes').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const id = b.closest('.pane').dataset.pane;
+  if (b.dataset.act === 'fold') closed.has(id) ? closed.delete(id) : closed.add(id);
+  else wide.has(id) ? wide.delete(id) : wide.add(id);
+  save(); renderPanes(cur(), lastRes);
+});
+$('panes').addEventListener('change', e => { if (e.target.id === 'partner') { partner = e.target.value; save(); renderPanes(cur(), lastRes); } });
+let dragId = null;
+$('panes').addEventListener('dragstart', e => { const p = e.target.closest('.pane'); if (!p) return; dragId = p.dataset.pane; e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', dragId); e.dataTransfer.setDragImage(p, 20, 20); } catch (x) {} });
+$('panes').addEventListener('dragover', e => { const p = e.target.closest('.pane'); if (!p || !dragId) return; e.preventDefault(); document.querySelectorAll('.pane.drag-over').forEach(x => x !== p && x.classList.remove('drag-over')); p.classList.add('drag-over'); });
+$('panes').addEventListener('drop', e => {
+  const p = e.target.closest('.pane'); if (!p || !dragId) return; e.preventDefault();
+  const to = p.dataset.pane; if (to !== dragId) { order = order.filter(x => x !== dragId); order.splice(order.indexOf(to), 0, dragId); save(); }
+  dragId = null; renderPanes(cur(), lastRes);
+});
+$('panes').addEventListener('dragend', () => { dragId = null; document.querySelectorAll('.pane.drag-over').forEach(x => x.classList.remove('drag-over')); });
+
+/* ---------- events: library & import ---------- */
+$('lib').addEventListener('click', e => { const it = e.target.closest('.item'); if (!it) return; sel = it.dataset.id; save(); renderAll(true); });
+$('new').onclick = () => { draft = { id: DRAFT, kind: 'oligo', draft: true, name: 'New oligo', seq: '', role: 'F' }; sel = DRAFT; renderAll(true); $('seq').focus(); };
+$('new-seq').onclick = () => { const o = { id: uid(), kind: 'seq', name: 'New sequence', seq: '' }; lib.unshift(o); sel = o.id; save(); renderAll(true); $('s-seq').focus(); };
+$('export').onclick = () => copy(lib.map(o => `>${o.name || 'Untitled'}\n${(o.seq.match(/.{1,70}/g) || []).join('\n')}`).join('\n'), 'Library copied as FASTA');
+$('import').onclick = () => { $('imp-t').textContent = 'Paste sequences'; $('imp-note').hidden = false; $('imp-go').hidden = false; $('imp').hidden = false; $('imp-txt').value = ''; $('imp-txt').focus(); };
+$('imp-x').onclick = () => $('imp').hidden = true;
+$('imp').addEventListener('click', e => { if (e.target.id === 'imp') $('imp').hidden = true; });
+$('imp-go').onclick = () => { const t = $('imp-txt').value.trim(); if (!t) return; if (addParsed(parseText(t, 'Pasted'))) $('imp').hidden = true; };
+$('open').onclick = () => $('file').click();
+$('file').addEventListener('change', async e => {
+  const recs = [];
+  for (const f of e.target.files) { try { const t = await f.text(); recs.push(...parseText(t, f.name.replace(/\.[^.]+$/, ''))); } catch (x) {} }
+  e.target.value = '';
+  addParsed(recs);
+});
+document.addEventListener('dragover', e => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
+document.addEventListener('drop', async e => {
+  if (!e.dataTransfer || !e.dataTransfer.files.length) return;
+  e.preventDefault(); const recs = [];
+  for (const f of e.dataTransfer.files) { try { recs.push(...parseText(await f.text(), f.name.replace(/\.[^.]+$/, ''))); } catch (x) {} }
+  addParsed(recs);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!$('imp').hidden) { $('imp').hidden = true; return; }
+  if (SV.sel && !$('seqview').hidden) clearSel();
+});
+
+/* ---------- conditions ---------- */
+const CF = { na: 'c-na', mg: 'c-mg', dntp: 'c-dntp', oligo: 'c-oligo', temp: 'c-temp' };
+Object.entries(CF).forEach(([k, id]) => {
+  $(id).value = cond[k];
+  $(id).addEventListener('input', e => { const v = parseFloat(e.target.value); if (isFinite(v) && (k === 'temp' || v >= 0)) { cond[k] = k === 'oligo' ? Math.max(v, 0.001) : v; schedule(); } });
+});
+const setMethod = m => { cond.method = m; $('m-sl').setAttribute('aria-pressed', m === 'santalucia'); $('m-ow').setAttribute('aria-pressed', m === 'owczarzy'); };
+setMethod(cond.method);
+$('m-sl').onclick = () => { setMethod('santalucia'); schedule(); };
+$('m-ow').onclick = () => { setMethod('owczarzy'); schedule(); };
+
+if (!lib.some(o => o.id === sel)) sel = lib[0].id;
+renderAll(true);
+save();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { mapKey = ''; renderAll(false); });
+})();
+</script>
+
+</body>
+</html>
