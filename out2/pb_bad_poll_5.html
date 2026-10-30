@@ -1,0 +1,542 @@
+ï»¿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="ncbitoggler" content="animation:'none'"/>
+<meta name="referrer" content="origin-when-cross-origin" />
+<meta name="ncbi_app" content="primerblast" />
+<meta name="ncbi_pdid" content="blastresults" />
+<meta name="ncbi_program" content="blastn" />
+<meta name="ncbi_db" content="refseq_mrna" />
+<meta name="ncbi_sessionid" content="0C42E0F9AE4695F1_0000SID" />
+<meta name="ncbi_phid" content="9CAB076DAE4695F10000000000000001" />
+<script type="text/javascript">    var ncbi_startTime = new Date(); </script>
+<title>Primer-Blast results</title>
+<!-- style -->
+<meta http-equiv="Pragma" content="no-cache">
+<link rel="stylesheet" type="text/css" href="css/uswds.min.css" media="screen" />
+<!--<link rel="stylesheet"  type="text/css" href="https://www.ncbi.nlm.nih.gov/style-guide/static/nwds/css/nwds.css"/>-->
+<link rel="stylesheet"  type="text/css" href="css/nwds.css"/>
+<link rel="stylesheet" href="css/header.css"/>
+<link rel="stylesheet" href="css/footer.css"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous"> <!-- Font Awesome icons -->
+<link rel="stylesheet" type="text/css" href="css/footer.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="css/main.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="css/results.css" media="screen" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" type="text/css" href="css/ie6_or_less.css" />
+<![endif]-->
+
+<!-- js files for title filling -->
+<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="/core/jig/1.15.2/js/jig.min.js"></script>
+<script type="text/javascript" src="js/remote_data_provider.js"></script>
+<script type="text/javascript" src="js/results.js"></script>
+<!-- JavaScript for Sequence Viewer integration -->
+
+<script type="text/javascript" src="/projects/sviewer/js/sviewer.js" id="autoload"></script>
+
+<!-- reset some setting that were overwritten by ncbi_templates.css  -->
+<style type="text/css">
+  h2 {margin: 0;}
+  a.x-menu-item { color:#222222; }
+</style>
+                                                
+
+</head>
+<body id="type-a" class="">
+
+<div id="wrap">
+    <script>var useOfficialGovtHeader = true;</script>
+<section class="usa-banner">
+  <div class="usa-accordion">
+    <header class="usa-banner-header">
+      <div class="usa-grid usa-banner-inner">
+        <img src="https://www.ncbi.nlm.nih.gov/coreutils/uswds/img/favicons/favicon-57.png" alt="U.S. flag">
+        <p>An official website of the United States government</p>
+        <button class="usa-accordion-button usa-banner-button" aria-expanded="false" aria-controls="gov-banner-top">
+          <span class="usa-banner-button-text">Here's how you know</span>
+        </button>
+      </div>
+    </header>
+    <div class="usa-banner-content usa-grid usa-accordion-content" id="gov-banner-top" aria-hidden="true">
+      <div class="usa-banner-guidance-gov usa-width-one-half">
+        <img class="usa-banner-icon usa-media_block-img" src="https://www.ncbi.nlm.nih.gov/coreutils/uswds/img/icon-dot-gov.svg" alt="Dot gov">
+        <div class="usa-media_block-body">
+          <p>
+            <strong>The .gov means itâs official.</strong>
+            <br>
+            Federal government websites often end in .gov or .mil. Before
+            sharing sensitive information, make sure youâre on a federal
+            government site.
+          </p>
+        </div>
+      </div>
+      <div class="usa-banner-guidance-ssl usa-width-one-half">
+        <img class="usa-banner-icon usa-media_block-img" src="https://www.ncbi.nlm.nih.gov/coreutils/uswds/img/icon-https.svg" alt="Https">
+        <div class="usa-media_block-body">
+          <p>
+            <strong>The site is secure.</strong>
+            <br>
+            The <strong>https://</strong> ensures that you are connecting to the
+            official website and that any information you provide is encrypted
+            and transmitted securely.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<header class="ncbi-header" role="banner" data-section="Header">
+<a class="usa-skipnav" href="#mainCont">Skip to main page content</a>
+<div class="usa-grid">
+    <div class="usa-width-one-whole">
+        <div class="ncbi-header__logo">
+                <a href="https://www.ncbi.nlm.nih.gov/" class="logo" aria-label="NCBI Logo" data-ga-action="click_image" data-ga-label="NIH NLM Logo">
+                  <img src="https://www.ncbi.nlm.nih.gov/coreutils/nwds/img/logos/AgencyLogo.svg" alt="NIH NLM Logo">
+                </a>
+            </div>
+
+        <div class="ncbi-header__account">
+            <a id="account_login" href="https://www.ncbi.nlm.nih.gov/account/?back_url=https%3A%2F%2Fwww%2Encbi%2Enlm%2Enih%2Egov%2Ftools%2Fprimer%2Dblast%2Findex%2Ecgi" class="usa-button header-button">Log in</a>
+            <button id="account_info" class="header-button" aria-controls="account_popup">
+                <span class="fa fa-user" aria-hidden="true"></span>
+                <span class="username desktop-only" aria-hidden="true" id="uname_short"></span>
+                <span class="sr-only">Show account info</span>
+            </button>
+        </div>
+
+        <div class="ncbi-popup-anchor">
+            <div class="ncbi-popup account-popup" id="account_popup" aria-hidden="true" role="dialog" aria-labelledby="account-popup-header">
+                <div class="ncbi-popup-head">
+                    <button class="ncbi-close-button"><span class="fa fa-window-close"></span><span class="usa-sr-only">Close</span></button>
+                    <h4>Account</h4>
+                </div>
+                <div class="account-user-info">
+                    Logged in as:<br>
+                    <b><span class="username" id="uname_long">username</span></b>
+                </div>
+                <div class="account-links">
+                    <ul class="usa-unstyled-list">
+                        <li><a id="account_myncbi" href="https://www.ncbi.nlm.nih.gov/myncbi/">Dashboard</a> <span class="ncbi-text-small-light">(My NCBI)</span></li>
+                        <li><a id="account_pubs" href="https://www.ncbi.nlm.nih.gov/myncbi/collections/bibliography/">Publications</a> <span class="ncbi-text-small-light">(My Bibliography)</span></li>
+                        <li><a id="account_settings" href="https://www.ncbi.nlm.nih.gov/account/settings/">Account settings</a></li>
+                        <li><a id="account_logout" href="https://www.ncbi.nlm.nih.gov/account/signout/?back_url=https%3A%2F%2Fwww%2Encbi%2Enlm%2Enih%2Egov%2Ftools%2Fprimer%2Dblast%2Findex%2Ecgi">Log out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</header>
+<div role="navigation" aria-label="access keys">
+<a id="nws_header_accesskey_0" href="https://www.ncbi.nlm.nih.gov/guide/browsers/#ncbi_accesskeys" class="usa-sr-only" accesskey="0" tabindex="-1">Access keys</a>
+<a id="nws_header_accesskey_1" href="https://www.ncbi.nlm.nih.gov" class="usa-sr-only" accesskey="1" tabindex="-1">NCBI Homepage</a>
+<a id="nws_header_accesskey_2" href="/myncbi/" class="set-base-url usa-sr-only" accesskey="2" tabindex="-1">MyNCBI Homepage</a>
+<a id="nws_header_accesskey_3" href="#maincontent" class="usa-sr-only" accesskey="3" tabindex="-1">Main Content</a>
+<a id="nws_header_accesskey_4" href="#" class="usa-sr-only" accesskey="4" tabindex="-1">Main Navigation</a>
+</div>
+
+<nav class="ncbi-topnav" id="navcontent">
+    <div class="usa-grid">
+        <span class="lf"><a class="lfa" href="index.cgi">Primer-BLAST</a><span class="brc"><span class="brcrmbsign">&raquo;</span> JOB ID:zsQTmxoTF7swhRKAH-A2smX7J4BI6DydSQ</span></span>
+        <span id="brc"></span>
+        <span class="rf"></span>
+    </div>
+</nav>
+
+        
+    
+    <div id="content-wrap">
+                                             
+        <div class="pageTitle">                            
+            Primer-BLAST Results 
+            <a class="helplink jig-ncbitoggler ui-ncbitoggler" data-jig="ncbitoggler" title="Primer-BLAST help" data-ncbitoggler-toggles="hlp11" id="dnHelp" href="#"><i class="fas fa-question-circle"></i> <span class="usa-sr-only">Help</span></a>
+            <div class="ui-helper-reset" aria-live="assertive" >
+            <div class="helpbox ui-ncbitoggler-slave" id="hlp11">
+            <p>
+            Primer-BLAST was developed at NCBI to help users make primers that are specific
+            to intended PCR target.  It uses <a href="https://github.com/primer3-org/primer3">Primer3</a> to design PCR primers and then uses 
+            BLAST and global alignment algorithm to screen primers against user-selected database
+            in order to avoid primer pairs (all combinations including forward-reverse primer pair,
+            forward-forward as well as reverse-reverse pairs) that can cause non-specific amplifications. 
+            To cite Primer-BLAST or look for more details, please consult our publication:
+            </p>
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=22708584">Ye J, Coulouris G, Zaretskaya I, Cutcutache I, Rozen S, Madden T (2012).
+            Primer-BLAST: A tool to design target-specific primers for polymerase chain reaction.
+            BMC Bioinformatics. 13:134.
+            </a> 
+            </p>
+            Use of Primer3 itself is subject to the terms and conditions stated on <a href="https://primer3.ut.ee/">Primer3 web site</a>.
+            </p>
+	    Explanations of fields in primer report.
+	    </p>
+	    Tm:
+	   
+	    This is the melting temperature for primers.
+	    </p>
+	    GC%:
+          
+            This is the percentage of G and C bases in a primer.
+	    </p>
+	    Self complementarity:
+            
+            This describes the tendency of a primer to bind to itself (therefore interfering with target sequence binding). It will score ANY binding (using local alignment) occurring within the entire primer sequence.  The lower this value is, the less likely the primer will bind itself, which is preferred.  Note that there are two options on Primer-BLAST interface to calculate this value (traditional secondary structure model or thermodynamic model). 
+	   </p>
+           Self 3' complementarity:
+        
+           This is similar to the above "Self complementarity" except this describes the tendency of a primer to bind to itself toward the 3' end.  Additionally, it is calculated using global alignment rather than local alignment.  The lower this value is, the less likely the primer will bind itself toward 3' end, which is preferred.  There are also two options to calculate this value (traditional secondary structure model or thermodynamic model). 
+             </div>
+             </div>
+             
+        </div>    
+        <div id="content">                       
+            <ul class="msg"><li class=""><p class=""></p></li></ul>        
+            <div class="">
+            <span id="flr">
+            <a href="#" id="resubmit" title="Edit and re-submit">Edit search</a>
+            <span class="usa-label ncbi-bg-secondary">New</span>
+            </span>
+            <div id="summary">
+                <div class="paramSummary">
+                    <dl>
+                    <dt>Input PCR template</dt> <dd>none&nbsp</dd>
+                    
+                    <dt>Specificity of primers</dt><dd>No target templates were found in selected database: NCBI Messenger RNA Reference Sequences (Organism limited to Homo sapiens)</dd>     
+                    <dt>Other reports</dt>  
+                    <dd>
+                    <a href="#" title="Show statistics"  class="resArrowLinkB jtg jig-ncbitoggler ui-ncbitoggler" data-ncbitoggler-toggles="resStat" id="showStat">Search Summary</a>                    
+                    </dd>
+                    </dl>    
+                    <input type="hidden" id="searchSpecPrimer" value="on" name="SEARCH_SPECIFIC_PRIMER" />
+                    <input type="hidden" id="groupTarget" value="" name="GROUP_TARGET" />
+                </div>
+                <div class="ui-helper-reset" aria-live="assertive" >
+                <div id="resStat" class="helpbox helpbox ui-ncbitoggler-slave">    
+                <table id="params" class="searchInfo"> 
+                <caption>Search parameters and other details</caption> 
+                <tr><th><div>Search parameter name</div></th><th><div>Search parameter value</div></th></tr> 
+                <tr><td>Number of Blast hits analyzed</td><td>0</td></tr><tr><td>Entrez query</td><td></td></tr><tr><td>Min total mismatches</td><td>2</td></tr><tr><td>Min 3' end mismatches</td><td>2</td></tr><tr><td>Defined 3' end region length</td><td>5</td></tr><tr><td>Mismatch threshold to ignore targets</td><td>6</td></tr><tr><td>Max target size</td><td>4000</td></tr><tr><td>Max number of Blast target sequences</td><td>50000</td></tr><tr><td>Blast E value</td><td>30000</td></tr><tr><td>Blast word size</td><td>7</td></tr><tr><td>Max candidate primer pairs</td><td>500</td></tr><tr><td>Min PCR product size</td><td>28</td></tr><tr><td>Max PCR product size</td><td>2000</td></tr><tr><td>Min Primer size</td><td>15</td></tr><tr><td>Opt Primer size</td><td>96</td></tr><tr><td>Max Primer size</td><td>27</td></tr><tr><td>Min Tm</td><td>0</td></tr><tr><td>Opt Tm</td><td>5.44109e-316</td></tr><tr><td>Max Tm</td><td>2.18186e+243</td></tr><tr><td>Max Tm difference</td><td>1.5316e-322</td></tr><tr><td>Repeat filter</td><td></td></tr><tr><td>Low complexity filter</td><td>No</td></tr>  
+                </table>                 
+                </div>  <!-- resStat -->
+                </div> <!-- aria end -->
+
+            </div>
+            <!--RID=  E8UAZMC8011 group rid:  -->
+            
+            
+            <div class="usa-accordion">            
+             
+            </div>                       
+            <div class=" usa-accordion">            
+            <button class="usa-accordion-button sectAccordion" aria-expanded="true" aria-controls="alignInfo">
+                Detailed primer reports
+                <i aria-hidden="true" class="fa fa-plus ncbi-button-icon"></i>
+                <i aria-hidden="true" class="fa fa-minus ncbi-button-icon"></i>
+            </button>     
+            <div id="alignInfo" class="resBox usa-accordion-content" aria-hidden="false">                        
+                <form name="reanalysisform" id="reanalysisform" action="./primertool.cgi"   method="post">
+                    <input type="hidden"  name="CMD" value="request"><input type="hidden"  name="CON_ANEAL_OLIGO" value="250.0"><input type="hidden"  name="CON_DNTPS" value="0.2"><input type="hidden"  name="DIVA_CATIONS" value="1.5"><input type="hidden"  name="EVALUE" value="30000"><input type="hidden"  name="HITSIZE" value="50000"><input type="hidden"  name="MAX_TARGET_PER_TEMPLATE" value="100"><input type="hidden"  name="MAX_TARGET_SIZE" value="4000"><input type="hidden"  name="MISMATCH_REGION_LENGTH" value="5"><input type="hidden"  name="MONO_CATIONS" value="50.0"><input type="hidden"  name="MYNCBI_USER" value="11591386258"><input type="hidden"  name="MYNCBI_USER" value="11591386258"><input type="hidden"  name="NUM_TARGETS_WITH_PRIMERS" value="1000"><input type="hidden"  name="ORGANISM" value="Homo sapiens"><input type="hidden"  name="PAGE_TYPE" value="PrimerDesign"><input type="hidden"  name="PRIMER_3END_SPECIFICITY_MISMATCH" value="1"><input type="hidden"  name="PRIMER_LEFT_INPUT" value="ACGT"><input type="hidden"  name="PRIMER_RIGHT_INPUT" value="TTGA"><input type="hidden"  name="PRIMER_SPECIFICITY_DATABASE" value="refseq_mrna"><input type="hidden"  name="SALT_FORMULAR" value="1"><input type="hidden"  name="SEARCH_SPECIFIC_PRIMER" value="on"><input type="hidden"  name="TM_METHOD" value="1"><input type="hidden"  name="TOTAL_MISMATCH_IGNORE" value="6"><input type="hidden"  name="TOTAL_PRIMER_SPECIFICITY_MISMATCH" value="1"><input type="hidden"  name="USER_TYPE" value="2"><input type="hidden"  name="USER_TYPE" value="2"><input type="hidden"  name="WORD_SIZE" value="7"><input type="hidden"  name="FIRST_USER_RID" value="">                
+                
+                <div class="hidden  reanlz">
+                    <span>
+                    You can re-search for specific primers by accepting some of the unintended targets, check the box(es) next to the ones you accept and try again to re-search for specific primers
+                    </span>
+                    <span><input type="submit"  id="submReanl1" class="submReanl" value="Submit"disabled="disabled" /></span>                    
+                    <a class="helplink jig-ncbitoggler ui-ncbitoggler" data-jig="ncbitoggler" title="Primer-BLAST help" data-ncbitoggler-toggles="submReanlHelp1" href="#"><i class="fas fa-question-circle"></i> <span class="usa-sr-only">Help</span></a>
+                    <div class="ui-helper-reset" aria-live="assertive" >
+                        <div class="helpbox ui-ncbitoggler-slave" id="submReanlHelp1">
+                            <p>
+                            Primer-BLAST can only find non-specific primers for your template since there are other targets that are similar or identical to your template.  You may choose to re-search for specific primers by allowing some of the highly similar off-targets if they are irrelevant to your PCR experiment.  For example, not all transcript variants are expressed in all tissues, or you are not concerned about the predicted transcripts (i.e., XM_ accessions), or there are redundant database entries.  Another example is, when you enter a raw sequence as PCR template rather than an accession, Primer-BLAST will likely report many off-targets.  However, some of these might be your intended target that you should choose to allow.  When Primer-BLAST does not need to avoid the highly similar off-targets in selecting unique primer regions, it typically has a much higher chance to find specific primers for your intended target.
+                            </p>
+                        </div>
+                    </diV>
+                </div>
+                </form>                
+                <ul id="allDownload" class="right-tools usa-nav-primary usa-accordion">
+                    <li>
+                        <button id="btnDwnld" class="usa-accordion-button usa-nav-link toolsCtr" aria-expanded="false" aria-controls="dsDownload">
+                          <span>Download primer pairs</span>
+                          <i aria-hidden="true" class="fa fa-angle-down ncbi-button-icon"></i>
+                        </button>
+                        <ul id="dsDownload" aria-hidden="true" class="usa-nav-submenu">
+                            <li><a href="#" name="dwn" fmt="txt">Text</a></li>
+                            <li><a href="#" name="dwn"  fmt="csv">CSV</a></li>
+                            <li><a href="#" name="dwn" fmt="tabular">Tabular</a></li>
+                        </ul>
+                    </li>                    
+                </ul>                
+                <form id="alignmentsform" action="./primertool.cgi"   method="post">                    
+                <input type="hidden" value="" name="PCR_TEMPLATE" />
+                <input type="hidden" value="" name="RANGE_FROM" />
+                <input type="hidden" value="" name="RANGE_TO" />                  
+                <input type="hidden" value="No target templates were found in selected database: NCBI Messenger RNA Reference Sequences (Organism limited to Homo sapiens)" name="PRIMER_RESULTS_INFO" />                                  
+                <input type="hidden" value="1" name="PRIMER_PAIRS_NUMBER" />
+                <input type="hidden" value="PRIMER_PAIR_NOTEMPLATE" name="PRIMER_PAIRS_TEMPLATE" />                
+                <input type="hidden" value="" id="prPairsFmtType" name="PRIMER_PAIRS_FORMAT_TYPE" />  
+                <input type="hidden" value="" name="TEMPLATE_ID" />                  
+                
+                <input type="hidden" name="DOWNLOAD" value="on" />                              
+                <div id="alignments" class="blRes">
+                <div class="prPairInfo">
+<a name = "0"></a><h2>Primer pair 1</h2>
+<table>
+	<tr><th></th><th>Sequence (5'->3')</th><th>Length</th><th>Tm</th><th>GC%</th><th>Self complementarity</th><th>Self 3' complementarity</th></tr>
+	<tr><th>Forward primer</th><td>ACGT</td><td>4</td><td>-38.72</td><td>50.00</td><td>4.00</td><td>4.00</td></tr>
+	<tr><th>Reverse primer</th><td>TTGA</td><td>4</td><td>-59.73</td><td>25.00</td><td>1.00</td><td>1.00</td></tr>	
+</table>
+<input type="hidden" value="ACGT" name="FW_PRIMER_SEQ_0"/>
+<input type="hidden" value="4" name="FW_PRIMER_LEN_0"/>
+<input type="hidden" value="-38.72" name="FW_PRIMER_TM_0"/>
+<input type="hidden" value="50.00" name="FW_PRIMER_GC_0"/>
+<input type="hidden" value="4.00" name="FW_PRIMER_SFCM_0"/>
+<input type="hidden" value="4.00" name="FW_PRIMER_SF3CM_0"/>    
+<input type="hidden" value="TTGA" name="RV_PRIMER_SEQ_0"/>
+<input type="hidden" value="4" name="RV_PRIMER_LEN_0"/>
+<input type="hidden" value="-59.73" name="RV_PRIMER_TM_0"/>
+<input type="hidden" value="25.00" name="RV_PRIMER_GC_0"/>
+<input type="hidden" value="1.00" name="RV_PRIMER_SFCM_0"/>
+<input type="hidden" value="1.00" name="RV_PRIMER_SF3CM_0"/>
+<div class="hidden ">
+    <div class="prPairTl">Products on intended targets</div>
+    <hr/>
+    <div class="prPairDtl"></div>
+</div>
+
+<div class="hidden ">
+    <div class="prPairTl">Products on allowed targets</div>
+    <hr/>
+    <div class="prPairDtl"></div>
+</div>
+
+<div class="hidden ">
+    <div class="prPairTl">Products on allowed transcript variants</div>
+    <hr/>
+    <div class="prPairDtl"></div>
+</div>
+
+<div class="hidden ">
+    <div class="prPairTl">Products on potentially unintended templates</div>
+    <hr/>
+    <div class="prPairDtl"></div>
+</div>
+
+<div class="hidden ">
+    <div class="prPairTl">Products on target templates</div>
+    <hr/>
+    <div class="prPairDtl"></div>
+</div>
+</div>
+                <!---->
+                </div><!--/#alignments-->
+                </form>
+                <div class="hidden  reanlz">
+                    <span>
+                        If you want to allow any of the unintended targets, check the box(es) next to the ones you accept and try again to re-search for specific primers
+                    </span>
+                    <span><input type="submit"  id="submReanl2" class="submReanl" value="Submit" disabled="disabled" /></span>
+                    <a class="helplink jig-ncbitoggler ui-ncbitoggler" data-jig="ncbitoggler" title="Primer-BLAST help" data-ncbitoggler-toggles="submReanlHelp2" href="#"><i class="fas fa-question-circle"></i> <span class="usa-sr-only">Help</span></a>
+                    <div class="ui-helper-reset" aria-live="assertive" >
+                        <div class="helpbox ui-ncbitoggler-slave" id="submReanlHelp2">
+                            <p>
+                            Primer-BLAST can only find non-specific primers for your template since there are other targets that are similar or identical to your template.  You may choose to re-search for specific primers by allowing some of the highly similar off-targets if they are irrelevant to your PCR experiment.  For example, not all transcript variants are expressed in all tissues, or you are not concerned about the predicted transcripts (i.e., XM_ accessions), or there are redundant database entries.  Another example is, when you enter a raw sequence as PCR template rather than an accession, Primer-BLAST will likely report many off-targets.  However, some of these might be your intended target that you should choose to allow.  When Primer-BLAST does not need to avoid the highly similar off-targets in selecting unique primer regions, it typically has a much higher chance to find specific primers for your intended target.
+                            </p>
+                        </div>
+                    </diV>
+                </div>                
+            </div><!-- alignInfo -->            
+            </div>            
+            </div><!-- SEARCH_INFO end -->
+        </div><!-- /#content -->
+     <footer>
+      <section class="icon-section">
+        <div id="icon-section-header" class="icon-section_header">Follow NCBI</div>
+        <div class="grid-container container">
+          <div class="icon-section_container">
+            <a class="footer-icon" id="footer_twitter" href="https://twitter.com/ncbi" aria-label="Twitter"><svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+                <defs>
+                  <style>
+                    .cls-11 {
+                      fill: #737373;
+                    }
+                  </style>
+                </defs>
+                <title>Twitter</title>
+                <path class="cls-11" d="M250.11,105.48c-7,3.14-13,3.25-19.27.14,8.12-4.86,8.49-8.27,11.43-17.46a78.8,78.8,0,0,1-25,9.55,39.35,39.35,0,0,0-67,35.85,111.6,111.6,0,0,1-81-41.08A39.37,39.37,0,0,0,81.47,145a39.08,39.08,0,0,1-17.8-4.92c0,.17,0,.33,0,.5a39.32,39.32,0,0,0,31.53,38.54,39.26,39.26,0,0,1-17.75.68,39.37,39.37,0,0,0,36.72,27.3A79.07,79.07,0,0,1,56,223.34,111.31,111.31,0,0,0,116.22,241c72.3,0,111.83-59.9,111.83-111.84,0-1.71,0-3.4-.1-5.09C235.62,118.54,244.84,113.37,250.11,105.48Z">
+                </path>
+              </svg></a>
+            <a class="footer-icon" id="footer_facebook" href="https://www.facebook.com/ncbi.nlm" aria-label="Facebook"><svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+                <title>Facebook</title>
+                <path class="cls-11" d="M210.5,115.12H171.74V97.82c0-8.14,5.39-10,9.19-10h27.14V52l-39.32-.12c-35.66,0-42.42,26.68-42.42,43.77v19.48H99.09v36.32h27.24v109h45.41v-109h35Z">
+                </path>
+              </svg></a>
+            <a class="footer-icon" id="footer_linkedin" href="https://www.linkedin.com/company/ncbinlm" aria-label="LinkedIn"><svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+                <title>LinkedIn</title>
+                <path class="cls-11" d="M101.64,243.37H57.79v-114h43.85Zm-22-131.54h-.26c-13.25,0-21.82-10.36-21.82-21.76,0-11.65,8.84-21.15,22.33-21.15S101.7,78.72,102,90.38C102,101.77,93.4,111.83,79.63,111.83Zm100.93,52.61A17.54,17.54,0,0,0,163,182v61.39H119.18s.51-105.23,0-114H163v13a54.33,54.33,0,0,1,34.54-12.66c26,0,44.39,18.8,44.39,55.29v58.35H198.1V182A17.54,17.54,0,0,0,180.56,164.44Z">
+                </path>
+              </svg></a>
+            <a class="footer-icon" id="footer_github" href="https://github.com/ncbi" aria-label="GitHub"><svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+                <defs>
+                  <style>
+                    .cls-11,
+                    .cls-12 {
+                      fill: #737373;
+                    }
+
+                    .cls-11 {
+                      fill-rule: evenodd;
+                    }
+                  </style>
+                </defs>
+                <title>GitHub</title>
+                <path class="cls-11" d="M151.36,47.28a105.76,105.76,0,0,0-33.43,206.1c5.28,1,7.22-2.3,7.22-5.09,0-2.52-.09-10.85-.14-19.69-29.42,6.4-35.63-12.48-35.63-12.48-4.81-12.22-11.74-15.47-11.74-15.47-9.59-6.56.73-6.43.73-6.43,10.61.75,16.21,10.9,16.21,10.9,9.43,16.17,24.73,11.49,30.77,8.79,1-6.83,3.69-11.5,6.71-14.14C108.57,197.1,83.88,188,83.88,147.51a40.92,40.92,0,0,1,10.9-28.39c-1.1-2.66-4.72-13.42,1-28,0,0,8.88-2.84,29.09,10.84a100.26,100.26,0,0,1,53,0C198,88.3,206.9,91.14,206.9,91.14c5.76,14.56,2.14,25.32,1,28a40.87,40.87,0,0,1,10.89,28.39c0,40.62-24.74,49.56-48.29,52.18,3.79,3.28,7.17,9.71,7.17,19.58,0,14.15-.12,25.54-.12,29,0,2.82,1.9,6.11,7.26,5.07A105.76,105.76,0,0,0,151.36,47.28Z">
+                </path>
+                <path class="cls-12" d="M85.66,199.12c-.23.52-1.06.68-1.81.32s-1.2-1.06-.95-1.59,1.06-.69,1.82-.33,1.21,1.07.94,1.6Zm-1.3-1">
+                </path>
+                <path class="cls-12" d="M90,203.89c-.51.47-1.49.25-2.16-.49a1.61,1.61,0,0,1-.31-2.19c.52-.47,1.47-.25,2.17.49s.82,1.72.3,2.19Zm-1-1.08">
+                </path>
+                <path class="cls-12" d="M94.12,210c-.65.46-1.71,0-2.37-.91s-.64-2.07,0-2.52,1.7,0,2.36.89.65,2.08,0,2.54Zm0,0"></path>
+                <path class="cls-12" d="M99.83,215.87c-.58.64-1.82.47-2.72-.41s-1.18-2.06-.6-2.7,1.83-.46,2.74.41,1.2,2.07.58,2.7Zm0,0">
+                </path>
+                <path class="cls-12" d="M107.71,219.29c-.26.82-1.45,1.2-2.64.85s-2-1.34-1.74-2.17,1.44-1.23,2.65-.85,2,1.32,1.73,2.17Zm0,0">
+                </path>
+                <path class="cls-12" d="M116.36,219.92c0,.87-1,1.59-2.24,1.61s-2.29-.68-2.3-1.54,1-1.59,2.26-1.61,2.28.67,2.28,1.54Zm0,0">
+                </path>
+                <path class="cls-12" d="M124.42,218.55c.15.85-.73,1.72-2,1.95s-2.37-.3-2.52-1.14.73-1.75,2-2,2.37.29,2.53,1.16Zm0,0"></path>
+              </svg></a>
+            <a class="footer-icon" id="footer_blog" href="https://ncbiinsights.ncbi.nlm.nih.gov/" aria-label="Blog">
+              <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><defs><style>.cls-1{fill:#737373;}</style></defs><path class="cls-1" d="M14,30a4,4,0,1,1-4-4,4,4,0,0,1,4,4Zm11,3A19,19,0,0,0,7.05,15a1,1,0,0,0-1,1v3a1,1,0,0,0,.93,1A14,14,0,0,1,20,33.07,1,1,0,0,0,21,34h3a1,1,0,0,0,1-1Zm9,0A28,28,0,0,0,7,6,1,1,0,0,0,6,7v3a1,1,0,0,0,1,1A23,23,0,0,1,29,33a1,1,0,0,0,1,1h3A1,1,0,0,0,34,33Z"></path></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="container-fluid bg-primary">
+        <div class="container pt-5">
+          <div class="row mt-3">
+            <div class="col-lg-3 col-12">
+              <p><a class="text-white" href="https://www.nlm.nih.gov/socialmedia/index.html">Connect with NLM</a></p>
+              <ul class="list-inline social_media">
+                <li class="list-inline-item"><a href="https://twitter.com/NLM_NIH" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 249 249" style="enable-background:new 0 0 249 249;" xml:space="preserve">
+                      <style type="text/css">
+                        .st20 {
+                          fill: #FFFFFF;
+                        }
+
+                        .st30 {
+                          fill: none;
+                          stroke: #FFFFFF;
+                          stroke-width: 8;
+                          stroke-miterlimit: 10;
+                        }
+                      </style>
+                      <title>SM-Twitter</title>
+                      <g>
+                        <g>
+                          <g>
+                            <path class="st20" d="M192.9,88.1c-5,2.2-9.2,2.3-13.6,0.1c5.7-3.4,6-5.8,8.1-12.3c-5.4,3.2-11.4,5.5-17.6,6.7
+                                                c-10.5-11.2-28.1-11.7-39.2-1.2c-7.2,6.8-10.2,16.9-8,26.5c-22.3-1.1-43.1-11.7-57.2-29C58,91.6,61.8,107.9,74,116
+                                                c-4.4-0.1-8.7-1.3-12.6-3.4c0,0.1,0,0.2,0,0.4c0,13.2,9.3,24.6,22.3,27.2c-4.1,1.1-8.4,1.3-12.5,0.5c3.6,11.3,14,19,25.9,19.3
+                                                c-11.6,9.1-26.4,13.2-41.1,11.5c12.7,8.1,27.4,12.5,42.5,12.5c51,0,78.9-42.2,78.9-78.9c0-1.2,0-2.4-0.1-3.6
+                                                C182.7,97.4,189.2,93.7,192.9,88.1z"></path>
+                          </g>
+                        </g>
+                        <circle class="st30" cx="124.4" cy="128.8" r="108.2"></circle>
+                      </g>
+                    </svg></a></li>
+                <li class="list-inline-item"><a href="https://www.facebook.com/nationallibraryofmedicine" aria-label="Facebook" rel="noopener noreferrer" target="_blank">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 249 249" style="enable-background:new 0 0 249 249;" xml:space="preserve">
+                      <style type="text/css">
+                        .st10 {
+                          fill: #FFFFFF;
+                        }
+
+                        .st110 {
+                          fill: none;
+                          stroke: #FFFFFF;
+                          stroke-width: 8;
+                          stroke-miterlimit: 10;
+                        }
+                      </style>
+                      <title>SM-Facebook</title>
+                      <g>
+                        <g>
+                          <path class="st10" d="M159,99.1h-24V88.4c0-5,3.3-6.2,5.7-6.2h16.8V60l-24.4-0.1c-22.1,0-26.2,16.5-26.2,27.1v12.1H90v22.5h16.9
+                                                      v67.5H135v-67.5h21.7L159,99.1z"></path>
+                        </g>
+                      </g>
+                      <circle class="st110" cx="123.6" cy="123.2" r="108.2"></circle>
+                    </svg>
+                  </a></li>
+                <li class="list-inline-item"><a href="https://www.youtube.com/user/NLMNIH" aria-label="Youtube" target="_blank" rel="noopener noreferrer"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 249 249" style="enable-background:new 0 0 249 249;" xml:space="preserve">
+                      <title>SM-Youtube</title>
+                      <style type="text/css">
+                        .st4 {
+                          fill: none;
+                          stroke: #FFFFFF;
+                          stroke-width: 8;
+                          stroke-miterlimit: 10;
+                        }
+
+                        .st5 {
+                          fill: #FFFFFF;
+                        }
+                      </style>
+                      <circle class="st4" cx="124.2" cy="123.4" r="108.2"></circle>
+                      <g transform="translate(0,-952.36218)">
+                        <path class="st5" d="M88.4,1037.4c-10.4,0-18.7,8.3-18.7,18.7v40.1c0,10.4,8.3,18.7,18.7,18.7h72.1c10.4,0,18.7-8.3,18.7-18.7
+                                            v-40.1c0-10.4-8.3-18.7-18.7-18.7H88.4z M115.2,1058.8l29.4,17.4l-29.4,17.4V1058.8z"></path>
+                      </g>
+                    </svg></a></li>
+              </ul>
+            </div>
+            <div class="col-lg-3 col-12">
+              <p class="address_footer text-white">National Library of Medicine<br>
+                <a href="https://www.google.com/maps/place/8600+Rockville+Pike,+Bethesda,+MD+20894/@38.9959508,-77.101021,17z/data=!3m1!4b1!4m5!3m4!1s0x89b7c95e25765ddb:0x19156f88b27635b8!8m2!3d38.9959508!4d-77.0988323" class="text-white" target="_blank" rel="noopener noreferrer">8600 Rockville Pike<br>
+                  Bethesda, MD 20894</a></p>
+            </div>
+            <div class="col-lg-3 col-12 centered-lg">
+              <p><a href="https://www.nlm.nih.gov/web_policies.html" class="text-white">Web Policies</a><br>
+                <a href="https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office" class="text-white">FOIA</a><br>
+                <a href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html" class="text-white" id="vdp">HHS Vulnerability Disclosure</a></p>
+            </div>
+            <div class="col-lg-3 col-12 centered-lg">
+              <p><a class="supportLink text-white" href="https://support.nlm.nih.gov/">Help</a><br>
+                <a href="https://www.nlm.nih.gov/accessibility.html" class="text-white">Accessibility</a><br>
+                <a href="https://www.nlm.nih.gov/careers/careers.html" class="text-white">Careers</a></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 centered-lg">
+              <nav class="bottom-links">
+                <ul class="mt-3">
+                  <li>
+                    <a class="text-white" href="//www.nlm.nih.gov/">NLM</a>
+                  </li>
+                  <li>
+                    <a class="text-white" href="https://www.nih.gov/">NIH</a>
+                  </li>
+                  <li>
+                    <a class="text-white" href="https://www.hhs.gov/">HHS</a>
+                  </li>
+                  <li>
+                    <a class="text-white" href="https://www.usa.gov/">USA.gov</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </section>
+    </footer>
+<script type="text/javascript" src="js/nwds.js"></script>
+<script type="text/javascript" src="js/ncbipopup.js"></script>
+<script type="text/javascript" src="js/header.js"></script>
+<script src="js/uswds.min.js"></script>
+    </div><!-- /#content-wrap -->
+</div><!--/#wrap-->
+<script type="text/javascript" src="/portal/portal3rc.fcgi/rlib/js/InstrumentOmnitureBaseJS/InstrumentNCBIBaseJS/InstrumentPageStarterJS.js"></script>
+</body>
+</html>

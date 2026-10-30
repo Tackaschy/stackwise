@@ -1,0 +1,4085 @@
+{
+"BlastOutput2": [
+{
+    "report": {
+      "program": "blastn",
+      "version": "BLASTN 2.17.0+",
+      "reference": "Stephen F. Altschul, Thomas L. Madden, Alejandro A. Sch&auml;ffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), \"Gapped BLAST and PSI-BLAST: a new generation of protein database search programs\", Nucleic Acids Res. 25:3389-3402.",
+      "search_target": {
+        "db": "refseq_rna"
+      },
+      "params": {
+        "expect": 1000,
+        "sc_match": 1,
+        "sc_mismatch": -3,
+        "gap_open": 5,
+        "gap_extend": 2,
+        "filter": "F",
+        "entrez_query": "\"Homo sapiens\"[organism]"
+      },
+      "results": {
+        "search": {
+          "query_id": "Query_955730",
+          "query_title": "oligo_1",
+          "query_len": 20,
+          "hits": [
+            {
+              "num": 1,
+              "description": [
+                {
+                  "id": "gi|1676440496|ref|NM_001357943.2|",
+                  "accession": "NM_001357943",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 7, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1231,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 82,
+                  "hit_to": 101,
+                  "hit_strand": "Plus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "hseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 2,
+              "description": [
+                {
+                  "id": "gi|1675059531|ref|NM_001289746.2|",
+                  "accession": "NM_001289746",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1525,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 322,
+                  "hit_to": 341,
+                  "hit_strand": "Plus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "hseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 3,
+              "description": [
+                {
+                  "id": "gi|1676452850|ref|NR_152150.2|",
+                  "accession": "NR_152150",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 6, non-coding RNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 763,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 82,
+                  "hit_to": 101,
+                  "hit_strand": "Plus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "hseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 4,
+              "description": [
+                {
+                  "id": "gi|1675171238|ref|NM_001289745.3|",
+                  "accession": "NM_001289745",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1377,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 174,
+                  "hit_to": 193,
+                  "hit_strand": "Plus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "hseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 5,
+              "description": [
+                {
+                  "id": "gi|1519316078|ref|NM_002046.7|",
+                  "accession": "NM_002046",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1285,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 82,
+                  "hit_to": 101,
+                  "hit_strand": "Plus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "hseq": "GAAGGTGAAGGTCGGAGTCA",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 6,
+              "description": [
+                {
+                  "id": "gi|2462585728|ref|XM_054326047.1|",
+                  "accession": "XM_054326047",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X11, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 13677,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 7,
+              "description": [
+                {
+                  "id": "gi|2217339345|ref|XM_017028698.2|",
+                  "accession": "XM_017028698",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X29, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                },
+                {
+                  "id": "gi|2462584381|ref|XM_054325394.1|",
+                  "accession": "XM_054325394",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X29, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6806,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6626,
+                  "hit_to": 6639,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 8,
+              "description": [
+                {
+                  "id": "gi|2217340337|ref|XM_011530459.3|",
+                  "accession": "XM_011530459",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8688,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1581,
+                  "hit_to": 1598,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 9,
+              "description": [
+                {
+                  "id": "gi|2462585718|ref|XM_054326042.1|",
+                  "accession": "XM_054326042",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X6, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8660,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 10,
+              "description": [
+                {
+                  "id": "gi|2217340340|ref|XM_011530464.3|",
+                  "accession": "XM_011530464",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X6, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8660,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 11,
+              "description": [
+                {
+                  "id": "gi|2217340346|ref|XM_011530466.3|",
+                  "accession": "XM_011530466",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X11, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6780,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 12,
+              "description": [
+                {
+                  "id": "gi|2217340338|ref|XM_017029013.2|",
+                  "accession": "XM_017029013",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8763,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1656,
+                  "hit_to": 1673,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 13,
+              "description": [
+                {
+                  "id": "gi|2462584333|ref|XM_054325370.1|",
+                  "accession": "XM_054325370",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X5, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7227,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 7047,
+                  "hit_to": 7060,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 14,
+              "description": [
+                {
+                  "id": "gi|2462584365|ref|XM_054325386.1|",
+                  "accession": "XM_054325386",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X21, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6833,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6653,
+                  "hit_to": 6666,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 15,
+              "description": [
+                {
+                  "id": "gi|2217340345|ref|XM_011530465.3|",
+                  "accession": "XM_011530465",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X10, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8475,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1368,
+                  "hit_to": 1385,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 16,
+              "description": [
+                {
+                  "id": "gi|2462584349|ref|XM_054325378.1|",
+                  "accession": "XM_054325378",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X13, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 10371,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 10191,
+                  "hit_to": 10204,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 17,
+              "description": [
+                {
+                  "id": "gi|2462584363|ref|XM_054325385.1|",
+                  "accession": "XM_054325385",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X20, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6845,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6665,
+                  "hit_to": 6678,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 18,
+              "description": [
+                {
+                  "id": "gi|2217340344|ref|XM_017029015.2|",
+                  "accession": "XM_017029015",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X9, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8531,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1430,
+                  "hit_to": 1447,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 19,
+              "description": [
+                {
+                  "id": "gi|2462584359|ref|XM_054325383.1|",
+                  "accession": "XM_054325383",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X18, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6891,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6711,
+                  "hit_to": 6724,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 20,
+              "description": [
+                {
+                  "id": "gi|2217340335|ref|XM_011530458.3|",
+                  "accession": "XM_011530458",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8663,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 21,
+              "description": [
+                {
+                  "id": "gi|2217339337|ref|XM_017028696.2|",
+                  "accession": "XM_017028696",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X24, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                },
+                {
+                  "id": "gi|2462584371|ref|XM_054325389.1|",
+                  "accession": "XM_054325389",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X24, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6849,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6669,
+                  "hit_to": 6682,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 22,
+              "description": [
+                {
+                  "id": "gi|2462584351|ref|XM_054325379.1|",
+                  "accession": "XM_054325379",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X14, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 10368,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 10188,
+                  "hit_to": 10201,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 23,
+              "description": [
+                {
+                  "id": "gi|2462584329|ref|XM_054325368.1|",
+                  "accession": "XM_054325368",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7244,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 7064,
+                  "hit_to": 7077,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 24,
+              "description": [
+                {
+                  "id": "gi|2217340342|ref|XM_047441551.1|",
+                  "accession": "XM_047441551",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X8, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8657,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 25,
+              "description": [
+                {
+                  "id": "gi|2462585708|ref|XM_054326037.1|",
+                  "accession": "XM_054326037",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8663,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 26,
+              "description": [
+                {
+                  "id": "gi|2462584383|ref|XM_054325395.1|",
+                  "accession": "XM_054325395",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X30, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6807,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6627,
+                  "hit_to": 6640,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 27,
+              "description": [
+                {
+                  "id": "gi|2462584331|ref|XM_054325369.1|",
+                  "accession": "XM_054325369",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7241,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 7061,
+                  "hit_to": 7074,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 28,
+              "description": [
+                {
+                  "id": "gi|2217339346|ref|XM_047441259.1|",
+                  "accession": "XM_047441259",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X30, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6770,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6590,
+                  "hit_to": 6603,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 29,
+              "description": [
+                {
+                  "id": "gi|2462585716|ref|XM_054326041.1|",
+                  "accession": "XM_054326041",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X5, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8561,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1454,
+                  "hit_to": 1471,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 30,
+              "description": [
+                {
+                  "id": "gi|2462585710|ref|XM_054326038.1|",
+                  "accession": "XM_054326038",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 19559,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 31,
+              "description": [
+                {
+                  "id": "gi|2462585720|ref|XM_054326043.1|",
+                  "accession": "XM_054326043",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X7, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8660,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 32,
+              "description": [
+                {
+                  "id": "gi|2217339338|ref|XM_047441256.1|",
+                  "accession": "XM_047441256",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X25, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                },
+                {
+                  "id": "gi|2462584373|ref|XM_054325390.1|",
+                  "accession": "XM_054325390",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X25, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6849,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6669,
+                  "hit_to": 6682,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 33,
+              "description": [
+                {
+                  "id": "gi|2462585722|ref|XM_054326044.1|",
+                  "accession": "XM_054326044",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X8, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8657,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 34,
+              "description": [
+                {
+                  "id": "gi|2462584327|ref|XM_054325367.1|",
+                  "accession": "XM_054325367",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7253,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 7073,
+                  "hit_to": 7086,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 35,
+              "description": [
+                {
+                  "id": "gi|2217339340|ref|XM_047441257.1|",
+                  "accession": "XM_047441257",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X26, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7128,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6948,
+                  "hit_to": 6961,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 36,
+              "description": [
+                {
+                  "id": "gi|2462584379|ref|XM_054325393.1|",
+                  "accession": "XM_054325393",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X28, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6821,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6641,
+                  "hit_to": 6654,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 37,
+              "description": [
+                {
+                  "id": "gi|2462584339|ref|XM_054325373.1|",
+                  "accession": "XM_054325373",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X8, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7184,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 7004,
+                  "hit_to": 7017,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 38,
+              "description": [
+                {
+                  "id": "gi|2462585724|ref|XM_054326045.1|",
+                  "accession": "XM_054326045",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X9, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8531,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1430,
+                  "hit_to": 1447,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 39,
+              "description": [
+                {
+                  "id": "gi|2462584325|ref|XM_054325366.1|",
+                  "accession": "XM_054325366",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7256,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 7076,
+                  "hit_to": 7089,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 40,
+              "description": [
+                {
+                  "id": "gi|2462585714|ref|XM_054326040.1|",
+                  "accession": "XM_054326040",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8763,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1656,
+                  "hit_to": 1673,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 41,
+              "description": [
+                {
+                  "id": "gi|2462584375|ref|XM_054325391.1|",
+                  "accession": "XM_054325391",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X26, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 10327,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 10147,
+                  "hit_to": 10160,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 42,
+              "description": [
+                {
+                  "id": "gi|2462584377|ref|XM_054325392.1|",
+                  "accession": "XM_054325392",
+                  "title": "PREDICTED: Homo sapiens RNA binding fox-1 homolog 2 (RBFOX2), transcript variant X27, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 6801,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 5,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 6621,
+                  "hit_to": 6634,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTGAAGGTCGGAGT",
+                  "hseq": "GTGAAGGTCGGAGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 43,
+              "description": [
+                {
+                  "id": "gi|2217340341|ref|XM_017029014.2|",
+                  "accession": "XM_017029014",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X7, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 8660,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 44,
+              "description": [
+                {
+                  "id": "gi|2217340336|ref|XM_011530461.3|",
+                  "accession": "XM_011530461",
+                  "title": "PREDICTED: Homo sapiens myosin XVIIIB (MYO18B), transcript variant X2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 15286,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 3,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 1556,
+                  "hit_to": 1573,
+                  "hit_strand": "Plus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "AGGTGAAGGTCGGAGTCA",
+                  "hseq": "AGGTGAAGCTCGGAGTCA",
+                  "midline": "|||||||| |||||||||"
+                }
+              ]
+            },
+            {
+              "num": 45,
+              "description": [
+                {
+                  "id": "gi|2462587649|ref|XM_054345488.1|",
+                  "accession": "XM_054345488",
+                  "title": "PREDICTED: Homo sapiens kelch repeat and BTB domain containing 12 (KBTBD12), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 2466,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 4,
+                  "query_to": 17,
+                  "query_strand": "Plus",
+                  "hit_from": 181,
+                  "hit_to": 168,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GGTGAAGGTCGGAG",
+                  "hseq": "GGTGAAGGTCGGAG",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 46,
+              "description": [
+                {
+                  "id": "gi|2217342261|ref|XM_047447590.1|",
+                  "accession": "XM_047447590",
+                  "title": "PREDICTED: Homo sapiens kelch repeat and BTB domain containing 12 (KBTBD12), transcript variant X2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 2616,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 4,
+                  "query_to": 17,
+                  "query_strand": "Plus",
+                  "hit_from": 331,
+                  "hit_to": 318,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GGTGAAGGTCGGAG",
+                  "hseq": "GGTGAAGGTCGGAG",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 47,
+              "description": [
+                {
+                  "id": "gi|2462570919|ref|XM_054340926.1|",
+                  "accession": "XM_054340926",
+                  "title": "PREDICTED: Homo sapiens cilia and flagella associated protein 221 (CFAP221), transcript variant X3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 3877,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 4,
+                  "query_to": 17,
+                  "query_strand": "Plus",
+                  "hit_from": 3877,
+                  "hit_to": 3864,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GGTGAAGGTCGGAG",
+                  "hseq": "GGTGAAGGTCGGAG",
+                  "midline": "||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 1,
+                  "query_to": 11,
+                  "query_strand": "Plus",
+                  "hit_from": 1083,
+                  "hit_to": 1093,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGG",
+                  "hseq": "GAAGGTGAAGG",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 48,
+              "description": [
+                {
+                  "id": "gi|2462570925|ref|XM_054340929.1|",
+                  "accession": "XM_054340929",
+                  "title": "PREDICTED: Homo sapiens cilia and flagella associated protein 221 (CFAP221), transcript variant X6, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 3553,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 4,
+                  "query_to": 17,
+                  "query_strand": "Plus",
+                  "hit_from": 3546,
+                  "hit_to": 3533,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GGTGAAGGTCGGAG",
+                  "hseq": "GGTGAAGGTCGGAG",
+                  "midline": "||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 1,
+                  "query_to": 11,
+                  "query_strand": "Plus",
+                  "hit_from": 752,
+                  "hit_to": 762,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGG",
+                  "hseq": "GAAGGTGAAGG",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 49,
+              "description": [
+                {
+                  "id": "gi|2462570931|ref|XM_054340931.1|",
+                  "accession": "XM_054340931",
+                  "title": "PREDICTED: Homo sapiens cilia and flagella associated protein 221 (CFAP221), transcript variant X9, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 3354,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 4,
+                  "query_to": 17,
+                  "query_strand": "Plus",
+                  "hit_from": 3343,
+                  "hit_to": 3330,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GGTGAAGGTCGGAG",
+                  "hseq": "GGTGAAGGTCGGAG",
+                  "midline": "||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 1,
+                  "query_to": 11,
+                  "query_strand": "Plus",
+                  "hit_from": 549,
+                  "hit_to": 559,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGG",
+                  "hseq": "GAAGGTGAAGG",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 50,
+              "description": [
+                {
+                  "id": "gi|2462570921|ref|XM_054340927.1|",
+                  "accession": "XM_054340927",
+                  "title": "PREDICTED: Homo sapiens cilia and flagella associated protein 221 (CFAP221), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 4206,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 4,
+                  "query_to": 17,
+                  "query_strand": "Plus",
+                  "hit_from": 4206,
+                  "hit_to": 4193,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GGTGAAGGTCGGAG",
+                  "hseq": "GGTGAAGGTCGGAG",
+                  "midline": "||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 1,
+                  "query_to": 11,
+                  "query_strand": "Plus",
+                  "hit_from": 1412,
+                  "hit_to": 1422,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "GAAGGTGAAGG",
+                  "hseq": "GAAGGTGAAGG",
+                  "midline": "|||||||||||"
+                }
+              ]
+            }
+          ],
+          "stat": {
+            "db_num": 249420,
+            "db_len": 1026782571,
+            "hsp_len": 0,
+            "eff_space": 0,
+            "kappa": 0.710602795216363,
+            "lambda": 1.37406312246009,
+            "entropy": 1.30724660390929
+          }
+        }
+      }
+    }
+  }
+,
+{
+    "report": {
+      "program": "blastn",
+      "version": "BLASTN 2.17.0+",
+      "reference": "Stephen F. Altschul, Thomas L. Madden, Alejandro A. Sch&auml;ffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), \"Gapped BLAST and PSI-BLAST: a new generation of protein database search programs\", Nucleic Acids Res. 25:3389-3402.",
+      "search_target": {
+        "db": "refseq_rna"
+      },
+      "params": {
+        "expect": 1000,
+        "sc_match": 1,
+        "sc_mismatch": -3,
+        "gap_open": 5,
+        "gap_extend": 2,
+        "filter": "F",
+        "entrez_query": "\"Homo sapiens\"[organism]"
+      },
+      "results": {
+        "search": {
+          "query_id": "Query_955731",
+          "query_title": "oligo_2",
+          "query_len": 20,
+          "hits": [
+            {
+              "num": 1,
+              "description": [
+                {
+                  "id": "gi|1676440496|ref|NM_001357943.2|",
+                  "accession": "NM_001357943",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 7, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1231,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 198,
+                  "hit_to": 179,
+                  "hit_strand": "Minus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGGTC",
+                  "hseq": "TTGAGGTCAATGAAGGGGTC",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 2,
+              "description": [
+                {
+                  "id": "gi|1676318038|ref|NM_001256799.3|",
+                  "accession": "NM_001256799",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1386,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 299,
+                  "hit_to": 280,
+                  "hit_strand": "Minus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGGTC",
+                  "hseq": "TTGAGGTCAATGAAGGGGTC",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 3,
+              "description": [
+                {
+                  "id": "gi|1675059531|ref|NM_001289746.2|",
+                  "accession": "NM_001289746",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1525,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 438,
+                  "hit_to": 419,
+                  "hit_strand": "Minus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGGTC",
+                  "hseq": "TTGAGGTCAATGAAGGGGTC",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 4,
+              "description": [
+                {
+                  "id": "gi|1676452850|ref|NR_152150.2|",
+                  "accession": "NR_152150",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 6, non-coding RNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 763,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 198,
+                  "hit_to": 179,
+                  "hit_strand": "Minus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGGTC",
+                  "hseq": "TTGAGGTCAATGAAGGGGTC",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 5,
+              "description": [
+                {
+                  "id": "gi|1675171238|ref|NM_001289745.3|",
+                  "accession": "NM_001289745",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1377,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 290,
+                  "hit_to": 271,
+                  "hit_strand": "Minus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGGTC",
+                  "hseq": "TTGAGGTCAATGAAGGGGTC",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 6,
+              "description": [
+                {
+                  "id": "gi|1519316078|ref|NM_002046.7|",
+                  "accession": "NM_002046",
+                  "title": "Homo sapiens glyceraldehyde-3-phosphate dehydrogenase (GAPDH), transcript variant 1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1285,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 40.14,
+                  "score": 20,
+                  "evalue": 0.00338949,
+                  "identity": 20,
+                  "query_from": 1,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 198,
+                  "hit_to": 179,
+                  "hit_strand": "Minus",
+                  "align_len": 20,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGGTC",
+                  "hseq": "TTGAGGTCAATGAAGGGGTC",
+                  "midline": "||||||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 7,
+              "description": [
+                {
+                  "id": "gi|565324147|ref|NM_018424.3|",
+                  "accession": "NM_018424",
+                  "title": "Homo sapiens erythrocyte membrane protein band 4.1 like 4B (EPB41L4B), transcript variant 1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 4030,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 34.1929,
+                  "score": 17,
+                  "evalue": 0.209112,
+                  "identity": 17,
+                  "query_from": 2,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 2517,
+                  "hit_to": 2501,
+                  "hit_strand": "Minus",
+                  "align_len": 17,
+                  "gaps": 0,
+                  "qseq": "TGAGGTCAATGAAGGGG",
+                  "hseq": "TGAGGTCAATGAAGGGG",
+                  "midline": "|||||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 8,
+              "description": [
+                {
+                  "id": "gi|2462576618|ref|XM_054343661.1|",
+                  "accession": "XM_054343661",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X8, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 101208,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 34562,
+                  "hit_to": 34572,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 9,
+              "description": [
+                {
+                  "id": "gi|642945630|ref|NM_001267550.2|",
+                  "accession": "NM_001267550",
+                  "title": "Homo sapiens titin (TTN), transcript variant IC, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 109224,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9728,
+                  "hit_to": 9742,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 42578,
+                  "hit_to": 42588,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 10,
+              "description": [
+                {
+                  "id": "gi|378925624|ref|NM_001256850.1|",
+                  "accession": "NM_001256850",
+                  "title": "Homo sapiens titin (TTN), transcript variant N2BA, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 104301,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9728,
+                  "hit_to": 9742,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37655,
+                  "hit_to": 37665,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 11,
+              "description": [
+                {
+                  "id": "gi|291045224|ref|NM_133378.4|",
+                  "accession": "NM_133378",
+                  "title": "Homo sapiens titin (TTN), transcript variant N2-A, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 101520,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9728,
+                  "hit_to": 9742,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 34874,
+                  "hit_to": 34884,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 12,
+              "description": [
+                {
+                  "id": "gi|2217330619|ref|XM_047445661.1|",
+                  "accession": "XM_047445661",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103893,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37247,
+                  "hit_to": 37257,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 13,
+              "description": [
+                {
+                  "id": "gi|2462576622|ref|XM_054343663.1|",
+                  "accession": "XM_054343663",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X10, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100554,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 33908,
+                  "hit_to": 33918,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 14,
+              "description": [
+                {
+                  "id": "gi|1034616270|ref|XM_017004823.1|",
+                  "accession": "XM_017004823",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X13, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82170,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15524,
+                  "hit_to": 15534,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 15,
+              "description": [
+                {
+                  "id": "gi|1034616262|ref|XM_017004819.1|",
+                  "accession": "XM_017004819",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 108117,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 41471,
+                  "hit_to": 41481,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 16,
+              "description": [
+                {
+                  "id": "gi|2462576604|ref|XM_054343654.1|",
+                  "accession": "XM_054343654",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 108117,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 41471,
+                  "hit_to": 41481,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 17,
+              "description": [
+                {
+                  "id": "gi|2462576630|ref|XM_054343667.1|",
+                  "accession": "XM_054343667",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X14, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82119,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15473,
+                  "hit_to": 15483,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 18,
+              "description": [
+                {
+                  "id": "gi|2217330625|ref|XM_047445668.1|",
+                  "accession": "XM_047445668",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X9, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100785,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 34139,
+                  "hit_to": 34149,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 19,
+              "description": [
+                {
+                  "id": "gi|291045222|ref|NM_003319.4|",
+                  "accession": "NM_003319",
+                  "title": "Homo sapiens titin (TTN), transcript variant N2-B, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82029,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9590,
+                  "hit_to": 9604,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15383,
+                  "hit_to": 15393,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 20,
+              "description": [
+                {
+                  "id": "gi|2462576606|ref|XM_054343655.1|",
+                  "accession": "XM_054343655",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 104229,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37583,
+                  "hit_to": 37593,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 21,
+              "description": [
+                {
+                  "id": "gi|2462576624|ref|XM_054343664.1|",
+                  "accession": "XM_054343664",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X11, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100437,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 33791,
+                  "hit_to": 33801,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 22,
+              "description": [
+                {
+                  "id": "gi|2462576628|ref|XM_054343666.1|",
+                  "accession": "XM_054343666",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X13, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82170,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15524,
+                  "hit_to": 15534,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 23,
+              "description": [
+                {
+                  "id": "gi|2217330617|ref|XM_047445660.1|",
+                  "accession": "XM_047445660",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 104229,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37583,
+                  "hit_to": 37593,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 24,
+              "description": [
+                {
+                  "id": "gi|1370478798|ref|XM_024453099.1|",
+                  "accession": "XM_024453099",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X14, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82119,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15473,
+                  "hit_to": 15483,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 25,
+              "description": [
+                {
+                  "id": "gi|1370478790|ref|XM_024453095.1|",
+                  "accession": "XM_024453095",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103662,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37016,
+                  "hit_to": 37026,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 26,
+              "description": [
+                {
+                  "id": "gi|2217330621|ref|XM_047445663.1|",
+                  "accession": "XM_047445663",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X7, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 102768,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 36122,
+                  "hit_to": 36132,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 27,
+              "description": [
+                {
+                  "id": "gi|2462576612|ref|XM_054343658.1|",
+                  "accession": "XM_054343658",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X5, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103515,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 36869,
+                  "hit_to": 36879,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 28,
+              "description": [
+                {
+                  "id": "gi|642945632|ref|NM_133437.4|",
+                  "accession": "NM_133437",
+                  "title": "Homo sapiens titin (TTN), transcript variant novex-2, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82605,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9590,
+                  "hit_to": 9604,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15959,
+                  "hit_to": 15969,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 29,
+              "description": [
+                {
+                  "id": "gi|2462576626|ref|XM_054343665.1|",
+                  "accession": "XM_054343665",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X12, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100356,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 33710,
+                  "hit_to": 33720,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 30,
+              "description": [
+                {
+                  "id": "gi|291045227|ref|NM_133432.3|",
+                  "accession": "NM_133432",
+                  "title": "Homo sapiens titin (TTN), transcript variant novex-1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 82404,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9590,
+                  "hit_to": 9604,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 15758,
+                  "hit_to": 15768,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 31,
+              "description": [
+                {
+                  "id": "gi|1370478796|ref|XM_024453098.1|",
+                  "accession": "XM_024453098",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X12, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100356,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 33710,
+                  "hit_to": 33720,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 32,
+              "description": [
+                {
+                  "id": "gi|1034616266|ref|XM_017004821.1|",
+                  "accession": "XM_017004821",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X6, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103512,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9728,
+                  "hit_to": 9742,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 36866,
+                  "hit_to": 36876,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 33,
+              "description": [
+                {
+                  "id": "gi|2217330623|ref|XM_047445665.1|",
+                  "accession": "XM_047445665",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X8, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 101208,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 34562,
+                  "hit_to": 34572,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 34,
+              "description": [
+                {
+                  "id": "gi|2462576610|ref|XM_054343657.1|",
+                  "accession": "XM_054343657",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103662,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37016,
+                  "hit_to": 37026,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 35,
+              "description": [
+                {
+                  "id": "gi|1370478794|ref|XM_024453097.1|",
+                  "accession": "XM_024453097",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X11, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100437,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 33791,
+                  "hit_to": 33801,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 36,
+              "description": [
+                {
+                  "id": "gi|2462576614|ref|XM_054343659.1|",
+                  "accession": "XM_054343659",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X6, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103512,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9728,
+                  "hit_to": 9742,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 36866,
+                  "hit_to": 36876,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 37,
+              "description": [
+                {
+                  "id": "gi|1034616264|ref|XM_017004820.1|",
+                  "accession": "XM_017004820",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X5, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103515,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 36869,
+                  "hit_to": 36879,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 38,
+              "description": [
+                {
+                  "id": "gi|1034616268|ref|XM_017004822.1|",
+                  "accession": "XM_017004822",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X10, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100554,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 33908,
+                  "hit_to": 33918,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 39,
+              "description": [
+                {
+                  "id": "gi|2462576608|ref|XM_054343656.1|",
+                  "accession": "XM_054343656",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 103893,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 37247,
+                  "hit_to": 37257,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 40,
+              "description": [
+                {
+                  "id": "gi|2462576616|ref|XM_054343660.1|",
+                  "accession": "XM_054343660",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X7, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 102768,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 36122,
+                  "hit_to": 36132,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 41,
+              "description": [
+                {
+                  "id": "gi|2462576620|ref|XM_054343662.1|",
+                  "accession": "XM_054343662",
+                  "title": "PREDICTED: Homo sapiens titin (TTN), transcript variant X9, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 100785,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9731,
+                  "hit_to": 9745,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                },
+                {
+                  "num": 2,
+                  "bit_score": 22.2988,
+                  "score": 11,
+                  "evalue": 795.915,
+                  "identity": 11,
+                  "query_from": 10,
+                  "query_to": 20,
+                  "query_strand": "Plus",
+                  "hit_from": 34139,
+                  "hit_to": 34149,
+                  "hit_strand": "Plus",
+                  "align_len": 11,
+                  "gaps": 0,
+                  "qseq": "ATGAAGGGGTC",
+                  "hseq": "ATGAAGGGGTC",
+                  "midline": "|||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 42,
+              "description": [
+                {
+                  "id": "gi|1676316866|ref|NM_133379.5|",
+                  "accession": "NM_133379",
+                  "title": "Homo sapiens titin (TTN), transcript variant novex-3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 18220,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 30.2282,
+                  "score": 15,
+                  "evalue": 3.26494,
+                  "identity": 15,
+                  "query_from": 1,
+                  "query_to": 15,
+                  "query_strand": "Plus",
+                  "hit_from": 9728,
+                  "hit_to": 9742,
+                  "hit_strand": "Plus",
+                  "align_len": 15,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAG",
+                  "hseq": "TTGAGGTCAATGAAG",
+                  "midline": "|||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 43,
+              "description": [
+                {
+                  "id": "gi|2462578564|ref|XM_054344569.1|",
+                  "accession": "XM_054344569",
+                  "title": "PREDICTED: Homo sapiens G protein-coupled receptor 55 (GPR55), transcript variant X3, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 3846,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 6,
+                  "query_to": 19,
+                  "query_strand": "Plus",
+                  "hit_from": 2893,
+                  "hit_to": 2906,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTCAATGAAGGGGT",
+                  "hseq": "GTCAATGAAGGGGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 44,
+              "description": [
+                {
+                  "id": "gi|2462629017|ref|XM_054326845.1|",
+                  "accession": "XM_054326845",
+                  "title": "PREDICTED: Homo sapiens protocadherin 11 X-linked (PCDH11X), transcript variant X8, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 7313,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 1,
+                  "query_to": 14,
+                  "query_strand": "Plus",
+                  "hit_from": 1716,
+                  "hit_to": 1703,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAA",
+                  "hseq": "TTGAGGTCAATGAA",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 45,
+              "description": [
+                {
+                  "id": "gi|2462517436|ref|XM_054365008.1|",
+                  "accession": "XM_054365008",
+                  "title": "PREDICTED: Homo sapiens family with sequence similarity 241 member B (FAM241B), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 1357,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 17,
+                  "query_from": 1,
+                  "query_to": 18,
+                  "query_strand": "Plus",
+                  "hit_from": 657,
+                  "hit_to": 640,
+                  "hit_strand": "Minus",
+                  "align_len": 18,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAAGGGG",
+                  "hseq": "TTGAGGTCATTGAAGGGG",
+                  "midline": "||||||||| ||||||||"
+                }
+              ]
+            },
+            {
+              "num": 46,
+              "description": [
+                {
+                  "id": "gi|2462578560|ref|XM_054344567.1|",
+                  "accession": "XM_054344567",
+                  "title": "PREDICTED: Homo sapiens G protein-coupled receptor 55 (GPR55), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 4125,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 6,
+                  "query_to": 19,
+                  "query_strand": "Plus",
+                  "hit_from": 3172,
+                  "hit_to": 3185,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTCAATGAAGGGGT",
+                  "hseq": "GTCAATGAAGGGGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 47,
+              "description": [
+                {
+                  "id": "gi|2462629011|ref|XM_054326842.1|",
+                  "accession": "XM_054326842",
+                  "title": "PREDICTED: Homo sapiens protocadherin 11 X-linked (PCDH11X), transcript variant X5, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 11245,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 1,
+                  "query_to": 14,
+                  "query_strand": "Plus",
+                  "hit_from": 1716,
+                  "hit_to": 1703,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAA",
+                  "hseq": "TTGAGGTCAATGAA",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 48,
+              "description": [
+                {
+                  "id": "gi|2462629009|ref|XM_054326841.1|",
+                  "accession": "XM_054326841",
+                  "title": "PREDICTED: Homo sapiens protocadherin 11 X-linked (PCDH11X), transcript variant X4, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 11275,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 1,
+                  "query_to": 14,
+                  "query_strand": "Plus",
+                  "hit_from": 1716,
+                  "hit_to": 1703,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAA",
+                  "hseq": "TTGAGGTCAATGAA",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 49,
+              "description": [
+                {
+                  "id": "gi|2462578562|ref|XM_054344568.1|",
+                  "accession": "XM_054344568",
+                  "title": "PREDICTED: Homo sapiens G protein-coupled receptor 55 (GPR55), transcript variant X5, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 4379,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 6,
+                  "query_to": 19,
+                  "query_strand": "Plus",
+                  "hit_from": 3426,
+                  "hit_to": 3439,
+                  "hit_strand": "Plus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "GTCAATGAAGGGGT",
+                  "hseq": "GTCAATGAAGGGGT",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            },
+            {
+              "num": 50,
+              "description": [
+                {
+                  "id": "gi|2462632169|ref|XM_054328379.1|",
+                  "accession": "XM_054328379",
+                  "title": "PREDICTED: Homo sapiens protocadherin 11 Y-linked (PCDH11Y), transcript variant X1, mRNA",
+                  "taxid": 9606,
+                  "sciname": "Homo sapiens"
+                }
+              ],
+              "len": 13068,
+              "hsps": [
+                {
+                  "num": 1,
+                  "bit_score": 28.2458,
+                  "score": 14,
+                  "evalue": 12.901,
+                  "identity": 14,
+                  "query_from": 1,
+                  "query_to": 14,
+                  "query_strand": "Plus",
+                  "hit_from": 3487,
+                  "hit_to": 3474,
+                  "hit_strand": "Minus",
+                  "align_len": 14,
+                  "gaps": 0,
+                  "qseq": "TTGAGGTCAATGAA",
+                  "hseq": "TTGAGGTCAATGAA",
+                  "midline": "||||||||||||||"
+                }
+              ]
+            }
+          ],
+          "stat": {
+            "db_num": 249420,
+            "db_len": 1026782571,
+            "hsp_len": 0,
+            "eff_space": 0,
+            "kappa": 0.710602795216363,
+            "lambda": 1.37406312246009,
+            "entropy": 1.30724660390929
+          }
+        }
+      }
+    }
+  }
+]
+}
+

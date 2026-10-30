@@ -1,0 +1,127 @@
+09:54:00 bind_refseqrna_human: rid=E8U9SVXC014 rtoe=30
+09:54:04 bind_refseqrna_all: rid=E8U9WB12014 rtoe=30
+09:54:08 bind_corent_all: rid=E8U9ZF3V016 rtoe=30
+09:54:12 bind_megaoff_refseqrna: rid=E8UA3V61014 rtoe=30
+09:54:16 saved align_put_put.html (42905)
+09:54:16 align_put: status 200 url https://blast.ncbi.nlm.nih.gov/BlastAlign.cgi rid=E8UA7J3M114
+09:54:20 saved align_put_short_put.html (42905)
+09:54:20 align_put_short: status 200 url https://blast.ncbi.nlm.nih.gov/BlastAlign.cgi rid=E8UABBX7114
+09:54:24 saved align_request_put.html (24254)
+09:54:24 align_request: status 200 url https://blast.ncbi.nlm.nih.gov/BlastAlign.cgi rid=None
+09:54:28 pb_gapdh_nt: submit 200 in 1.3s job_key=jYdQ2LhjtcuS8SX0KJQBxlKPEPR_nAvpfg done_now=False
+09:54:32 pb_actb: submit 200 in 1.3s job_key=WVOGgDm4NBATLi4rI0sKGVlQGyt0QwA2dQ done_now=False
+09:54:33 saved pb_gapdh_nt_poll_1.html (21501)
+09:54:33 pb_gapdh_nt: poll 1 status "Running Current time 30 October 2026, 05:54:33 Time since su"
+09:54:36 pb_random: submit 200 in 1.3s job_key=g4le1rZju8uc8Sv0JpQPxlyPHvRxnAXpcA done_now=False
+09:54:37 saved pb_actb_poll_1.html (21501)
+09:54:37 pb_actb: poll 1 status "Running Current time 30 October 2026, 05:54:37 Time since su"
+09:54:38 saved pb_gapdh_nt_poll_2.html (21502)
+09:54:38 pb_gapdh_nt: poll 2 status "Running Current time 30 October 2026, 05:54:38 Time since su"
+09:54:40 pb_bad: submit 200 in 1.3s job_key=zsQTmxoTF7swhRKAH-A2smX7J4BI6DydSQ done_now=False
+09:54:41 saved pb_random_poll_1.html (21501)
+09:54:41 pb_random: poll 1 status "Running Current time 30 October 2026, 05:54:41 Time since su"
+09:54:42 saved pb_actb_poll_2.html (21502)
+09:54:42 pb_actb: poll 2 status "Running Current time 30 October 2026, 05:54:42 Time since su"
+09:54:44 saved pb_gapdh_nt_poll_3.html (21502)
+09:54:44 pb_gapdh_nt: poll 3 status "Running Current time 30 October 2026, 05:54:44 Time since su"
+09:54:45 saved pb_bad_poll_1.html (21501)
+09:54:45 pb_bad: poll 1 status "Running Current time 30 October 2026, 05:54:45 Time since su"
+09:54:46 saved pb_random_poll_2.html (21502)
+09:54:46 pb_random: poll 2 status "Running Current time 30 October 2026, 05:54:46 Time since su"
+09:54:47 saved pb_actb_poll_3.html (21502)
+09:54:47 pb_actb: poll 3 status "Running Current time 30 October 2026, 05:54:47 Time since su"
+09:54:49 saved pb_gapdh_nt_poll_4.html (21502)
+09:54:49 pb_gapdh_nt: poll 4 status "Running Current time 30 October 2026, 05:54:49 Time since su"
+09:54:50 saved pb_bad_poll_2.html (21502)
+09:54:50 pb_bad: poll 2 status "Running Current time 30 October 2026, 05:54:50 Time since su"
+09:54:52 saved pb_random_poll_3.html (21502)
+09:54:52 pb_random: poll 3 status "Running Current time 30 October 2026, 05:54:52 Time since su"
+09:54:53 saved pb_actb_poll_4.html (21502)
+09:54:53 pb_actb: poll 4 status "Running Current time 30 October 2026, 05:54:53 Time since su"
+09:54:54 saved pb_gapdh_nt_poll_5.html (21502)
+09:54:54 pb_gapdh_nt: poll 5 status "Running Current time 30 October 2026, 05:54:54 Time since su"
+09:54:55 saved pb_bad_poll_3.html (21502)
+09:54:55 pb_bad: poll 3 status "Running Current time 30 October 2026, 05:54:55 Time since su"
+09:54:57 saved pb_random_poll_4.html (21502)
+09:54:57 pb_random: poll 4 status "Running Current time 30 October 2026, 05:54:57 Time since su"
+09:54:58 saved pb_actb_poll_5.html (55775)
+09:54:58 pb_actb: poll 5 status "None"
+09:54:58 saved pb_actb_final.html (55775)
+09:54:58 pb_actb: final after 27s pairs=1
+09:54:59 saved pb_gapdh_nt_poll_6.html (21502)
+09:54:59 pb_gapdh_nt: poll 6 status "Running Current time 30 October 2026, 05:54:59 Time since su"
+09:55:01 saved pb_bad_poll_4.html (21502)
+09:55:01 pb_bad: poll 4 status "Running Current time 30 October 2026, 05:55:01 Time since su"
+09:55:02 saved pb_random_poll_5.html (21502)
+09:55:02 pb_random: poll 5 status "Running Current time 30 October 2026, 05:55:02 Time since su"
+09:55:04 saved pb_gapdh_nt_poll_7.html (21502)
+09:55:04 pb_gapdh_nt: poll 7 status "Running Current time 30 October 2026, 05:55:04 Time since su"
+09:55:06 saved pb_bad_poll_5.html (37324)
+09:55:06 pb_bad: poll 5 status "None"
+09:55:06 saved pb_bad_final.html (37324)
+09:55:06 pb_bad: final after 27s pairs=1
+09:55:07 saved pb_random_poll_6.html (21502)
+09:55:07 pb_random: poll 6 status "Running Current time 30 October 2026, 05:55:07 Time since su"
+09:55:10 saved pb_gapdh_nt_poll_8.html (21502)
+09:55:10 pb_gapdh_nt: poll 8 status "Running Current time 30 October 2026, 05:55:10 Time since su"
+09:55:12 saved pb_random_poll_7.html (21502)
+09:55:12 pb_random: poll 7 status "Running Current time 30 October 2026, 05:55:12 Time since su"
+09:55:15 saved pb_gapdh_nt_poll_9.html (21502)
+09:55:15 pb_gapdh_nt: poll 9 status "Running Current time 30 October 2026, 05:55:15 Time since su"
+09:55:18 saved pb_random_poll_8.html (21502)
+09:55:18 pb_random: poll 8 status "Running Current time 30 October 2026, 05:55:18 Time since su"
+09:55:20 saved pb_gapdh_nt_poll_10.html (21502)
+09:55:20 pb_gapdh_nt: poll 10 status "Running Current time 30 October 2026, 05:55:20 Time since su"
+09:55:23 saved pb_random_poll_9.html (21502)
+09:55:23 pb_random: poll 9 status "Running Current time 30 October 2026, 05:55:23 Time since su"
+09:55:25 saved pb_gapdh_nt_poll_11.html (21502)
+09:55:25 pb_gapdh_nt: poll 11 status "Running Current time 30 October 2026, 05:55:25 Time since su"
+09:55:28 saved pb_random_poll_10.html (37422)
+09:55:28 pb_random: poll 10 status "None"
+09:55:28 saved pb_random_final.html (37422)
+09:55:28 pb_random: final after 53s pairs=1
+09:55:30 saved pb_gapdh_nt_poll_12.html (21502)
+09:55:30 pb_gapdh_nt: poll 12 status "Running Current time 30 October 2026, 05:55:30 Time since su"
+09:55:36 saved pb_gapdh_nt_poll_13.html (21502)
+09:55:36 pb_gapdh_nt: poll 13 status "Running Current time 30 October 2026, 05:55:35 Time since su"
+09:55:41 saved pb_gapdh_nt_poll_14.html (21502)
+09:55:41 pb_gapdh_nt: poll 14 status "Running Current time 30 October 2026, 05:55:41 Time since su"
+09:55:46 saved pb_gapdh_nt_poll_15.html (21502)
+09:55:46 pb_gapdh_nt: poll 15 status "Running Current time 30 October 2026, 05:55:46 Time since su"
+09:55:51 saved pb_gapdh_nt_poll_16.html (21502)
+09:55:51 pb_gapdh_nt: poll 16 status "Running Current time 30 October 2026, 05:55:51 Time since su"
+09:55:56 saved pb_gapdh_nt_poll_17.html (21502)
+09:55:56 pb_gapdh_nt: poll 17 status "Running Current time 30 October 2026, 05:55:56 Time since su"
+09:56:01 saved pb_gapdh_nt_poll_18.html (21502)
+09:56:01 pb_gapdh_nt: poll 18 status "Running Current time 30 October 2026, 05:56:01 Time since su"
+09:56:07 saved pb_gapdh_nt_poll_19.html (21503)
+09:56:07 pb_gapdh_nt: poll 19 status "Running Current time 30 October 2026, 05:56:07 Time since su"
+09:56:12 saved pb_gapdh_nt_poll_20.html (21503)
+09:56:12 pb_gapdh_nt: poll 20 status "Running Current time 30 October 2026, 05:56:12 Time since su"
+09:56:17 saved pb_gapdh_nt_poll_21.html (21503)
+09:56:17 pb_gapdh_nt: poll 21 status "Running Current time 30 October 2026, 05:56:17 Time since su"
+09:56:22 saved pb_gapdh_nt_poll_22.html (21503)
+09:56:22 pb_gapdh_nt: poll 22 status "Running Current time 30 October 2026, 05:56:22 Time since su"
+09:56:27 saved pb_gapdh_nt_poll_23.html (21503)
+09:56:27 pb_gapdh_nt: poll 23 status "Running Current time 30 October 2026, 05:56:27 Time since su"
+09:56:33 saved pb_gapdh_nt_poll_24.html (21503)
+09:56:33 pb_gapdh_nt: poll 24 status "Running Current time 30 October 2026, 05:56:33 Time since su"
+09:56:38 saved pb_gapdh_nt_poll_25.html (21503)
+09:56:38 pb_gapdh_nt: poll 25 status "Running Current time 30 October 2026, 05:56:38 Time since su"
+09:56:43 saved pb_gapdh_nt_poll_26.html (21503)
+09:56:43 pb_gapdh_nt: poll 26 status "Running Current time 30 October 2026, 05:56:43 Time since su"
+09:56:48 saved pb_gapdh_nt_poll_27.html (21503)
+09:56:48 pb_gapdh_nt: poll 27 status "Running Current time 30 October 2026, 05:56:48 Time since su"
+09:56:53 saved pb_gapdh_nt_poll_28.html (21503)
+09:56:53 pb_gapdh_nt: poll 28 status "Running Current time 30 October 2026, 05:56:53 Time since su"
+09:56:58 saved pb_gapdh_nt_poll_29.html (71668)
+09:56:58 pb_gapdh_nt: poll 29 status "None"
+09:56:58 saved pb_gapdh_nt_final.html (71668)
+09:56:58 pb_gapdh_nt: final after 152s pairs=1
+10:12:29 bind_megaoff_refseqrna: READY after 1096 s (70 polls); hits: yes
+10:12:32 saved bind_megaoff_refseqrna_result_JSON2_S.txt (139779)
+10:14:38 align_put: still WAITING after 10 min
+10:14:42 align_put_short: still WAITING after 10 min
+10:22:02 bind_refseqrna_human: still WAITING after 28 min
+10:22:07 bind_refseqrna_all: still WAITING after 28 min
+10:22:09 bind_corent_all: still WAITING after 28 min
