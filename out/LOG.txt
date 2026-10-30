@@ -1,0 +1,21 @@
+bind_put.html: 43763 chars
+bind: put status 200 rid=E8T8FGTU014 rtoe=30
+bind_info_first.txt: 24631 chars
+bind_result_JSON2_S.txt: 24798 chars
+bind_result_Text.txt: 24785 chars
+bl2seq_subjects_put.html: 43381 chars
+bl2seq_subjects: put status 200 rid=None rtoe=None
+bl2seq_spec_put.html: 43489 chars
+bl2seq_spec: put status 200 rid=None rtoe=None
+bl2seq_short_put.html: 43340 chars
+bl2seq_short: put status 200 rid=None rtoe=None
+pb_form.html: 105489 chars
+pb form inputs: {"PRIMER5_START": "", "PRIMER5_END": "", "PRIMER3_START": "", "PRIMER3_END": "", "PRIMER_LEFT_INPUT": "", "PRIMER_RIGHT_INPUT": "", "PRIMER_NUM_RETURN": "", "PRIMER_MIN_TM": "", "PRIMER_OPT_TM": "", "PRIMER_MAX_TM": "", "PRIMER_MAX_DIFF_TM": "", "ORGANISM": "Homo sapien (taxid:9606)", "ENTREZ_QUERY": "", "MAX_TARGET_SIZE": "", "NUM_TARGETS": "", "NUM_TARGETS_WITH_PRIMERS": "", "MAX_TARGET_PER_TEMPLATE": "", "PRODUCT_MIN_TM": "", "PRODUCT_OPT_TM": "", "PRODUCT_MAX_TM": "", "PRIMER_MIN_SIZE": "", "PRIMER_OPT_SIZE": "", "PRIMER_MAX_SIZE": "", "PRIMER_MIN_GC": "", "PRIMER_MAX_GC": "", "GC_CLAMP": "", "POLYX": "", "PRIMER_MAX_END_STABILITY": "", "PRIMER_MAX_END_GC": "", "PRIMER_MAX_TEMPLATE_MISPRIMING_TH": "", "PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING_TH": "", "PRIMER_MAX_SELF_ANY_TH": "", "PRIMER_MAX_SELF_END_TH": "", "PRIMER_PAIR_MAX_COMPL_ANY_TH": "", "PRIMER_PAIR_MAX_COMPL_END_TH": "", "PRIMER_MAX_HAIRPIN_TH": "", "PRIMER_MAX_TEMPLATE_MISPRIMING": "", "PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING": "", "SELF_ANY": "", "SELF_END": "", "PRIMER_PAIR_MAX_COMPL_ANY": "", "PRIMER_PAIR_MAX_COMPL_END": "", "EXCLUDED_REGIONS": "", "OVERLAP": "", "MONO_CATIONS": "", "DIVA_CATIONS": "", "CON_DNTPS": "", "CON_ANEAL_OLIGO": "", "PRIMER_INTERNAL_OLIGO_MIN_SIZE": "", "PRIMER_INTERNAL_OLIGO_OPT_SIZE": "", "PRIMER_INTERNAL_OLIGO_MAX_SIZE": "", "PRIMER_INTERNAL_OLIGO_MIN_TM": "", "PRIMER_INTERNAL_OLIGO_OPT_TM": "", "PRIMER_INTERNAL_OLIGO_MAX_TM": "", "PRIMER_INTERNAL_OLIGO_MIN_GC": "", "PRIMER_INTERNAL_OLIGO_OPT_GC_PERCENT": "", "PRIMER_INTERNAL_OLIGO_MAX_GC": "", "LINK_LOC": "", "SVIEWER_DATA_KEY": "", "CMD": "request", "NUM_DIFFS": "0", "NUM_OPTS_DIFFS": "0"}
+pb selects: PRIMER_ON_SPLICE_SITE, SEARCHMODE, PRIMER_SPECIFICITY_DATABASE, TOTAL_PRIMER_SPECIFICITY_MISMATCH, PRIMER_3END_SPECIFICITY_MISMATCH, MISMATCH_REGION_LENGTH, TOTAL_MISMATCH_IGNORE, HITSIZE, EVALUE, WORD_SIZE, MAX_CANDIDATE_PRIMER, SALT_FORMULAR, TM_METHOD, PRIMER_MISPRIMING_LIBRARY
+pb_submit.html: 21309 chars
+pb submit status 200 url https://www.ncbi.nlm.nih.gov/tools/primer-blast/primertool.cgi
+pb headers {"Access-Control-Allow-Methods": "POST, GET, PUT, OPTIONS, PATCH, DELETE", "Access-Control-Allow-Origin": "", "Access-Control-Allow-Credentials": "true", "Access-Control-Allow-Headers": "Origin,X-Accept-Charset,X-Accept,Content-Type,X-Requested-With,NCBI-SID,NCBI-PHID", "Content-Type": "text/html"}
+pb job_key=qqB1c8m7xBPjLd4o00j6GqlT6yiEQPA1hQ
+pb_poll_first.html: 49515 chars
+pb_result.html: 49515 chars
+pb polls done, result has "Primer pair 1": True, products: 26
