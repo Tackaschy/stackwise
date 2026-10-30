@@ -100,3 +100,8 @@ a.btn { text-decoration: none; color: inherit; }
 a.btn.primary { color: var(--accent-fg); }
 .btn[disabled] { opacity: 0.55; cursor: default; }
 .amp div .btn { padding: 3px 9px; font-size: 12px; }
+
+.pb-sum { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.pb-sum div { background: var(--panel); padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; }
+.pb-sum b { font-family: var(--f-mono); font-size: 16px; }
+.genes { display: flex; flex-wrap: wrap; gap: 6px; }

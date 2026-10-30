@@ -9,8 +9,9 @@
             scoring), with a button that opens NCBI's "Align two sequences" page. */
 const IS_DESKTOP = !!(window.__TAURI__ && window.__TAURI__.core && window.__TAURI__.core.invoke);
 const BL = Object.assign({ mode: 'bind', db: 'core_nt', org: '', pbdb: 'refseq_mrna', email: '' }, store.get('blast', {}));
-const saveBL = () => store.set('blast', { mode: BL.mode, db: BL.db, org: BL.org, pbdb: BL.pbdb, email: BL.email });
+const saveBL = () => store.set('blast', { mode: BL.mode, db: BL.db, org: BL.org, pbdb: BL.pbdb, email: BL.email, pbmax: BL.pbmax });
 const BJ = new Map();      // job key -> job
+const PJ = new Map();      // Primer-BLAST job key -> job
 const openHits = new Set(); // expanded alignment rows
 const BLAST_DBS = [['core_nt', 'Core nucleotide (core_nt)'], ['refseq_rna', 'RefSeq RNA (refseq_rna)'], ['refseq_genomic', 'RefSeq genomic (refseq_genomic)'], ['nt', 'Nucleotide collection (nt)']];
 const PB_DBS = [['refseq_mrna', 'RefSeq mRNA'], ['refseq_representative_genomes', 'RefSeq representative genomes'], ['nt', 'Nucleotide collection (nt)']];
@@ -51,7 +52,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function ncbi(params) {
   const p = params.concat([['TOOL', 'stackwise']]);
   if (BL.email && /.+@.+\..+/.test(BL.email)) p.push(['EMAIL', BL.email.trim()]);
-  return window.__TAURI__.core.invoke('ncbi_blast', { params: p });
+  const put = p.some(([k, v]) => k === 'CMD' && v === 'Put');
+  return window.__TAURI__.core.invoke('ncbi_request', { endpointName: 'blast', method: put ? 'post' : 'get', params: p });
 }
 function ncbiError(html) {
   const m = html.match(/Message ID#\d+ Error:\s*([^<\n]+)/i) || html.match(/class="error"[^>]*>\s*([^<]+)/i);
@@ -72,11 +74,20 @@ async function runBlast(qs) {
     const rid = (html.match(/RID\s*=\s*([A-Z0-9-]+)/) || [])[1];
     if (!rid) throw new Error(ncbiError(html));
     job.rid = rid; job.rtoe = +((html.match(/RTOE\s*=\s*(\d+)/) || [])[1] || 20);
-    job.status = 'waiting'; refreshBlast(true);
-    await sleep(Math.max(10, Math.min(job.rtoe, 60)) * 1000);
+    job.status = 'waiting'; persistJobs(); refreshBlast(true);
+    await pollBlast(job);
+  } catch (e) {
+    if (job.cancelled) return;
+    job.status = 'error'; job.error = String(e && e.message || e).replace(/^Error:\s*/, '');
+  }
+  persistJobs(); refreshBlast(true);
+}
+async function pollBlast(job) {
+    const rid = job.rid;
+    await sleep(Math.max(10, Math.min(job.rtoe || 20, 60)) * 1000);
     for (;;) {
       if (job.cancelled) return;
-      if (Date.now() - job.started > 20 * 60 * 1000) throw new Error('NCBI took longer than 20 minutes. Try again later or open the search on NCBI.');
+      if (Date.now() - job.started > 90 * 60 * 1000) throw new Error('NCBI has not finished after 90 minutes. Try again later.');
       const info = await ncbi([['CMD', 'Get'], ['FORMAT_OBJECT', 'SearchInfo'], ['RID', rid]]);
       const st = ((info.match(/Status=(\w+)/) || [])[1] || 'UNKNOWN').toUpperCase();
       if (st === 'READY') {
@@ -90,11 +101,20 @@ async function runBlast(qs) {
     }
     if (job.cancelled) return;
     job.status = 'done'; job.finished = Date.now();
-  } catch (e) {
-    if (job.cancelled) return;
-    job.status = 'error'; job.error = String(e && e.message || e).replace(/^Error:\s*/, '');
+}
+function persistJobs() {
+  const keep = [...BJ.values()].filter(j => j.rid && (j.status === 'waiting' || j.status === 'done') && Date.now() - j.started < 30 * 3600 * 1000)
+    .map(j => ({ key: j.key, qs: j.qs, db: j.db, org: j.org, rid: j.rid, rtoe: j.rtoe, started: j.started, finished: j.finished, status: j.status }));
+  store.set('blastJobs', keep);
+}
+function resumeJobs() {
+  for (const j of store.get('blastJobs', [])) {
+    if (!j.rid || Date.now() - j.started > 30 * 3600 * 1000) continue;
+    const job = Object.assign({ results: null, error: null, cancelled: false }, j, { status: 'waiting', resumed: true });
+    BJ.set(job.key, job);
+    pollBlast(Object.assign(job, { rtoe: 1 })).then(() => {}, e => { job.status = 'error'; job.error = String(e && e.message || e); })
+      .finally(() => { persistJobs(); refreshBlast(true); });
   }
-  refreshBlast(true);
 }
 
 function parseBlast(text, qs) {
@@ -208,7 +228,8 @@ function blastOutHTML(qs) {
   const job = BJ.get(jobKey(qs));
   if (!job) return '';
   if (job.status === 'submitting') return `<div class="bl-status">${pill('neutral', 'Sending')}<span>Sending the search to NCBI…</span></div>`;
-  if (job.status === 'waiting') return `<div class="bl-status"><span class="spin" aria-hidden="true"></span><span>Running at NCBI · request <b class="mono">${esc(job.rid)}</b> · ${mmss(Date.now() - job.started)} elapsed (NCBI estimated ${job.rtoe} s). Checked every 15 s.</span><button class="btn ghost" data-bl="cancel">Stop waiting</button></div>`;
+  if (job.status === 'waiting') return `<div class="bl-status"><span class="spin" aria-hidden="true"></span><span>Running at NCBI · request <b class="mono">${esc(job.rid)}</b> · ${mmss(Date.now() - job.started)} elapsed (NCBI estimated ${job.rtoe} s). Checked every 15 s.</span><button class="btn ghost" data-bl="cancel">Stop waiting</button></div>
+    <p class="hint" style="margin:0">NCBI runs searches sent by programs in a separate, slower queue; it often takes 15–30 minutes. You can keep working, switch oligos, or quit Stackwise; the search keeps its place and the results load when you come back (NCBI keeps them for about a day).</p>`;
   if (job.status === 'error') return `<div class="bl-status err">${pill('bad', 'Failed')}<span>${esc(job.error)}</span></div>`;
   const res = job.results || [];
   const prods = sharedProducts(res);
@@ -237,8 +258,112 @@ function alignHTML(a, b) {
   };
   return `<p class="hint" style="margin:0">Both orientations, aligned here with blastn’s default scoring (match +2, mismatch −3, gap 5 + 2 per base). Plus / Minus similarity means the two oligos are complementary there; see the cross-dimer pane for its ΔG.</p>
     ${block(plus, '+')}${block(minus, '-')}
-    <div class="bench-row">${extLink(align2URL({ label: 'oligo_1', seq: a.seq }, { label: 'oligo_2', seq: b.seq }), 'Align on NCBI', 'btn primary')}<button class="btn ghost" data-bl="copyfasta">Copy both as FASTA</button>
-    <span class="hint">Opens NCBI’s “Align two sequences” page. If its boxes come up empty, paste the copied FASTA.</span></div>`;
+    <div class="bench-row"><button class="btn ghost" data-bl="copyfasta">Copy both as FASTA</button>${extLink(align2URL({ label: 'oligo_1', seq: a.seq }, { label: 'oligo_2', seq: b.seq }), 'Also open on NCBI', 'btn ghost')}</div>`;
+}
+
+// Reads a finished Primer-BLAST result page (primertool.cgi) into plain data.
+function parsePrimerBlast(html) {
+  const dec = s => s.replace(/&nbsp;?/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  const strip = s => dec(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+  const info = (html.match(/name="PRIMER_RESULTS_INFO"[^>]*value="([^"]*)"|value="([^"]*)"\s+name="PRIMER_RESULTS_INFO"/) || []).slice(1).find(Boolean) || '';
+  const msgs = [...html.matchAll(/<ul class="msg">([\s\S]*?)<\/ul>/g)].map(m => strip(m[1])).filter(Boolean);
+  const pairBlock = html.split('<div class="prPairInfo">')[1] || '';
+  const primers = [];
+  for (const m of pairBlock.matchAll(/<tr><th>(Forward|Reverse) primer<\/th><td>([ACGTN]+)<\/td><td>(\d+)<\/td><td>([\d.]+)<\/td><td>([\d.]+)<\/td><td>([\d.]+)<\/td><td>([\d.]+)<\/td><\/tr>/gi))
+    primers.push({ dir: m[1], seq: m[2], len: +m[3], tm: +m[4], gc: +m[5], selfAny: +m[6], self3: +m[7] });
+  const sections = [];
+  const re = /<div class="prPairTl">([^<]+)<\/div>\s*<hr\/>\s*<div class="prPairDtl">([\s\S]*?)<\/div>\s*<\/div>/g;
+  for (const m of pairBlock.matchAll(re)) {
+    const title = strip(m[1]), body = m[2], products = [];
+    let last = null;
+    for (const e of body.matchAll(/<a [^>]*>([^<]+)<\/a>([^\n<]*)\s*<pre>([\s\S]*?)<\/pre>/g)) {
+      const pre = dec(e[3]);
+      const size = +((pre.match(/product length = (\d+)/) || [])[1] || 0);
+      const binds = [];
+      const lines = pre.split('\n');
+      for (let k = 0; k < lines.length - 1; k++) {
+        const a = lines[k].match(/^(Forward primer|Reverse primer|Internal oligo)\s+(\d+)\s+([ACGTN]+)\s+(\d+)/);
+        const b = lines[k + 1].match(/^Template\s+(\d+)\s+(\S+)\s+(\d+)/);
+        if (a && b) {
+          const tmpl = b[2], mm = (tmpl.match(/[^.]/g) || []).length;
+          binds.push({ primer: a[1], pFrom: +a[2], seq: a[3], pTo: +a[4], tFrom: +b[1], tmpl, tTo: +b[3], minus: +b[1] > +b[3], mm, mm3: (tmpl.slice(-5).match(/[^.]/g) || []).length });
+        }
+      }
+      const p = { acc: strip(e[1]), desc: strip(e[2]), size, binds: binds.length ? binds : (last ? last.binds : []), sameAsAbove: !binds.length && !!last };
+      products.push(p); if (binds.length) last = p;
+    }
+    if (products.length || !/hidden\s*"/.test(m[0])) sections.push({ title, products });
+  }
+  const noPairs = !pairBlock;
+  return { info: strip(info), msgs, primers, sections: sections.filter(s => s.products.length), noPairs };
+}
+
+const pbPair = () => { const o = cur(), { p } = pickPartner(o); return p ? orderPair(o, p) : null; };
+const pbOrg = () => BL.org || 'Homo sapiens';
+function pbKey() { const pr = pbPair(); return pr ? [pr[0].seq, pr[1].seq, BL.pbdb, pbOrg().toLowerCase(), BL.pbmax || 4000, cond.na, cond.mg, cond.dntp, cond.oligo, cond.method].join('|') : ''; }
+async function runPrimerBlast() {
+  const pr = pbPair(); if (!pr) return;
+  const [f, r] = pr, key = pbKey();
+  const job = { key, f: { name: f.name, seq: f.seq }, r: { name: r.name, seq: r.seq }, db: BL.pbdb, org: pbOrg(), status: 'running', started: Date.now(), progress: 'Sending to NCBI…' };
+  PJ.set(key, job); refreshBlast(true);
+  const pb = (method, params) => window.__TAURI__.core.invoke('ncbi_request', { endpointName: 'primerblast', method, params });
+  try {
+    const data = { PRIMER_LEFT_INPUT: f.seq, PRIMER_RIGHT_INPUT: r.seq, ORGANISM: job.org, PRIMER_SPECIFICITY_DATABASE: job.db,
+      SEARCH_SPECIFIC_PRIMER: 'on', CMD: 'request', PAGE_TYPE: 'PrimerDesign', TOTAL_PRIMER_SPECIFICITY_MISMATCH: '1', PRIMER_3END_SPECIFICITY_MISMATCH: '1',
+      MISMATCH_REGION_LENGTH: '5', TOTAL_MISMATCH_IGNORE: '6', MAX_TARGET_SIZE: String(BL.pbmax || 4000), HITSIZE: '50000', EVALUE: '30000', WORD_SIZE: '7',
+      NUM_TARGETS_WITH_PRIMERS: '1000', MAX_TARGET_PER_TEMPLATE: '100',
+      MONO_CATIONS: String(cond.na), DIVA_CATIONS: String(cond.mg), CON_DNTPS: String(cond.dntp), CON_ANEAL_OLIGO: String(cond.oligo),
+      SALT_FORMULAR: cond.method === 'owczarzy' ? '2' : '1', TM_METHOD: '1' };
+    let page = await pb('multipart', Object.entries(data));
+    const jk = (page.match(/job_key=([A-Za-z0-9_\-]+)/) || [])[1];
+    const done = s => /PRIMER_RESULTS_INFO|class="prPairInfo"/.test(s);
+    if (!jk && !done(page)) throw new Error('Primer-BLAST did not accept the request.');
+    job.jobKey = jk; job.progress = 'Running at NCBI';
+    while (!done(page)) {
+      if (job.cancelled) return;
+      if (Date.now() - job.started > 15 * 60 * 1000) throw new Error('Primer-BLAST has not finished after 15 minutes. Try again later.');
+      refreshBlast(false);
+      await sleep(6000);
+      page = await pb('get', [['job_key', jk]]);
+      const txt = page.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+      if (!/Status\s+(Running|Submitted|Queued)/i.test(txt) && !done(page)) throw new Error((txt.match(/(Error[^.]{0,200}\.)/i) || [, 'Primer-BLAST stopped without results.'])[1]);
+      const pm = txt.match(/Progress Message (.{0,120}?)(?: Follow NCBI|$)/); job.progress = pm && pm[1].trim() ? pm[1].trim() : 'Running at NCBI';
+    }
+    if (job.cancelled) return;
+    job.res = parsePrimerBlast(page); job.status = 'done'; job.finished = Date.now();
+  } catch (e) {
+    if (job.cancelled) return;
+    job.status = 'error'; job.error = String(e && e.message || e).replace(/^Error:\s*/, '');
+  }
+  refreshBlast(true);
+}
+const geneOf = d => (d.match(/\(([A-Za-z0-9\-.]+)\)(?:,| transcript| mRNA| gene|$)/) || [])[1] || '';
+function pbOutHTML() {
+  const job = PJ.get(pbKey()); if (!job) return '';
+  if (job.status === 'running') return `<div class="bl-status"><span class="spin" aria-hidden="true"></span><span>${esc(job.progress)} · ${mmss(Date.now() - job.started)} elapsed</span><button class="btn ghost" data-bl="pbcancel">Stop waiting</button></div>`;
+  if (job.status === 'error') return `<div class="bl-status err">${pill('bad', 'Failed')}<span>${esc(job.error)}</span></div>`;
+  const R = job.res, prods = R.sections.flatMap(s => s.products.map(p => Object.assign({ section: s.title }, p)));
+  const link = job.jobKey ? extLink(`https://www.ncbi.nlm.nih.gov/tools/primer-blast/primertool.cgi?job_key=${enc(job.jobKey)}`, 'Full report on NCBI', 'btn ghost') : '';
+  let html = `<div class="bl-status">${pill(prods.length ? 'ok' : 'warn', 'Done')}<span>${esc(R.info || 'Search finished')} · ${mmss(job.finished - job.started)}</span>${link}</div>`;
+  if (!prods.length) return html + `<p class="empty">Primer-BLAST found no product for this pair in ${esc(PB_DBS.find(d => d[0] === job.db)?.[1] || job.db)}${job.org ? ' (' + esc(job.org) + ')' : ''}. If you expected one, check the organism and that the reverse primer is written 5′→3′ on the opposite strand.</p>`;
+  const perfect = prods.filter(p => p.binds.length >= 2 && p.binds.every(b => b.mm === 0));
+  const genes = new Map(); for (const p of prods) { const g = geneOf(p.desc) || p.acc; genes.set(g, (genes.get(g) || 0) + 1); }
+  const sizes = [...new Set(perfect.map(p => p.size))].sort((a, b) => a - b);
+  html += `<div class="pb-sum"><div><span class="hint">Products</span><b class="num">${prods.length}</b></div><div><span class="hint">Perfect matches</span><b class="num">${perfect.length}</b></div>
+    <div><span class="hint">Genes / templates</span><b class="num">${genes.size}</b></div><div><span class="hint">Perfect-match size${sizes.length > 1 ? 's' : ''}</span><b class="num">${sizes.length ? sizes.slice(0, 4).join(', ') + ' bp' : '—'}</b></div></div>
+    <div class="genes">${[...genes].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([g, n]) => `<span class="pill neutral">${esc(g)} · ${n}</span>`).join('')}</div>`;
+  const bindTxt = b => `<span class="dir ${b.minus ? 'rev' : 'fwd'}">${b.minus ? '←' : '→'}</span> <span class="num">${b.tFrom}–${b.tTo}</span> ${b.mm ? pill(b.mm3 ? 'bad' : 'warn', b.mm + ' mm' + (b.mm3 ? ', ' + b.mm3 + ' in 3′' : '')) : pill('ok', 'perfect')}`;
+  const rows = prods.slice(0, 150).map((p, n) => {
+    const id = `pb#${job.jobKey}#${n}`, open = openHits.has(id);
+    const used = p.binds.map(b => b.primer[0]).join('');
+    const kind = used === 'FR' || used === 'RF' ? '' : `<span class="pill warn">${used === 'FF' ? 'forward only' : used === 'RR' ? 'reverse only' : used}</span>`;
+    return `<tr data-hit="${esc(id)}" class="hitrow${open ? ' open' : ''}"><td class="nm" title="${esc(p.desc)}">${esc(p.desc)}</td><td>${extLink(nuccore(p.acc), esc(p.acc), 'acc')}</td><td class="n">${p.size.toLocaleString('en-US')}</td>
+      <td>${p.binds[0] ? bindTxt(p.binds[0]) : ''}</td><td>${p.binds[1] ? bindTxt(p.binds[1]) : ''} ${kind}</td></tr>` +
+      (open ? `<tr class="alnrow"><td colspan="5"><pre class="duplex">${p.binds.map(b => `<span class="lab">${b.primer.padEnd(15)} ${String(b.pFrom).padStart(5)}  </span>${colored(b.seq)}<span class="lab">  ${b.pTo}</span>\n<span class="lab">${'Template'.padEnd(15)} ${String(b.tFrom).padStart(5)}  </span>${b.tmpl.split('').map(c => c === '.' ? '<span class="lab">.</span>' : `<span class="b${c} hot">${c}</span>`).join('')}<span class="lab">  ${b.tTo}</span>`).join('\n\n')}</pre><p class="hint" style="margin:0">Dots are bases that match the primer; letters are template mismatches.</p></td></tr>` : '');
+  }).join('');
+  return html + `<div class="tablewrap"><table class="frag"><thead><tr><th>Template</th><th>Accession</th><th class="n">Product bp</th><th>First primer site</th><th>Second primer site</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${prods.length > 150 ? `<p class="hint">Showing 150 of ${prods.length} products; the full report on NCBI lists all.</p>` : ''}
+    <p class="hint" style="margin:0">Click a row to see where each primer binds. Products from mismatched sites, or from one primer alone, are the ones that can give extra bands.</p>`;
 }
 
 function blastPaneBody(o) {
@@ -258,6 +383,16 @@ function blastPaneBody(o) {
   if (mode === 'pair') {
     if (!p) return h + '<p class="empty">Add a second oligo to the library to check the pair.</p>';
     const [f, r] = pair;
+    if (IS_DESKTOP) {
+      const job = PJ.get(pbKey()), busy = job && job.status === 'running';
+      return h + `<div class="bl-form"><div class="field"><label for="bl-pbdb">Database</label><select id="bl-pbdb">${PB_DBS.map(([v, t]) => `<option value="${v}" ${BL.pbdb === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>${orgField}
+        <div class="field"><label for="bl-pbmax">Max product</label><input id="bl-pbmax" type="number" min="100" step="100" value="${BL.pbmax || 4000}"><i>bp</i></div></div>
+        <div class="bl-q"><div class="sq"><span class="eyebrow">Forward</span> <b>${esc(f.name)}</b> <span class="mono"><span class="lab">5′-</span>${colored(f.seq)}<span class="lab">-3′</span></span></div>
+        <div class="sq"><span class="eyebrow">Reverse</span> <b>${esc(r.name)}</b> <span class="mono"><span class="lab">5′-</span>${colored(r.seq)}<span class="lab">-3′</span></span></div></div>
+        <div class="bench-row"><button class="btn primary" data-bl="pbrun" ${busy ? 'disabled' : ''}>${job && job.status === 'done' ? 'Check again' : 'Check specificity'}</button>
+        <span class="hint">Runs NCBI Primer-BLAST on this pair with the reaction conditions from the top bar. Usually 30 s to 3 minutes.</span></div>
+        <div id="pb-out">${pbOutHTML()}</div>`;
+    }
     return h + `<div class="bl-form"><div class="field"><label for="bl-pbdb">Database</label><select id="bl-pbdb">${PB_DBS.map(([v, t]) => `<option value="${v}" ${BL.pbdb === v ? 'selected' : ''}>${t}</option>`).join('')}</select></div>${orgField}</div>
       <div class="bl-q"><div class="sq"><span class="eyebrow">Forward</span> <b>${esc(f.name)}</b> <span class="mono"><span class="lab">5′-</span>${colored(f.seq)}<span class="lab">-3′</span></span></div>
       <div class="sq"><span class="eyebrow">Reverse</span> <b>${esc(r.name)}</b> <span class="mono"><span class="lab">5′-</span>${colored(r.seq)}<span class="lab">-3′</span></span></div></div>
@@ -274,11 +409,14 @@ function blastPaneBody(o) {
   const job = BJ.get(jobKey(qs)), busy = job && (job.status === 'submitting' || job.status === 'waiting');
   return h + form + `<div class="bench-row"><button class="btn primary" data-bl="run" ${busy ? 'disabled' : ''}>${job && job.status === 'done' ? 'Search again' : qs.length > 1 ? 'BLAST both oligos' : 'BLAST this oligo'}</button>
       <div class="field"><label for="bl-email">Email for NCBI</label><input id="bl-email" class="wide" type="email" value="${esc(BL.email)}" placeholder="optional" autocomplete="off"></div>
-      <span class="hint">Sent to NCBI with the search (blastn tuned for short sequences, word size 7). Usually takes 30 s to a few minutes.</span></div>
+      <span class="hint">Sent to NCBI with the search (blastn tuned for short sequences, word size 7). NCBI’s queue for app searches is slow, often 15–30 minutes; for a primer pair, Primer pair specificity answers in about a minute.</span></div>
     <div id="bl-out">${blastOutHTML(qs)}</div>`;
 }
 function blastSummary(o) {
-  if (BL.mode !== 'bind' || !IS_DESKTOP) return '';
+  if (!IS_DESKTOP) return '';
+  if (BL.mode === 'pair') { const j = PJ.get(pbKey()); if (!j) return ''; if (j.status === 'running') return pill('neutral', 'running…'); if (j.status === 'error') return pill('bad', 'failed');
+    const n = j.res.sections.reduce((a, s) => a + s.products.length, 0); return pill(n ? 'ok' : 'warn', n + ' product' + (n === 1 ? '' : 's')); }
+  if (BL.mode !== 'bind') return '';
   const { p } = pickPartner(o), pair = p ? orderPair(o, p) : [o];
   const job = BJ.get(jobKey(pair.map((x, k) => ({ label: `oligo_${k + 1}`, seq: x.seq }))));
   if (!job) return '';
@@ -292,13 +430,15 @@ function refreshBlast(full) {
   const sum = sec.querySelector('.sum'); if (sum) sum.innerHTML = blastSummary(cur());
   if (closed.has('blast')) return;
   if (full) { const body = sec.querySelector('.pane-b'); if (body) body.innerHTML = blastPaneBody(cur()); return; }
+  const pbo = $('pb-out'); if (pbo) pbo.innerHTML = pbOutHTML();
   const out = $('bl-out'); if (!out) return;
   const o = cur(), { p } = pickPartner(o), pair = p ? orderPair(o, p) : [o];
   out.innerHTML = blastOutHTML(pair.map((x, k) => ({ label: `oligo_${k + 1}`, name: x.name, seq: x.seq })));
 }
-setInterval(() => { for (const j of BJ.values()) if (j.status === 'waiting') { refreshBlast(false); break; } }, 1000);
+setInterval(() => { if ([...BJ.values()].some(j => j.status === 'waiting') || [...PJ.values()].some(j => j.status === 'running')) refreshBlast(false); }, 1000);
 
 function wireBlast() {
+  if (IS_DESKTOP) resumeJobs();
   const panes = $('panes');
   panes.addEventListener('click', e => {
     const m = e.target.closest('[data-bl-mode]');
@@ -308,7 +448,9 @@ function wireBlast() {
       const o = cur(), { p } = pickPartner(o), pair = p ? orderPair(o, p) : [o];
       const qs = pair.map((x, k) => ({ label: `oligo_${k + 1}`, name: x.name || `Oligo ${k + 1}`, seq: x.seq }));
       if (b.dataset.bl === 'run') { const em = $('bl-email'); if (em) { BL.email = em.value.trim(); saveBL(); } runBlast(qs); }
-      else if (b.dataset.bl === 'cancel') { const j = BJ.get(jobKey(qs)); if (j) { j.cancelled = true; BJ.delete(j.key); } refreshBlast(true); }
+      else if (b.dataset.bl === 'cancel') { const j = BJ.get(jobKey(qs)); if (j) { j.cancelled = true; BJ.delete(j.key); persistJobs(); } refreshBlast(true); }
+      else if (b.dataset.bl === 'pbrun') runPrimerBlast();
+      else if (b.dataset.bl === 'pbcancel') { const j = PJ.get(pbKey()); if (j) { j.cancelled = true; PJ.delete(j.key); } refreshBlast(true); }
       else if (b.dataset.bl === 'copyfasta') copy(fasta(qs.map(q => ({ label: q.name.replace(/\s+/g, '_'), seq: q.seq }))), 'Both oligos copied as FASTA');
       return;
     }
@@ -322,6 +464,7 @@ function wireBlast() {
     else if (t.id === 'bl-pbdb') { BL.pbdb = t.value; saveBL(); refreshBlast(true); }
     else if (t.id === 'bl-org') { BL.org = t.value.trim(); saveBL(); refreshBlast(true); }
     else if (t.id === 'bl-email') { BL.email = t.value.trim(); saveBL(); }
+    else if (t.id === 'bl-pbmax') { const v = parseInt(t.value, 10); if (v >= 100) { BL.pbmax = v; saveBL(); refreshBlast(true); } }
   });
   panes.addEventListener('input', e => { if (e.target.id === 'bl-org') { BL.org = e.target.value.trim(); saveBL(); } });
   panes.addEventListener('keydown', e => { if (e.target.id === 'bl-org' && e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
