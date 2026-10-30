@@ -53,7 +53,8 @@ const PANES = [
 let order = store.get('order', PANES.map(p => p.id)).filter(id => PANES.some(p => p.id === id));
 PANES.forEach(p => { if (!order.includes(p.id)) order.push(p.id); });
 let closed = new Set(store.get('closed', []));
-let wide = new Set(store.get('wide', ['stab', 'blast']));
+let wide = new Set(store.get('wide', ['blast']));
+if (!store.get('stabNarrow', false)) { wide.delete('stab'); store.set('stabNarrow', true); }
 if (!store.get('seenBlast', false)) { wide.add('blast'); store.set('seenBlast', true); }
 const DRAFT = '__draft';
 let draft = null;
@@ -246,7 +247,7 @@ function meltChart(seq, th) {
 function stabChart(seq) {
   const w = S.windows(seq, cond, 5);
   if (!w.length) return '<p class="empty">Needs at least 5 nt.</p>';
-  const W = Math.max(360, w.length * 14 + 60), H = 200, l = 40, r = 10, t = 12, b = 26;
+  const W = Math.max(300, w.length * 18 + 54), H = 170, l = 40, r = 10, t = 12, b = 26;
   const minG = Math.min(-10, ...w), Yv = v => t + (v / minG) * (H - t - b);
   const bw = (W - l - r) / w.length;
   let g = '';
@@ -257,7 +258,7 @@ function stabChart(seq) {
   }).join('');
   const ticks = w.map((v, k) => (k % 5 === 0 || k === w.length - 1) ? `<text x="${l + k * bw + bw / 2}" y="${H - b + 14}" text-anchor="middle">${k + 1}</text>` : '').join('');
   const lim = `<line x1="${l}" x2="${W - r}" y1="${Yv(-9)}" y2="${Yv(-9)}" stroke="var(--bad)" stroke-dasharray="4 3"/><text x="${W - r}" y="${Yv(-9) - 4}" text-anchor="end" style="fill:var(--bad)">−9 limit</text>`;
-  return `<div style="overflow-x:auto"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 560)}px;max-width:${Math.max(W * 1.4, 620)}px" role="img" aria-label="Pentamer duplex stability along the sequence">${g}${bars}${lim}<line class="ax" x1="${l}" x2="${W - r}" y1="${Yv(0)}" y2="${Yv(0)}"/>${ticks}</svg></div>`;
+  return `<div style="overflow-x:auto"><svg class="chart" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="width:${W}px;max-width:none;height:${H}px" role="img" aria-label="Pentamer duplex stability along the sequence">${g}${bars}${lim}<line class="ax" x1="${l}" x2="${W - r}" y1="${Yv(0)}" y2="${Yv(0)}"/>${ticks}</svg></div>`;
 }
 
 /* ---------- oligo analysis ---------- */
