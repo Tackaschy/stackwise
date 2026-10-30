@@ -133,10 +133,11 @@ textarea.seq:focus { outline: none; border-color: var(--accent); }
 .pill.ok { background: var(--ok-soft); color: var(--ok); }
 .pill.warn { background: var(--warn-soft); color: var(--warn); }
 .pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.crit { background: var(--bad); color: var(--panel); }
 .pill.neutral { background: var(--sunk); color: var(--muted); }
 
 .struct { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.struct.ok { border-left: 3px solid var(--ok); } .struct.warn { border-left: 3px solid var(--warn); } .struct.bad { border-left: 3px solid var(--bad); }
+.struct.ok { border-left: 3px solid var(--ok); } .struct.warn { border-left: 3px solid var(--warn); } .struct.bad { border-left: 3px solid var(--bad); } .struct.crit { border-left: 6px solid var(--bad); } .struct.crit .struct-h { background: var(--bad-soft); }
 .struct-h { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding: 7px 10px; background: var(--sunk); font-size: 12px; color: var(--muted); }
 .struct-h b { font-family: var(--f-mono); color: var(--fg); font-size: 13px; }
 .duplex { font-family: var(--f-mono); font-size: 13px; line-height: 1.35; padding: 8px 10px; overflow-x: auto; white-space: pre; margin: 0; }

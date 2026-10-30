@@ -1,7 +1,7 @@
 {
   "name": "stackwise",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Oligo thermodynamics bench: nearest-neighbor Tm, hairpins, dimers and primer design on double-stranded sequences",
   "scripts": {
     "build-web": "node scripts/build-web.mjs",

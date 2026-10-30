@@ -63,9 +63,37 @@ const cur = () => (sel === DRAFT && draft) || lib.find(o => o.id === sel) || lib
 const byId = id => id === DRAFT ? draft : lib.find(o => o.id === id);
 
 /* ---------- severity rules ---------- */
+// Conservative limits (kcal/mol at the ΔG temperature). Four grades, each step needing a more negative ΔG:
+// ok > first limit ≥ warn > second ≥ bad > third ≥ crit. A 3′ end inside the structure uses the stricter set,
+// because a polymerase can extend it.
+const STRUCT_LIMITS = {
+  hairpin: { end3: [-1, -2, -3], inner: [-2, -3, -4.5] },
+  dimer: { end3: [-3, -5, -7], inner: [-5, -7, -9] }
+};
+const GRADES = ['ok', 'warn', 'bad', 'crit'];
+const GRADE_LABEL = { ok: 'Negligible', warn: 'Moderate', bad: 'Strong', crit: 'Severe' };
+// Share of strands held in the structure at the ΔG temperature and oligo concentration.
+// Hairpin: f = 1 / (1 + e^(ΔG/RT)). Dimer: solves the binding equilibrium (self: 2A ⇌ A₂, cross: A + B ⇌ AB, equal amounts).
+function boundFraction(dG, kind) {
+  const RT = 1.98720425864083e-3 * (cond.temp + 273.15), Ct = Math.max(cond.oligo, 1e-6) * 1e-9;
+  const x = Math.min(dG / RT, 700);
+  if (kind === 'hairpin') return 1 / (1 + Math.exp(x));
+  const K = Math.exp(-x);
+  if (kind === 'self') { const free = 2 * Ct / (1 + Math.sqrt(1 + 8 * K * Ct)); return 1 - free / Ct; }
+  const free = 2 * Ct / (1 + Math.sqrt(1 + 4 * K * Ct)); return 1 - free / Ct;
+}
 const rateStruct = (dG, end3, kind) => {
-  const lim = kind === 'hairpin' ? (end3 ? [-2, -4] : [-3, -6]) : (end3 ? [-5, -8] : [-6, -9]);
-  return dG > lim[0] ? 'ok' : dG > lim[1] ? 'warn' : 'bad';
+  const lim = STRUCT_LIMITS[kind === 'hairpin' ? 'hairpin' : 'dimer'][end3 ? 'end3' : 'inner'];
+  let g = dG > lim[0] ? 0 : dG > lim[1] ? 1 : dG > lim[2] ? 2 : 3;
+  const f = boundFraction(dG, kind);
+  if (kind === 'hairpin') { if (f >= 0.5) g = Math.max(g, 1); if (f >= 0.9 && end3) g = Math.max(g, 2); }
+  else { if (f >= 0.01) g = Math.max(g, 1); if (f >= 0.1) g = Math.max(g, 2); if (f >= 0.3) g = Math.max(g, 3); }
+  return GRADES[g];
+};
+const fracText = (dG, kind) => {
+  const f = boundFraction(dG, kind) * 100;
+  const v = f >= 99.95 ? '>99.9' : f < 0.1 ? '<0.1' : f < 10 ? f.toFixed(1) : f.toFixed(0);
+  return kind === 'hairpin' ? `≈${v}% folded at ${cond.temp} °C` : `≈${v}% of strands paired at ${cond.temp} °C, ${cond.oligo} nM`;
 };
 const tmClass = tm => tm >= 52 && tm <= 65 ? 'ok' : tm >= 45 && tm <= 72 ? 'warn' : 'bad';
 const pill = (st, t) => `<span class="pill ${st}">${t}</span>`;
@@ -214,7 +242,7 @@ function dimerCard(d, A, B, kind) {
   const flags = [];
   if (d.end3A) flags.push(kind === 'self' ? '3′ end' : '3′ of this oligo');
   if (d.end3B && kind !== 'self') flags.push('3′ of partner');
-  return `<div class="struct ${st}"><div class="struct-h"><span>ΔG <b>${fx(d.dG, 2)}</b> kcal/mol</span><span>ΔH <b>${fx(d.dH, 1)}</b></span><span>ΔS <b>${fx(d.dS, 1)}</b></span><span>${d.pairs.length} bp</span>${flags.map(f => `<span class="pill bad">${f}</span>`).join('')}<span class="pill ${st}" style="margin-left:auto">${st === 'ok' ? 'Negligible' : st === 'warn' ? 'Moderate' : 'Strong'}</span></div>${duplexHTML(A, Y, d.pairs, { hotTop, hotBot })}</div>`;
+  return `<div class="struct ${st}"><div class="struct-h"><span>ΔG <b>${fx(d.dG, 2)}</b> kcal/mol</span><span>ΔH <b>${fx(d.dH, 1)}</b></span><span>ΔS <b>${fx(d.dS, 1)}</b></span><span>${d.pairs.length} bp</span>${flags.map(f => `<span class="pill bad">${f}</span>`).join('')}<span class="hint">${fracText(d.dG, kind)}</span><span class="pill ${st}" style="margin-left:auto">${GRADE_LABEL[st]}</span></div>${duplexHTML(A, Y, d.pairs, { hotTop, hotBot })}</div>`;
 }
 function hairpinCard(h, s) {
   const st = rateStruct(h.dG, h.end3, 'hairpin');
@@ -222,7 +250,7 @@ function hairpinCard(h, s) {
   const pairs = h.pairs.map(([i, j]) => [i, n - 1 - j]);
   const [iK, jK] = h.pairs[h.pairs.length - 1];
   const loop = s.slice(iK + 1, jK);
-  return `<div class="struct ${st}"><div class="struct-h"><span>ΔG <b>${fx(h.dG, 2)}</b> kcal/mol</span><span>Tm <b>${fx(h.tm, 1)}</b> °C</span><span>${h.pairs.length} bp stem · ${loop.length} nt loop</span>${h.end3 ? '<span class="pill bad">3′ end in stem</span>' : ''}<span class="pill ${st}" style="margin-left:auto">${st === 'ok' ? 'Negligible' : st === 'warn' ? 'Moderate' : 'Strong'}</span></div>${duplexHTML(s.slice(0, iK + 1), Y.slice(0, n - jK), pairs, { loop, hotBot: new Set([0, 1, 2]), labels: ['5′', '', '3′', ''] })}</div>`;
+  return `<div class="struct ${st}"><div class="struct-h"><span>ΔG <b>${fx(h.dG, 2)}</b> kcal/mol</span><span>Tm <b>${fx(h.tm, 1)}</b> °C</span><span>${h.pairs.length} bp stem · ${loop.length} nt loop</span>${h.end3 ? '<span class="pill bad">3′ end in stem</span>' : ''}<span class="hint">${fracText(h.dG, 'hairpin')}</span><span class="pill ${st}" style="margin-left:auto">${GRADE_LABEL[st]}</span></div>${duplexHTML(s.slice(0, iK + 1), Y.slice(0, n - jK), pairs, { loop, hotBot: new Set([0, 1, 2]), labels: ['5′', '', '3′', ''] })}</div>`;
 }
 
 /* ---------- charts ---------- */
@@ -287,8 +315,8 @@ function checks(o, r) {
   add(w3 > -9 ? 'ok' : 'warn', '3′ end stability', 'ΔG of the 3′ pentamer above −9 kcal/mol', fx(w3, 2));
   add(r.rep.runs.length ? 'warn' : 'ok', 'Single-base runs', 'No run of 4 or more of one base', r.rep.runs.length ? r.rep.runs.map(x => x.seq).join(', ') : 'none');
   add(r.rep.di.length ? 'warn' : 'ok', 'Dinucleotide repeats', 'No dinucleotide repeated 4 or more times', r.rep.di.length ? r.rep.di.map(x => x.seq).join(', ') : 'none');
-  if (r.hp) { const h = r.hp[0]; add(h ? rateStruct(h.dG, h.end3, 'hairpin') : 'ok', 'Hairpins', 'ΔG above −2 (3′) / −3 kcal/mol (internal)', h ? fx(h.dG, 2) : 'none'); }
-  if (r.sd) { const d = r.sd[0]; add(d ? rateStruct(d.dG, d.end3A || d.end3B, 'self') : 'ok', 'Self-dimers', 'ΔG above −5 (3′) / −6 kcal/mol (internal)', d ? fx(d.dG, 2) : 'none'); }
+  if (r.hp) { const h = r.hp[0]; add(h ? rateStruct(h.dG, h.end3, 'hairpin') : 'ok', 'Hairpins', 'ΔG above −1 (3′ end in stem) / −2 kcal/mol (internal); more negative is graded harder', h ? fx(h.dG, 2) : 'none'); }
+  if (r.sd) { const d = r.sd[0]; add(d ? rateStruct(d.dG, d.end3A || d.end3B, 'self') : 'ok', 'Self-dimers', 'ΔG above −3 (3′ end paired) / −5 kcal/mol (internal); more negative is graded harder', d ? fx(d.dG, 2) : 'none'); }
   return out;
 }
 
@@ -546,7 +574,7 @@ function paneBody(id, o, r) {
       <tr><td>Self-complementary</td><td>${th.sym ? 'yes (Ct used, not Ct/4)' : 'no'}</td></tr></table>`;
   }
   if (id === 'checks') {
-    return `<div class="checks">${checks(o, r).map(c => `<div class="chk"><span class="pill ${c.st}">${c.st === 'ok' ? 'Pass' : c.st === 'warn' ? 'Check' : 'Fail'}</span><div><div>${c.name}</div><div class="d">${c.detail}</div></div><div class="val">${esc(c.val)}</div></div>`).join('')}</div>`;
+    return `<div class="checks">${checks(o, r).map(c => `<div class="chk"><span class="pill ${c.st}">${c.st === 'ok' ? 'Pass' : c.st === 'warn' ? 'Check' : c.st === 'crit' ? 'Fail ✕' : 'Fail'}</span><div><div>${c.name}</div><div class="d">${c.detail}</div></div><div class="val">${esc(c.val)}</div></div>`).join('')}</div>`;
   }
   if (id === 'hairpin') {
     if (!r.hp) return tooLong;
@@ -577,7 +605,7 @@ function paneBody(id, o, r) {
 function paneSummary(id, r) {
   if (!r.th) return '';
   if (id === 'melt') return pill(tmClass(r.th.tm), 'Tm ' + fx(r.th.tm, 1) + ' °C');
-  if (id === 'checks') { const cs = checks(cur(), r), w = cs.filter(c => c.st !== 'ok').length; return pill(w ? (cs.some(c => c.st === 'bad') ? 'bad' : 'warn') : 'ok', w ? w + ' to review' : 'All pass'); }
+  if (id === 'checks') { const cs = checks(cur(), r), w = cs.filter(c => c.st !== 'ok').length; return pill(w ? (cs.some(c => c.st === 'crit') ? 'crit' : cs.some(c => c.st === 'bad') ? 'bad' : 'warn') : 'ok', w ? w + ' to review' : 'All pass'); }
   if (id === 'hairpin' && r.hp) return hpPill(r.hp[0] || false);
   if (id === 'self' && r.sd) return sdPill(r.sd[0] || false);
   if (id === 'blast') return blastSummary(cur());
