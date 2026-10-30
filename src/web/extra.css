@@ -75,3 +75,28 @@ table.frag .nm { font-weight: 600; max-width: 220px; overflow: hidden; text-over
 .draftbar .dtext { flex: 1 1 260px; }
 .draftbar .nudge, .draftbar .dact { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .draftbar .nudge .btn { padding: 4px 9px; font-family: var(--f-mono); }
+
+/* ---------- NCBI BLAST pane ---------- */
+.bl-ctl { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.bl-ctl .seg { flex-wrap: wrap; }
+.bl-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bl-form select, .field select { border: 0; background: transparent; padding: 4px 2px; font-size: 13px; max-width: 100%; }
+.bl-q { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.bl-q h3 { font-family: var(--f-display); font-size: 14px; margin: 6px 0 0; display: flex; gap: 8px; align-items: baseline; }
+.bl-q .sq { font-size: 13px; overflow-x: auto; white-space: nowrap; display: flex; gap: 8px; align-items: baseline; }
+.bl-status { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 13px; color: var(--muted); padding: 8px 10px; border-radius: 8px; background: var(--sunk); }
+.bl-status b { color: var(--fg); }
+.bl-status .btn { margin-left: auto; }
+.bl-status.err { background: var(--bad-soft); color: var(--fg); }
+.spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line-strong); border-top-color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .spin { animation: spin 0.9s linear infinite; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+tr.hitrow { cursor: pointer; }
+tr.hitrow.open td { background: var(--accent-soft); }
+tr.alnrow td { background: var(--sunk); white-space: normal; }
+a.acc { font-family: var(--f-mono); font-size: 12px; color: var(--accent); text-decoration: none; }
+a.acc:hover { text-decoration: underline; }
+a.btn { text-decoration: none; color: inherit; }
+a.btn.primary { color: var(--accent-fg); }
+.btn[disabled] { opacity: 0.55; cursor: default; }
+.amp div .btn { padding: 3px 9px; font-size: 12px; }

@@ -6,6 +6,7 @@ const tpl = r('app.template.html');
 const head = tpl.slice(0, tpl.indexOf('</style>'));
 let page = head + r('extra.css') + '</style>\n\n' + r('body.html');
 for (const [k, f] of [['PARAMS', 'params.json'], ['ENGINE', 'engine.js'], ['STRUCT', 'struct.js'], ['APP', 'app.js']]) page = page.replace(`/*${k}*/`, () => r(f).trim());
+page = page.replace('/*BLAST*/', () => r('blast.js').trim());
 const base = '<style>[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0}</style>';
 const gf = /<link rel="preconnect"[^>]*>\n<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>\n/;
 if (!gf.test(page)) throw new Error('font link not found');

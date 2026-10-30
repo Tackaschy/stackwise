@@ -47,12 +47,14 @@ const PANES = [
   { id: 'hairpin', title: 'Hairpins' },
   { id: 'self', title: 'Self-dimers' },
   { id: 'cross', title: 'Cross-dimer & pair' },
-  { id: 'stab', title: '3′ stability profile' }
+  { id: 'stab', title: '3′ stability profile' },
+  { id: 'blast', title: 'NCBI BLAST' }
 ];
 let order = store.get('order', PANES.map(p => p.id)).filter(id => PANES.some(p => p.id === id));
 PANES.forEach(p => { if (!order.includes(p.id)) order.push(p.id); });
 let closed = new Set(store.get('closed', []));
-let wide = new Set(store.get('wide', ['stab']));
+let wide = new Set(store.get('wide', ['stab', 'blast']));
+if (!store.get('seenBlast', false)) { wide.add('blast'); store.set('seenBlast', true); }
 const DRAFT = '__draft';
 let draft = null;
 const save = () => { store.set('lib', lib); store.set('sel', sel === DRAFT ? ((draft && draft.parent) || (lib[0] && lib[0].id)) : sel); store.set('partner', partner); store.set('cond', cond); store.set('order', order); store.set('closed', [...closed]); store.set('wide', [...wide]); };
@@ -234,7 +236,7 @@ function meltChart(seq, th) {
   const path = pts.map(([x, y], k) => (k ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Yv(y).toFixed(1)).join('');
   const area = path + `L${X(t1)} ${Yv(0)}L${X(t0)} ${Yv(0)}Z`;
   const tmx = X(th.tm), showT = th.tm >= t0 && th.tm <= t1;
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Fraction of oligo in duplex versus temperature">
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" style="max-width:720px" role="img" aria-label="Fraction of oligo in duplex versus temperature">
     ${grid}<line class="ax" x1="${l}" x2="${W - r}" y1="${H - b}" y2="${H - b}"/>
     <path d="${area}" fill="var(--accent)" fill-opacity="0.10"/>
     <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
@@ -255,7 +257,7 @@ function stabChart(seq) {
   }).join('');
   const ticks = w.map((v, k) => (k % 5 === 0 || k === w.length - 1) ? `<text x="${l + k * bw + bw / 2}" y="${H - b + 14}" text-anchor="middle">${k + 1}</text>` : '').join('');
   const lim = `<line x1="${l}" x2="${W - r}" y1="${Yv(-9)}" y2="${Yv(-9)}" stroke="var(--bad)" stroke-dasharray="4 3"/><text x="${W - r}" y="${Yv(-9) - 4}" text-anchor="end" style="fill:var(--bad)">−9 limit</text>`;
-  return `<div style="overflow-x:auto"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 560)}px" role="img" aria-label="Pentamer duplex stability along the sequence">${g}${bars}${lim}<line class="ax" x1="${l}" x2="${W - r}" y1="${Yv(0)}" y2="${Yv(0)}"/>${ticks}</svg></div>`;
+  return `<div style="overflow-x:auto"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 560)}px;max-width:${Math.max(W * 1.4, 620)}px" role="img" aria-label="Pentamer duplex stability along the sequence">${g}${bars}${lim}<line class="ax" x1="${l}" x2="${W - r}" y1="${Yv(0)}" y2="${Yv(0)}"/>${ticks}</svg></div>`;
 }
 
 /* ---------- oligo analysis ---------- */
@@ -459,7 +461,7 @@ function renderFragments() {
     const tf = quick(f.o.seq).th.tm, tr = quick(r.o.seq).th.tm, d = Math.abs(tf - tr);
     let cd = '';
     if (f.o.seq.length <= STRUCT_MAX && r.o.seq.length <= STRUCT_MAX) { const x = St.dimer(f.o.seq, r.o.seq, cond, { limit: 1 })[0]; cd = 'Cross-dimer ' + (x ? pill(rateStruct(x.dG, x.end3A || x.end3B, 'cross'), fx(x.dG, 2)) : pill('ok', 'none')); }
-    return `<div><b>${esc(f.o.name)}</b><span class="hint">×</span><b>${esc(r.o.name)}</b><span class="mono num">${size.toLocaleString('en-US')} bp</span>${pill(d <= 2 ? 'ok' : d <= 5 ? 'warn' : 'bad', 'ΔTm ' + fx(d, 1) + ' °C')}${cd}</div>`;
+    return `<div><b>${esc(f.o.name)}</b><span class="hint">×</span><b>${esc(r.o.name)}</b><span class="mono num">${size.toLocaleString('en-US')} bp</span>${pill(d <= 2 ? 'ok' : d <= 5 ? 'warn' : 'bad', 'ΔTm ' + fx(d, 1) + ' °C')}${cd}<button class="btn ghost" data-blpair="${f.o.id},${r.o.id}">BLAST pair</button></div>`;
   }).join('');
   $('frag-body').innerHTML = `<div class="tablewrap"><table class="frag"><thead><tr><th>Name</th><th class="n">Position</th><th>Strand</th><th class="n">nt</th><th>Tm °C</th><th class="n">GC %</th><th class="n">ΔG ${cond.temp}°</th><th>Hairpin</th><th>Self-dimer</th><th>3′ ΔG</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` +
     (amps.length ? `<div class="amp"><span class="eyebrow">Products (forward × reverse)</span>${ampHTML}</div>` : '');
@@ -567,6 +569,7 @@ function paneBody(id, o, r) {
     const cd = St.dimer(o.seq, p.seq, cond, { limit: 4 });
     return body + (cd.length ? cd.map(d => dimerCard(d, o.seq, p.seq, 'cross')).join('') : '<p class="empty">No cross-dimer found.</p>');
   }
+  if (id === 'blast') return blastPaneBody(o);
   if (id === 'stab') return `<p class="note" style="margin:0">ΔG of each 5-nt window paired with its complement, at ${cond.temp} °C. The solid bar is the 3′ pentamer; a very stable 3′ end raises the risk of mispriming.</p>` + stabChart(o.seq);
   return '';
 }
@@ -576,6 +579,7 @@ function paneSummary(id, r) {
   if (id === 'checks') { const cs = checks(cur(), r), w = cs.filter(c => c.st !== 'ok').length; return pill(w ? (cs.some(c => c.st === 'bad') ? 'bad' : 'warn') : 'ok', w ? w + ' to review' : 'All pass'); }
   if (id === 'hairpin' && r.hp) return hpPill(r.hp[0] || false);
   if (id === 'self' && r.sd) return sdPill(r.sd[0] || false);
+  if (id === 'blast') return blastSummary(cur());
   if (id === 'stab' && r.win.length) { const v = r.win[r.win.length - 1]; return pill(v > -9 ? 'ok' : 'warn', '3′ ' + fx(v, 2)); }
   return '';
 }
@@ -697,6 +701,8 @@ function addParsed(recs) {
   return true;
 }
 
+/*BLAST*/
+
 /* ---------- events: sequence view ---------- */
 $('s-name').addEventListener('input', e => { cur().name = e.target.value; clearTimeout(timer); timer = setTimeout(() => { save(); renderLib(); renderSelBar(true); mapKey = ''; renderSeqMap(); }, 250); });
 $('s-seq').addEventListener('input', e => { readSeqInput(e.target.value, cur(), $('s-msg'), $('s-name')); if (SV.hits.length || $('s-find').value) SV.hits = []; schedule(cur().seq.length > 20000 ? 400 : 160); });
@@ -768,6 +774,12 @@ $('selbar').addEventListener('click', e => {
   else if (act === 'analyze') openDraftFromSel();
 });
 $('frag-body').addEventListener('click', e => {
+  const bp = e.target.closest('[data-blpair]');
+  if (bp) {
+    const [f, r] = bp.dataset.blpair.split(','); sel = f; partner = r; closed.delete('blast'); save(); renderAll(true);
+    const pane = document.querySelector('[data-pane=blast]'); if (pane) pane.scrollIntoView({ block: 'start', behavior: reduceMotion() ? 'auto' : 'smooth' });
+    return;
+  }
   const b = e.target.closest('[data-fa]'); if (!b) return;
   const x = byId(b.dataset.oid); if (!x) return;
   if (b.dataset.fa === 'open') { sel = x.id; save(); renderAll(true); window.scrollTo(0, 0); return; }
@@ -881,6 +893,7 @@ setMethod(cond.method);
 $('m-sl').onclick = () => { setMethod('santalucia'); schedule(); };
 $('m-ow').onclick = () => { setMethod('owczarzy'); schedule(); };
 
+wireBlast();
 if (!lib.some(o => o.id === sel)) sel = lib[0].id;
 renderAll(true);
 save();

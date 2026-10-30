@@ -6,6 +6,10 @@ Oligo thermodynamics bench for Mac and Windows: double-stranded sequence maps, n
 
 - **Sequences:** paste or open a strand (plain, FASTA, GenBank). The complement is drawn underneath in 10-bp blocks with position numbers. Drag across either strand to select a fragment, see its Tm, GC, ΔG, hairpin and self-dimer live, analyze it without saving, trim or extend its ends one base at a time, then save it.
 - **Oligos:** Tm (SantaLucia 1998 unified nearest-neighbor parameters, SantaLucia or Owczarzy salt correction), ΔH/ΔS/ΔG, melting curve, MW, ε260, hairpins, self- and cross-dimers drawn as duplexes, 3′ stability profile and primer checks.
+- **NCBI BLAST** (pane on the oligo page, for the oligo and a second one you pick):
+  - *Where each binds:* BLASTs both oligos against an NCBI nucleotide database (blastn tuned for short sequences) and lists the hits with alignments, 3′-end matches, and targets both oligos hit facing each other with the product size. The desktop app runs the search through NCBI's BLAST URL API (`ncbi_blast` in `src-tauri/src/lib.rs`); the browser version opens NCBI BLAST with the query filled in.
+  - *Primer pair specificity:* opens NCBI Primer-BLAST with both primers filled in (Primer-BLAST has no public API).
+  - *Align the two:* aligns the oligos on both strands with blastn's default scoring, with a button to open NCBI's "Align two sequences".
 - **Conditions:** Na⁺, Mg²⁺, dNTP, oligo concentration and ΔG temperature apply everywhere.
 
 Tm matches Primer3 to within 0.01 °C. Hairpin and dimer ΔG use Primer3's nearest-neighbor parameter tables with a dynamic-programming search and agree with Primer3 to about 0.3–0.6 kcal/mol on average.
@@ -14,7 +18,7 @@ Tm matches Primer3 to within 0.01 °C. Hairpin and dimer ΔG use Primer3's neare
 
 | Path | What it is |
 | --- | --- |
-| `src/web/` | Source of the app: page shell, styles, thermodynamics engine (`engine.js`), structure search (`struct.js`), UI (`app.js`), parameter tables (`params.json`) |
+| `src/web/` | Source of the app: page shell, styles, thermodynamics engine (`engine.js`), structure search (`struct.js`), UI (`app.js`), NCBI BLAST pane (`blast.js`), parameter tables (`params.json`) |
 | `scripts/build-web.mjs` | Assembles `src/web` into `app/index.html` (desktop, bundled fonts) and `dist/stackwise-web.html` (browser) |
 | `app/` | What the desktop app loads: `index.html`, `fonts.css`, `fonts/` |
 | `src-tauri/` | Tauri shell: window, bundle and icon settings |
