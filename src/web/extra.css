@@ -21,12 +21,11 @@
 
 .map { position: relative; font-family: var(--f-mono); font-size: 13.5px; line-height: 1; overflow-x: auto; padding: 2px 0 4px; user-select: none; -webkit-user-select: none; }
 .map .probe { position: absolute; visibility: hidden; white-space: pre; font: inherit; }
-.row { display: grid; grid-template-columns: var(--pw) 3ch max-content 3ch var(--pw); padding: 4px 0 8px; border-bottom: 1px dashed var(--line); content-visibility: auto; contain-intrinsic-size: auto 84px; }
-.row:last-child { border-bottom: 0; }
+.row { display: grid; grid-template-columns: var(--pw) 3ch max-content 3ch var(--pw); grid-template-rows: auto 13px 20px 20px auto; padding: 4px 0 8px; border-bottom: 1px dashed var(--line); box-sizing: border-box; contain: layout style; }
 .row .af { grid-area: 1 / 3; position: relative; }
 .row .ru { grid-area: 2 / 3; position: relative; height: 13px; }
 .row .ru span { position: absolute; bottom: 1px; transform: translateX(-100%); font-size: 9.5px; color: var(--faint); }
-.row .st { white-space: pre; height: 20px; line-height: 20px; }
+.row .st { white-space: pre; height: 20px; line-height: 20px; position: relative; }
 .row .st.up { grid-area: 3 / 3; }
 .row .st.dn { grid-area: 4 / 3; }
 .row .ar { grid-area: 5 / 3; position: relative; }
@@ -37,9 +36,6 @@
 .map.live .st { cursor: text; }
 .st i { font-style: normal; }
 .st.dn i { opacity: 0.82; }
-.st i.hit { background: var(--warn-soft); box-shadow: inset 0 -2px 0 var(--warn); }
-.st i.sel { background: var(--accent-soft); opacity: 1; }
-.st i.sels { background: var(--accent); color: var(--accent-fg); opacity: 1; }
 .bar { position: absolute; height: 14px; border: 0; border-radius: 3px; padding: 0 5px; font-family: var(--f-ui); font-size: 10px; font-weight: 600; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; text-align: left; }
 .bar.fwd { background: var(--accent); color: var(--accent-fg); }
 .bar.rev { background: var(--rev); color: var(--rev-fg); }
@@ -105,3 +101,53 @@ a.btn.primary { color: var(--accent-fg); }
 .pb-sum div { background: var(--panel); padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; }
 .pb-sum b { font-family: var(--f-mono); font-size: 16px; }
 .genes { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ---------- v4: overlay selection, side analysis panel ---------- */
+.st .ovl { position: absolute; inset: 0; pointer-events: none; }
+.st .cv { position: relative; display: block; }
+.st .ov { position: absolute; top: 0; bottom: 0; border-radius: 2px; }
+.st .ov.sels { background: var(--accent-soft); box-shadow: inset 0 -2px 0 var(--accent); }
+.st .ov.sel { background: var(--accent-soft); opacity: 0.5; }
+.st .ov.hit { background: var(--warn-soft); box-shadow: inset 0 -2px 0 var(--warn); }
+.map.live { cursor: text; }
+.map.live .bar { cursor: pointer; }
+.seqgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); gap: 16px; align-items: start; min-width: 0; }
+.seqgrid > .seqcard { grid-column: 1; grid-row: 1; }
+.seqgrid > .fragcard { grid-column: 1; grid-row: 2; }
+.selpanel { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: calc(var(--toph, 64px) + 12px); max-height: calc(100vh - var(--toph, 64px) - 24px); overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; overscroll-behavior: contain; }
+@media (max-width: 1180px) {
+  .seqgrid { grid-template-columns: minmax(0, 1fr); }
+  .seqgrid > .seqcard, .seqgrid > .fragcard, .selpanel { grid-column: 1; grid-row: auto; }
+  .selpanel { top: auto; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); max-height: 48vh; z-index: 15; border-color: var(--accent); box-shadow: 0 10px 28px rgb(20 16 50 / 0.18); }
+  .selpanel:has(.sp-empty) { position: static; max-height: none; box-shadow: none; border-color: var(--line); }
+}
+.sp-empty h2 { font-family: var(--f-display); font-size: 15px; margin: 0 0 4px; }
+.sp-empty p { margin: 0; color: var(--muted); font-size: 13px; }
+.sp-empty ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 12.5px; display: flex; flex-direction: column; gap: 4px; }
+.sp-head { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.iconbtn { border: 0; background: transparent; color: var(--faint); cursor: pointer; width: 28px; height: 28px; border-radius: 6px; font-size: 14px; }
+.iconbtn:hover { background: var(--sunk); color: var(--fg); }
+.iconbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sp-seq { font-size: 13px; line-height: 1.55; word-break: break-all; }
+.sp-ends { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sp-ends .btn { padding: 3px 9px; font-family: var(--f-mono); }
+.sp-ends .btn.ghost { font-family: var(--f-ui); margin-left: auto; }
+.pmgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.pm { background: var(--panel); padding: 6px 9px; display: flex; flex-direction: column; min-width: 0; }
+.pm span { font-size: 11px; color: var(--muted); }
+.pm b { font-family: var(--f-mono); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.pm.ok b { color: var(--ok); } .pm.warn b { color: var(--warn); } .pm.bad b { color: var(--bad); }
+.pm.crit { background: var(--bad-soft); } .pm.crit b { color: var(--bad); }
+.sp-tabs { display: flex; }
+.sp-tabs button { flex: 1; }
+.sp-body { display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+.sp-body .duplex { font-size: 12px; }
+.sp-body .chk { grid-template-columns: 58px minmax(0, 1fr) auto; padding: 5px 0; }
+.selpanel .row2 { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sp-foot { display: flex; gap: 6px; align-items: center; position: sticky; bottom: -14px; background: var(--panel); padding: 8px 0 2px; border-top: 1px solid var(--line); margin-top: 2px; }
+.selpanel > * { flex-shrink: 0; }
+.selpanel .field.grow { flex: none; }
+@media (min-width: 901px) {
+  .rail { position: sticky; top: calc(var(--toph, 64px) + 16px); max-height: calc(100vh - var(--toph, 64px) - 32px); }
+  .rail .lib { max-height: none; flex: 1 1 auto; min-height: 0; }
+}

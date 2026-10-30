@@ -1,4 +1,4 @@
-<header class="top">
+<header class="top" id="top">
   <div class="brand">
     <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="2" y="5" width="22" height="3" rx="1.5" fill="var(--bA)"/><rect x="2" y="11.5" width="22" height="3" rx="1.5" fill="var(--bC)"/><rect x="2" y="18" width="22" height="3" rx="1.5" fill="var(--bT)"/><rect x="7" y="3" width="2.4" height="20" rx="1.2" fill="var(--accent)"/><rect x="16.6" y="3" width="2.4" height="20" rx="1.2" fill="var(--accent)"/></svg>
     <div><b>Stackwise</b><br><span>Oligo thermodynamics bench</span></div>
@@ -33,7 +33,7 @@
 
   <main class="main">
     <!-- Sequence (double-stranded) view -->
-    <div id="seqview" class="main" hidden>
+    <div id="seqview" class="seqgrid" hidden>
       <section class="card seqcard">
         <div class="bench-row">
           <input class="name-in" id="s-name" aria-label="Sequence name" spellcheck="false">
@@ -57,7 +57,7 @@
         </div>
         <div class="map live" id="s-map"></div>
         <div class="bench-row">
-          <span class="hint">Drag across bases on either strand to select (touch: tap the first base, then the last). Shift-click extends.</span>
+          <span class="hint">Drag across either strand to select; the analysis appears in the panel.</span>
           <span class="sp"></span>
           <button class="btn ghost" id="s-copy">Copy top strand</button>
           <button class="btn ghost" id="s-copyrc">Copy bottom strand</button>
@@ -65,8 +65,8 @@
           <button class="btn ghost danger" id="s-del">Delete</button>
         </div>
       </section>
-      <section class="selbar" id="selbar" hidden></section>
-      <section class="card">
+      <aside class="card selpanel" id="selpanel" aria-label="Selection analysis"></aside>
+      <section class="card fragcard">
         <div class="pane-h"><h2>Oligos on this sequence</h2><span class="sum" id="frag-sum"></span></div>
         <div class="pane-b" id="frag-body"></div>
       </section>

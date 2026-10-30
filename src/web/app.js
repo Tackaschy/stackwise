@@ -349,85 +349,258 @@ function renderLib() {
   $('lib-count').textContent = `${seqs.length} seq · ${oligos.length} oligo${oligos.length === 1 ? '' : 's'}`;
 }
 
-/* ================= SEQUENCE VIEW ================= */
-const SV = { sel: null, anchor: null, dragging: false, touchPending: false, hits: [], hitIdx: -1, editing: false, nameDirty: false, pick: '+', pending: null };
-let mapEls = { top: [], bot: [], blocks: 0 }, painted = null, paintedHits = [], mapKey = '';
+/* ================= SEQUENCE VIEW =================
+   The double-stranded map draws only the rows near the screen (each row keeps a fixed height, so
+   scroll positions stay exact) and shows the selection and search matches as overlay boxes instead of
+   restyling every base. The selection is analyzed in the side panel; saving opens the full oligo page. */
+const SV = { sel: null, anchor: null, dragging: false, touchPending: false, hits: [], hitIdx: -1, editing: false, nameDirty: false, pick: '+', pending: null, tab: store.get('selTab', 'checks'), partnerId: null };
+const VS = new Map();          // sequence id -> { y, sel, find } remembered when you leave it
+let SM = null, mapKey = '', shown = { id: null, kind: null };
+let rowIO = null;
 
 function hashSeq(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
+function laneCount(items) {
+  const lanes = []; for (const it of items) { let L = 0; while (lanes[L] != null && lanes[L] >= it.a) L++; lanes[L] = it.b + 1; } return lanes.length;
+}
+function buildSeqMap(host, seq, ann, f) {
+  if (rowIO) rowIO.disconnect();
+  const n = seq.length;
+  if (!n) { host.innerHTML = '<p class="empty">No sequence yet. Click “Edit sequence” and paste a strand.</p>'; SM = null; return; }
+  const bpr = f.blocks * 10;
+  host.style.setProperty('--pw', f.pw + 'ch');
+  host.style.setProperty('--chpx', f.chPx + 'px');
+  const rows = [];
+  for (let r0 = 0, k = 0; r0 < n; r0 += bpr, k++) {
+    const r1 = Math.min(n, r0 + bpr) - 1;
+    const inRow = ann.filter(x => x.b >= r0 && x.a <= r1).map(x => Object.assign({}, x, { a: Math.max(x.a, r0), b: Math.min(x.b, r1), a0: x.a, b0: x.b }));
+    const fw = inRow.filter(x => x.strand === '+'), rv = inRow.filter(x => x.strand === '-');
+    const lf = laneCount(fw), lr = laneCount(rv);
+    const h = 4 + 8 + 1 + (lf ? lf * 16 + 2 : 0) + 13 + 40 + (lr ? lr * 16 + 2 : 0);
+    rows.push({ k, r0, r1, fw, rv, h, el: null, filled: false });
+  }
+  host.innerHTML = rows.map(r => `<div class="row" data-r="${r.k}" style="height:${r.h}px"></div>`).join('');
+  SM = { host, seq, rows, bpr, f };
+  host.querySelectorAll('.row').forEach((el, i) => { rows[i].el = el; });
+  if ('IntersectionObserver' in window) {
+    rowIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) fillRow(+e.target.dataset.r); }), { rootMargin: '1500px 0px' });
+    rows.forEach(r => rowIO.observe(r.el));
+  } else rows.forEach(r => fillRow(r.k));
+}
+const colOf = (k, r0) => (k - r0) + Math.floor((k - r0) / 10);
+function lanesHTML(items, r0, cls) {
+  const lanes = []; let html = '';
+  for (const it of items) {
+    let L = 0; while (lanes[L] != null && lanes[L] >= it.a) L++; lanes[L] = it.b + 1;
+    const fwd = it.strand === '+', h3 = fwd ? it.b === it.b0 : it.a === it.a0;
+    const left = colOf(it.a, r0), w = colOf(it.b, r0) + 1 - left;
+    html += `<button class="bar ${fwd ? 'fwd' : 'rev'}${h3 ? ' h3' : ''}${it.o.draft ? ' dr' : ''}" data-oid="${it.o.id}" style="left:calc(${left} * var(--chpx));width:calc(${w} * var(--chpx));top:${L * 16 + 1}px" title="${esc(it.o.name)} · ${it.a0 + 1}–${it.b0 + 1} ${fwd ? '→' : '←'}">${esc(it.o.name)}</button>`;
+  }
+  return `<div class="${cls}" style="height:${lanes.length ? lanes.length * 16 + 2 : 0}px">${html}</div>`;
+}
+// Bases are drawn on one canvas per strand line (far fewer page elements than one per base).
+let PAL = null;
+function palette() {
+  if (PAL) return PAL;
+  const cs = getComputedStyle(document.documentElement), m = getComputedStyle($('s-map'));
+  PAL = { A: cs.getPropertyValue('--bA').trim(), C: cs.getPropertyValue('--bC').trim(), G: cs.getPropertyValue('--bG').trim(), T: cs.getPropertyValue('--bT').trim(),
+    font: `${m.fontWeight} ${m.fontSize} ${m.fontFamily}` };
+  return PAL;
+}
+function drawStrand(cv, text, cols, cpx, alpha) {
+  const dpr = window.devicePixelRatio || 1, w = Math.ceil(cols * cpx), h = 20;
+  cv.width = Math.ceil(w * dpr); cv.height = h * dpr; cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const P = palette(); ctx.font = P.font; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = alpha;
+  for (let c = 0; c < text.length; c++) { const ch = text[c]; if (ch === ' ') continue; ctx.fillStyle = P[ch] || '#888'; ctx.fillText(ch, (c + 0.5) * cpx, h / 2 + 0.5); }
+}
+function drawRow(r) {
+  const seq = SM.seq; let top = '', bot = '';
+  for (let i = r.r0; i <= r.r1; i++) { if (i > r.r0 && (i - r.r0) % 10 === 0) { top += ' '; bot += ' '; } top += seq[i]; bot += COMP[seq[i]]; }
+  drawStrand(r.cvUp, top, top.length, SM.f.chPx, 1); drawStrand(r.cvDn, bot, bot.length, SM.f.chPx, 0.85);
+}
+function fillRow(k) {
+  const r = SM && SM.rows[k]; if (!r || r.filled) return;
+  let ru = '';
+  for (let i = r.r0; i <= r.r1; i++) if ((i + 1) % 10 === 0 || i === r.r1) ru += `<span style="left:calc(${colOf(i, r.r0) + 1} * var(--chpx))">${i + 1}</span>`;
+  const w = `style="width:calc(${colOf(r.r1, r.r0) + 1} * var(--chpx))"`;
+  r.el.innerHTML = `${lanesHTML(r.fw, r.r0, 'af')}<div class="ru">${ru}</div>
+    <span class="pl">${r.r0 + 1}</span><span class="e1">5′</span><div class="st up" ${w}><span class="ovl"></span><canvas class="cv" aria-hidden="true"></canvas></div><span class="e2">3′</span><span class="pr">${r.r1 + 1}</span>
+    <span class="e3">3′</span><div class="st dn" ${w}><span class="ovl"></span><canvas class="cv" aria-hidden="true"></canvas></div><span class="e4">5′</span>${lanesHTML(r.rv, r.r0, 'ar')}`;
+  r.filled = true; r.ovUp = r.el.querySelector('.st.up .ovl'); r.ovDn = r.el.querySelector('.st.dn .ovl');
+  r.cvUp = r.el.querySelector('.st.up .cv'); r.cvDn = r.el.querySelector('.st.dn .cv');
+  r.el.setAttribute('aria-label', `Bases ${r.r0 + 1} to ${r.r1 + 1}: ${SM.seq.slice(r.r0, r.r1 + 1)}`);
+  drawRow(r); paintRow(r);
+}
+function redrawMap() { PAL = null; if (SM) SM.rows.forEach(r => r.filled && drawRow(r)); }
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawMap); } catch (e) {}
+try { new MutationObserver(redrawMap).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
+function boxes(ranges, r, cls) {
+  let h = '';
+  for (const g of ranges) {
+    const a = Math.max(g.a, r.r0), b = Math.min(g.b, r.r1); if (a > b) continue;
+    const left = colOf(a, r.r0), w = colOf(b, r.r0) + 1 - left;
+    h += `<span class="ov ${cls}" style="left:calc(${left} * var(--chpx));width:calc(${w} * var(--chpx))"></span>`;
+  }
+  return h;
+}
+function paintRow(r) {
+  if (!r.filled) return;
+  const s = SV.sel, hitsUp = [], hitsDn = [];
+  for (const h of SV.hits) if (h.b >= r.r0 && h.a <= r.r1) (h.strand === '+' ? hitsUp : hitsDn).push(h);
+  const sr = s && s.b >= r.r0 && s.a <= r.r1 ? [s] : [];
+  r.ovUp.innerHTML = boxes(hitsUp, r, 'hit') + boxes(sr, r, s && s.strand === '+' ? 'sels' : 'sel');
+  r.ovDn.innerHTML = boxes(hitsDn, r, 'hit') + boxes(sr, r, s && s.strand === '-' ? 'sels' : 'sel');
+}
+let paintedRange = null;
+function paintSel() {
+  if (!SM) return;
+  const s = SV.sel, bpr = SM.bpr, ranges = [paintedRange, s].filter(Boolean);
+  const touched = new Set();
+  for (const g of ranges) for (let k = Math.floor(g.a / bpr); k <= Math.floor(g.b / bpr); k++) touched.add(k);
+  touched.forEach(k => SM.rows[k] && paintRow(SM.rows[k]));
+  paintedRange = s ? { a: s.a, b: s.b } : null;
+}
+function paintHits() { if (SM) SM.rows.forEach(paintRow); }
+
 function renderSeqMap(force) {
   const o = cur(), host = $('s-map');
   const ann = seqAnnots(o);
   if (draft && draft.parent === o.id) { const h = findOn(draft, o); if (h) ann.push(Object.assign({ o: draft }, h)); ann.sort((u, v) => u.a - v.a); }
+  if (!host.clientWidth) return ann; // hidden: build when shown
   const f = o.seq.length ? fit(host, o.seq.length, 10) : null;
   const key = [o.id, o.seq.length, hashSeq(o.seq), f && f.blocks, f && f.chPx.toFixed(2), ann.map(x => x.o.id + ':' + x.a + ':' + x.b + x.strand + x.o.name).join()].join('|');
   if (!force && key === mapKey) return ann;
-  mapKey = key;
-  mapEls = renderMap(host, o.seq, { annots: ann, fit: f });
-  painted = null; paintedHits = [];
-  paintSel(); paintHits();
+  mapKey = key; paintedRange = null;
+  const y = window.scrollY;
+  buildSeqMap(host, o.seq, ann, f);
+  try { window.scrollTo(0, y); } catch (e) {}
   return ann;
 }
-function paintSel() {
-  const { top, bot } = mapEls;
-  if (painted) for (let k = painted.a; k <= painted.b; k++) { if (top[k]) top[k].classList.remove('sel', 'sels'); if (bot[k]) bot[k].classList.remove('sel', 'sels'); }
-  painted = SV.sel ? Object.assign({}, SV.sel) : null;
-  if (painted) for (let k = painted.a; k <= painted.b; k++) {
-    if (top[k]) top[k].classList.add(painted.strand === '+' ? 'sels' : 'sel');
-    if (bot[k]) bot[k].classList.add(painted.strand === '-' ? 'sels' : 'sel');
+
+/* base under the pointer, computed from geometry (no per-base elements to hit) */
+function baseFromPoint(x, y, strandHint) {
+  if (!SM) return null;
+  let el = document.elementFromPoint(x, y), row = el && el.closest ? el.closest('#s-map .row') : null;
+  if (!row) { // pointer between rows: use the nearest row vertically
+    let best = null, bd = Infinity;
+    for (const r of SM.rows) { if (!r.filled) continue; const b = r.el.getBoundingClientRect(); const d = y < b.top ? b.top - y : y > b.bottom ? y - b.bottom : 0; if (d < bd) { bd = d; best = r.el; } if (d === 0) break; }
+    row = best;
   }
+  if (!row) return null;
+  const r = SM.rows[+row.dataset.r]; if (!r || !r.filled) return null;
+  const up = r.el.querySelector('.st.up').getBoundingClientRect(), dn = r.el.querySelector('.st.dn').getBoundingClientRect();
+  const strand = strandHint || (Math.abs(y - (up.top + up.bottom) / 2) <= Math.abs(y - (dn.top + dn.bottom) / 2) ? '+' : '-');
+  const cpx = SM.f.chPx, maxCol = colOf(r.r1, r.r0);
+  let c = Math.floor((x - up.left) / cpx); c = Math.max(0, Math.min(maxCol, c));
+  const k = r.r0 + Math.floor(c / 11) * 10 + Math.min(c % 11, 9);
+  return { i: Math.min(r.r1, k), strand, onText: y >= up.top - 2 && y <= dn.bottom + 2 && x >= up.left - cpx && x <= up.right + cpx };
 }
-function paintHits() {
-  paintedHits.forEach(el => el.classList.remove('hit'));
-  paintedHits = [];
-  for (const h of SV.hits) for (let k = h.a; k <= h.b; k++) {
-    const el = (h.strand === '+' ? mapEls.top : mapEls.bot)[k];
-    if (el) { el.classList.add('hit'); paintedHits.push(el); }
-  }
-}
+
 function fragName(o, s) { const short = (o.name || 'Seq').split(/[\s(,]/)[0].slice(0, 16) || 'Seq'; return `${short} ${s.strand === '+' ? 'F' : 'R'} ${s.a + 1}–${s.b + 1}`; }
 function selSeq() { const o = cur(), s = SV.sel, f = o.seq.slice(s.a, s.b + 1); return s.strand === '+' ? f : S.revcomp(f); }
 function setPick(st) { SV.pick = st; $('s-plus').setAttribute('aria-pressed', st === '+'); $('s-minus').setAttribute('aria-pressed', st === '-'); }
-function setSel(a, b, strand) {
+let panelT = null;
+function setSel(a, b, strand, full = true) {
   const n = cur().seq.length; if (!n) return;
   const lo = Math.max(0, Math.min(a, b)), hi = Math.min(n - 1, Math.max(a, b));
   const prev = SV.sel;
   if (!prev || prev.a !== lo || prev.b !== hi || prev.strand !== strand) SV.nameDirty = false;
   SV.sel = { a: lo, b: hi, strand };
   $('s-from').value = lo + 1; $('s-to').value = hi + 1; setPick(strand);
-  paintSel(); renderSelBar(false);
+  paintSel();
+  clearTimeout(panelT);
+  if (full) { renderPanel(false); panelT = setTimeout(() => renderPanel(true), 0); } else renderPanel(false);
 }
-function clearSel() { SV.sel = null; SV.touchPending = false; paintSel(); renderSelBar(); }
-function scrollToSel() {
-  const s = SV.sel; if (!s) return;
-  const el = mapEls.top[s.a]; if (el) el.scrollIntoView({ block: 'center', behavior: reduceMotion() ? 'auto' : 'smooth' });
+function clearSel() { SV.sel = null; SV.touchPending = false; paintSel(); renderPanel(true); }
+function scrollToSel(behavior) {
+  const s = SV.sel; if (!s || !SM) return;
+  const r = SM.rows[Math.floor(s.a / SM.bpr)]; if (!r) return;
+  const b = r.el.getBoundingClientRect(), y = window.scrollY + b.top - (window.innerHeight - b.height) / 2;
+  window.scrollTo({ top: Math.max(0, y), behavior: behavior || (reduceMotion() ? 'auto' : 'smooth') });
 }
 
-function renderSelBar(full) {
-  const bar = $('selbar'), s = SV.sel;
-  if (!s) { bar.hidden = true; bar.innerHTML = ''; return; }
-  const o = cur(), q = selSeq(), n = q.length;
-  const r = n >= 2 ? quick(q, !!full) : null;
-  let struct = '';
-  if (r && full && n <= STRUCT_MAX) struct = `<span class="hint">Hairpin</span>${hpPill(r.hp)}<span class="hint">Self-dimer</span>${sdPill(r.sd)}`;
-  else if (n > STRUCT_MAX) struct = `<span class="hint">Structure search runs up to ${STRUCT_MAX} nt</span>`;
-  const defName = fragName(o, s);
+/* ---------- side panel: quick analysis of the selection ---------- */
+const PANEL_TABS = [['checks', 'Checks'], ['hairpin', 'Hairpin'], ['self', 'Self-dimer'], ['pair', 'Pair']];
+function panelPartners(o, q) {
+  const onSeq = seqAnnots(o).map(x => x.o), rest = lib.filter(x => x.kind === 'oligo' && x.seq.length >= 2 && !onSeq.includes(x));
+  return onSeq.concat(rest).filter(x => x.seq !== q);
+}
+function renderPanel(full) {
+  const el = $('selpanel'), s = SV.sel, o = cur();
+  if (!s) {
+    el.innerHTML = `<div class="sp-empty"><h2>Selection</h2><p>Drag across bases on either strand to analyze them here. You can also type positions in From/To or find a primer above.</p>
+      <ul><li>Top strand reads 5′→3′ (forward primers), bottom strand gives reverse primers already written 5′→3′.</li><li>Shift-click extends a selection; on touch, tap the first and then the last base.</li><li>Click an arrow on the map to open a saved oligo.</li></ul></div>`;
+    return;
+  }
+  const q = selSeq(), n = q.length, fwd = s.strand === '+';
+  const r = n >= 2 ? quick(q, full) : null;
   const prevInput = $('sel-name');
-  const nameVal = SV.nameDirty && prevInput ? prevInput.value : defName;
-  const shown = n > 70 ? colored(q.slice(0, 32)) + '<span class="lab"> … </span>' + colored(q.slice(-32)) : colored(q);
-  const fwd = s.strand === '+';
-  bar.hidden = false;
-  bar.innerHTML = `<div class="row2"><span class="dir ${fwd ? 'fwd' : 'rev'}">${fwd ? '→ Top strand' : '← Bottom strand'}</span>
-      <b class="mono num">${s.a + 1}–${s.b + 1}</b><span class="hint">${n} nt</span>
-      ${r ? pill(tmClass(r.th.tm), 'Tm ' + fx(r.th.tm, 1) + ' °C') + pill('neutral', 'GC ' + fx(r.gc, 0) + ' %') + pill('neutral', 'ΔG ' + fx(r.th.dG, 2)) : '<span class="hint">Select at least 2 bases</span>'}
-      ${struct}<span class="sp"></span>${SV.touchPending ? '<span class="hint">Tap the last base</span>' : ''}<button class="btn ghost" data-sb="clear">Clear</button></div>
-    <div class="sq"><span class="lab">5′-</span>${shown}<span class="lab">-3′</span></div>
-    <div class="row2"><div class="field grow"><label for="sel-name">Name</label><input id="sel-name" value="${esc(nameVal)}" spellcheck="false"></div>
-      <button class="btn" data-sb="flip">Other strand</button>
-      <button class="btn" data-sb="copy">Copy</button>
-      <button class="btn" data-sb="save">Save oligo</button>
-      <button class="btn primary" data-sb="analyze">Analyze</button></div>`;
+  const nameVal = SV.nameDirty && prevInput ? prevInput.value : fragName(o, s);
+  const focusName = document.activeElement && document.activeElement.id === 'sel-name';
+  const caret = focusName ? prevInput.selectionStart : null;
+  const met = (k, v, st) => `<div class="pm${st ? ' ' + st : ''}"><span>${k}</span><b>${v}</b></div>`;
+  let metrics = '';
+  if (r) {
+    metrics = met('Tm', fx(r.th.tm, 1) + ' °C', tmClass(r.th.tm)) + met('GC', fx(r.gc, 0) + ' %', r.gc >= 40 && r.gc <= 60 ? 'ok' : 'warn') + met(`ΔG ${cond.temp}°`, fx(r.th.dG, 1)) +
+      met('3′ ΔG', fx(r.w3, 1), r.w3 == null ? '' : r.w3 > -9 ? 'ok' : 'warn');
+    if (full && n <= STRUCT_MAX) metrics += met('Hairpin', r.hp ? fx(r.hp.dG, 1) : 'none', r.hp ? rateStruct(r.hp.dG, r.hp.end3, 'hairpin') : 'ok') + met('Self-dimer', r.sd ? fx(r.sd.dG, 1) : 'none', r.sd ? rateStruct(r.sd.dG, r.sd.end3A || r.sd.end3B, 'self') : 'ok');
+    else if (n <= STRUCT_MAX) metrics += met('Hairpin', '…') + met('Self-dimer', '…');
+  }
+  let body = '';
+  if (!r) body = '<p class="empty">Select at least 2 bases.</p>';
+  else if (!full) body = '<p class="empty">Release to analyze…</p>';
+  else if (n > STRUCT_MAX && SV.tab !== 'checks') body = `<p class="empty">Structure search runs on selections up to ${STRUCT_MAX} nt.</p>`;
+  else if (SV.tab === 'checks') {
+    const ar = analyze({ seq: q });
+    body = `<div class="checks">${checks({ seq: q }, ar).map(c => `<div class="chk"><span class="pill ${c.st}">${c.st === 'ok' ? 'Pass' : c.st === 'warn' ? 'Check' : c.st === 'crit' ? 'Fail ✕' : 'Fail'}</span><div><div>${c.name}</div></div><div class="val">${esc(c.val)}</div></div>`).join('')}</div>`;
+  } else if (SV.tab === 'hairpin') {
+    const hs = St.hairpin(q, cond, { limit: 2 });
+    body = hs.length ? hs.map(h => hairpinCard(h, q)).join('') : '<p class="empty">No hairpin with a stem of 2 bp or more.</p>';
+  } else if (SV.tab === 'self') {
+    const ds = St.dimer(q, q, cond, { limit: 2 });
+    body = ds.length ? ds.map(d => dimerCard(d, q, q, 'self')).join('') : '<p class="empty">No self-dimer found.</p>';
+  } else if (SV.tab === 'pair') {
+    const ps = panelPartners(o, q);
+    if (!ps.length) body = '<p class="empty">Save another oligo (on this sequence or in the library) to check this selection against it.</p>';
+    else {
+      let p = ps.find(x => x.id === SV.partnerId) || ps.find(x => { const h = findOn(x, o); return h && h.strand !== s.strand; }) || ps[0];
+      SV.partnerId = p.id;
+      const pt = S.thermo(p.seq, cond), d = Math.abs(r.th.tm - pt.tm), h = findOn(p, o);
+      let prod = '';
+      if (h && h.strand !== s.strand) { const f = fwd ? s : h, rv = fwd ? h : s; if (rv.b > f.a) prod = `<span class="pill neutral">product ${(rv.b - f.a + 1).toLocaleString('en-US')} bp</span>`; }
+      const cd = p.seq.length <= STRUCT_MAX ? St.dimer(q, p.seq, cond, { limit: 1 }) : [];
+      body = `<div class="partner"><label class="eyebrow" for="sp-partner">With</label><select id="sp-partner">${ps.map(x => `<option value="${x.id}" ${x.id === p.id ? 'selected' : ''}>${esc(x.name || 'Untitled')}</option>`).join('')}</select></div>
+        <div class="row2">${pill(d <= 2 ? 'ok' : d <= 5 ? 'warn' : 'bad', 'ΔTm ' + fx(d, 1) + ' °C')}<span class="hint">${fx(r.th.tm, 1)} vs ${fx(pt.tm, 1)} °C</span>${prod}</div>
+        ${cd.length ? dimerCard(cd[0], q, p.seq, 'cross') : '<p class="empty">No cross-dimer found.</p>'}`;
+    }
+  }
+  const shownSeq = n > 60 ? colored(q.slice(0, 28)) + '<span class="lab">…</span>' + colored(q.slice(-28)) : colored(q);
+  el.innerHTML = `<div class="sp-head"><span class="dir ${fwd ? 'fwd' : 'rev'}">${fwd ? '→ Top strand' : '← Bottom strand'}</span><b class="mono num">${s.a + 1}–${s.b + 1}</b><span class="hint">${n} nt</span>
+      <span class="sp"></span>${SV.touchPending ? '<span class="hint">Tap the last base</span>' : ''}<button class="iconbtn" data-sb="clear" title="Clear selection (Esc)" aria-label="Clear selection">✕</button></div>
+    <div class="sp-seq mono"><span class="lab">5′-</span>${shownSeq}<span class="lab">-3′</span></div>
+    <div class="field grow"><label for="sel-name">Name</label><input id="sel-name" value="${esc(nameVal)}" spellcheck="false" autocomplete="off"></div>
+    <div class="sp-ends"><span class="hint">5′ end</span><button class="btn" data-nudge="5,-1" title="Trim one base at the 5′ end">−1</button><button class="btn" data-nudge="5,1" title="Add one base at the 5′ end">+1</button>
+      <span class="hint">3′ end</span><button class="btn" data-nudge="3,-1" title="Trim one base at the 3′ end">−1</button><button class="btn" data-nudge="3,1" title="Add one base at the 3′ end">+1</button>
+      <button class="btn ghost" data-sb="flip" title="Use the same stretch on the other strand">Other strand</button></div>
+    <div class="pmgrid">${metrics}</div>
+    <div class="seg sp-tabs" role="tablist">${PANEL_TABS.map(([k, t]) => `<button role="tab" data-tab="${k}" aria-pressed="${SV.tab === k}">${t}</button>`).join('')}</div>
+    <div class="sp-body">${body}</div>
+    <div class="sp-foot"><button class="btn ghost" data-sb="copy">Copy</button><button class="btn" data-sb="save">Save only</button><span class="sp"></span><button class="btn primary" data-sb="open">Save &amp; open</button></div>`;
+  if (focusName) { const i = $('sel-name'); i.focus(); try { i.setSelectionRange(caret, caret); } catch (e) {} }
+}
+function nudgeSel(end, d) {
+  const s = SV.sel; if (!s) return;
+  let { a, b } = s; const plus = s.strand === '+';
+  if ((end === 5) === plus) a -= d; else b += d;
+  if (a < 0 || b >= cur().seq.length) { toast('Reached the end of the sequence'); return; }
+  if (b - a + 1 < 5) { toast('Keep at least 5 nt'); return; }
+  setSel(a, b, s.strand);
 }
 
+function rememberSeq(id) {
+  if (!id) return;
+  VS.set(id, { y: window.scrollY, sel: SV.sel ? Object.assign({}, SV.sel) : null, find: $('s-find').value, anchor: SV.anchor });
+}
 function saveSel(open) {
   const o = cur(), s = SV.sel; if (!s) return;
   const q = selSeq();
@@ -437,36 +610,10 @@ function saveSel(open) {
   if (!item) { item = { id: uid(), kind: 'oligo', name, seq: q, role: s.strand === '+' ? 'F' : 'R', parent: o.id, start: s.a + 1, end: s.b + 1, strand: s.strand }; lib.push(item); toast('Saved ' + name); }
   else toast('Already saved as ' + item.name);
   save();
-  if (open) { sel = item.id; renderAll(true); window.scrollTo(0, 0); return; }
-  SV.sel = null; renderSelBar(); renderSeqMap(); renderFragments(); renderLib();
+  if (open) { go(item.id); return; }
+  renderSeqMap(); renderFragments(); renderLib(); renderPanel(true);
 }
 
-function openDraftFromSel() {
-  const o = cur(), s = SV.sel; if (!s) return;
-  const q = selSeq(); if (q.length < 2) { toast('Select at least 2 bases'); return; }
-  const name = ($('sel-name') && $('sel-name').value.trim()) || fragName(o, s);
-  draft = { id: DRAFT, kind: 'oligo', draft: true, name, seq: q, role: s.strand === '+' ? 'F' : 'R', parent: o.id, start: s.a + 1, end: s.b + 1, strand: s.strand };
-  sel = DRAFT; renderAll(true); window.scrollTo(0, 0);
-}
-function saveDraft() {
-  if (!draft) return;
-  const p = draft.parent && byId(draft.parent);
-  const dup = p && lib.find(x => x.kind === 'oligo' && x.parent === p.id && x.start === draft.start && x.end === draft.end && x.strand === draft.strand && x.seq === draft.seq);
-  if (dup) { draft = null; sel = dup.id; save(); renderAll(true); toast('Already saved as ' + dup.name); return; }
-  const item = Object.assign({}, draft, { id: uid() }); delete item.draft;
-  lib.push(item); draft = null; sel = item.id; save(); renderAll(true); toast('Saved ' + item.name);
-}
-function nudge(end, d) {
-  const o = draft, p = o && byId(o.parent); if (!p) return;
-  let a = o.start - 1, b = o.end - 1; const plus = o.strand === '+';
-  if ((end === 5) === plus) a -= d; else b += d;
-  if (a < 0 || b >= p.seq.length) { toast('Reached the end of the sequence'); return; }
-  if (b - a + 1 < 5) { toast('Oligo must stay at least 5 nt'); return; }
-  const f = p.seq.slice(a, b + 1);
-  if (/ [FR] \d+–\d+$/.test(o.name)) o.name = fragName(p, { a, b, strand: o.strand });
-  o.seq = plus ? f : S.revcomp(f); o.start = a + 1; o.end = b + 1;
-  renderAll(true);
-}
 function renderFragments() {
   const o = cur(), list = seqAnnots(o);
   $('frag-sum').innerHTML = list.length ? pill('neutral', list.length + ' oligo' + (list.length === 1 ? '' : 's')) : '';
@@ -481,7 +628,7 @@ function renderFragments() {
       <td class="n">${x.o.seq.length}</td><td>${pill(tmClass(r.th.tm), fx(r.th.tm, 1))}</td><td class="n">${fx(r.gc, 1)}</td>
       <td class="n">${fx(r.th.dG, 2)}</td><td>${hpPill(r.hp)}</td><td>${sdPill(r.sd)}</td>
       <td>${pill(r.w3 > -9 ? 'ok' : 'warn', fx(r.w3, 2))}</td>
-      <td><button class="btn ghost" data-fa="show" data-oid="${x.o.id}">Show</button><button class="btn ghost" data-fa="open" data-oid="${x.o.id}">Analyze</button></td></tr>`;
+      <td><button class="btn ghost" data-fa="show" data-oid="${x.o.id}">Show</button><button class="btn ghost" data-fa="open" data-oid="${x.o.id}">Open</button></td></tr>`;
   }).join('');
   const F = list.filter(x => x.strand === '+'), R = list.filter(x => x.strand === '-'), amps = [];
   for (const f of F) for (const r of R) if (r.b > f.b && r.a > f.a) amps.push({ f, r, size: r.b - f.a + 1 });
@@ -509,21 +656,26 @@ function seqStats(o) {
 
 function renderSeqView(sync) {
   const o = cur();
+  let restore = null;
   if (sync) {
     $('s-name').value = o.name; $('s-seq').value = o.seq;
-    SV.sel = null; SV.hits = []; SV.hitIdx = -1; SV.touchPending = false; SV.editing = !o.seq;
+    SV.sel = null; SV.hits = []; SV.hitIdx = -1; SV.touchPending = false; SV.editing = !o.seq; SV.nameDirty = false;
     $('s-find').value = ''; $('s-hits').textContent = ''; $('s-next').hidden = true; $('s-msg').hidden = true;
     $('s-from').value = ''; $('s-to').value = '';
     $('s-del').textContent = 'Delete'; $('s-del').dataset.armed = '';
-    mapKey = '';
+    restore = VS.get(o.id) || null;
   }
   if (SV.sel && SV.sel.b >= o.seq.length) SV.sel = null;
   $('s-seq').hidden = !SV.editing; $('s-editbtn').textContent = SV.editing ? 'Done editing' : 'Edit sequence';
   $('s-stats').innerHTML = seqStats(o);
   renderSeqMap(false);
   renderFragments();
-  if (SV.pending) { const p = SV.pending; SV.pending = null; setSel(p.a, p.b, p.strand); renderSelBar(true); requestAnimationFrame(scrollToSel); }
-  else renderSelBar(true);
+  if (SV.pending) { const p = SV.pending; SV.pending = null; setSel(p.a, p.b, p.strand); requestAnimationFrame(() => scrollToSel('auto')); }
+  else if (restore) {
+    if (restore.find) { $('s-find').value = restore.find; computeHits(); }
+    if (restore.sel && restore.sel.b < o.seq.length) { SV.anchor = restore.anchor; setSel(restore.sel.a, restore.sel.b, restore.sel.strand); } else renderPanel(true);
+    const y = restore.y; requestAnimationFrame(() => window.scrollTo(0, y));
+  } else renderPanel(true);
 }
 
 function computeHits() {
@@ -542,6 +694,16 @@ function computeHits() {
   const nt = SV.hits.filter(h => h.strand === '+').length, nb = SV.hits.length - nt;
   $('s-hits').textContent = !q.length ? '' : q.length < 3 ? 'Type at least 3 bases' : SV.hits.length ? `${SV.hits.length} match${SV.hits.length > 1 ? 'es' : ''}: ${nt} top, ${nb} bottom` : 'No match on either strand';
   $('s-next').hidden = !SV.hits.length;
+}
+
+/* navigation that remembers where you were on a sequence */
+let backTo = null; // where Discard / Back on a scratch oligo returns
+function go(id, opts = {}) {
+  const from = cur();
+  if (from && from.kind === 'seq' && !$('seqview').hidden) rememberSeq(from.id);
+  if (from && from.id !== id) backTo = from.id;
+  sel = id; save(); renderAll(true);
+  if (opts.top !== false && cur() && cur().kind !== 'seq') window.scrollTo(0, 0);
 }
 
 /* ================= OLIGO BENCH ================= */
@@ -639,7 +801,7 @@ function renderOrigin(o) {
   const el = $('o-origin');
   if (!spots.length) { el.hidden = true; el.innerHTML = ''; return; }
   el.hidden = false;
-  el.innerHTML = spots.slice(0, 4).map(({ p, h }) => `<span>On <b>${esc(p.name)}</b> · <span class="mono num">${h.a + 1}–${h.b + 1}</span> · <span class="dir ${h.strand === '+' ? 'fwd' : 'rev'}">${h.strand === '+' ? '→ top strand' : '← bottom strand'}</span></span><button class="btn ghost" data-goto="${p.id}" data-a="${h.a}" data-b="${h.b}" data-s="${h.strand}">Show in sequence</button>`).join('');
+  el.innerHTML = spots.slice(0, 4).map(({ p, h }) => `<span>On <b>${esc(p.name)}</b> · <span class="mono num">${h.a + 1}–${h.b + 1}</span> · <span class="dir ${h.strand === '+' ? 'fwd' : 'rev'}">${h.strand === '+' ? '→ top strand' : '← bottom strand'}</span></span><button class="btn ghost" data-goto="${p.id}" data-a="${h.a}" data-b="${h.b}" data-s="${h.strand}">${VS.has(p.id) ? 'Back to sequence' : 'Show in sequence'}</button>`).join('');
 }
 function renderOligoView(sync) {
   const o = cur();
@@ -733,91 +895,106 @@ function addParsed(recs) {
 /*BLAST*/
 
 /* ---------- events: sequence view ---------- */
-$('s-name').addEventListener('input', e => { cur().name = e.target.value; clearTimeout(timer); timer = setTimeout(() => { save(); renderLib(); renderSelBar(true); mapKey = ''; renderSeqMap(); }, 250); });
-$('s-seq').addEventListener('input', e => { readSeqInput(e.target.value, cur(), $('s-msg'), $('s-name')); if (SV.hits.length || $('s-find').value) SV.hits = []; schedule(cur().seq.length > 20000 ? 400 : 160); });
+$('s-name').addEventListener('input', e => { cur().name = e.target.value; clearTimeout(timer); timer = setTimeout(() => { save(); renderLib(); if (!SV.nameDirty) renderPanel(true); }, 250); });
+$('s-seq').addEventListener('input', e => { readSeqInput(e.target.value, cur(), $('s-msg'), $('s-name')); if (SV.hits.length || $('s-find').value) SV.hits = []; schedule(cur().seq.length > 20000 ? 400 : 200); });
 $('s-editbtn').onclick = () => { SV.editing = !SV.editing; renderSeqView(false); if (SV.editing) $('s-seq').focus(); };
-$('s-find').addEventListener('input', computeHits);
-$('s-find').addEventListener('keydown', e => { if (e.key === 'Enter' && SV.hits.length) { e.preventDefault(); $('s-next').click(); } });
-$('s-next').onclick = () => { if (!SV.hits.length) return; SV.hitIdx = (SV.hitIdx + 1) % SV.hits.length; const h = SV.hits[SV.hitIdx]; setSel(h.a, h.b, h.strand); renderSelBar(true); scrollToSel(); };
-$('s-plus').onclick = () => { setPick('+'); if (SV.sel) { setSel(SV.sel.a, SV.sel.b, '+'); renderSelBar(true); } };
-$('s-minus').onclick = () => { setPick('-'); if (SV.sel) { setSel(SV.sel.a, SV.sel.b, '-'); renderSelBar(true); } };
+let findT = null;
+$('s-find').addEventListener('input', () => { clearTimeout(findT); findT = setTimeout(computeHits, 120); });
+$('s-find').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(findT); computeHits(); if (SV.hits.length) $('s-next').click(); } });
+$('s-next').onclick = () => { if (!SV.hits.length) return; SV.hitIdx = (SV.hitIdx + 1) % SV.hits.length; const h = SV.hits[SV.hitIdx]; setSel(h.a, h.b, h.strand); scrollToSel(); };
+$('s-plus').onclick = () => { setPick('+'); if (SV.sel) setSel(SV.sel.a, SV.sel.b, '+'); };
+$('s-minus').onclick = () => { setPick('-'); if (SV.sel) setSel(SV.sel.a, SV.sel.b, '-'); };
 $('s-selrange').onclick = () => {
   const n = cur().seq.length, a = parseInt($('s-from').value, 10), b = parseInt($('s-to').value, 10);
   if (!n || !isFinite(a) || !isFinite(b)) { toast('Enter both positions'); return; }
   if (a < 1 || b < 1 || a > n || b > n) { toast(`Positions must be between 1 and ${n}`); return; }
-  setSel(a - 1, b - 1, SV.pick); renderSelBar(true); scrollToSel();
+  setSel(a - 1, b - 1, SV.pick); scrollToSel();
 };
 ['s-from', 's-to'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('s-selrange').click(); }));
 $('s-copy').onclick = () => copy(cur().seq, 'Top strand copied (5′→3′)');
 $('s-copyrc').onclick = () => copy(S.revcomp(cur().seq), 'Bottom strand copied (5′→3′)');
-$('s-flip').onclick = () => { const o = cur(); o.seq = S.revcomp(o.seq); delete o.ex; $('s-seq').value = o.seq; SV.sel = null; SV.hits = []; save(); renderAll(false); computeHits(); toast('Strands flipped; positions now count from the other end'); };
+$('s-flip').onclick = () => { const o = cur(); o.seq = S.revcomp(o.seq); delete o.ex; $('s-seq').value = o.seq; SV.sel = null; SV.hits = []; VS.delete(o.id); save(); renderAll(false); computeHits(); renderPanel(true); toast('Strands flipped; positions now count from the other end'); };
 $('s-del').onclick = e => {
   const b = e.currentTarget;
   if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Confirm delete'; return; }
-  const id = sel; lib = lib.filter(o => o.id !== id);
+  const id = sel; lib = lib.filter(o => o.id !== id); VS.delete(id);
   lib.forEach(o => { if (o.parent === id) delete o.parent; });
   if (!lib.length) lib.push({ id: uid(), kind: 'seq', name: 'New sequence', seq: '' });
   sel = lib[0].id; save(); renderAll(true);
 };
 
-// map selection: drag with mouse/pen, two taps on touch
+// map selection: drag with mouse/pen (throttled to one update per frame), two taps on touch
 const map = $('s-map');
-let lastPointer = 'mouse';
-const baseAt = (x, y) => { const el = document.elementFromPoint(x, y); return el && el.closest ? el.closest('#s-map .st i') : null; };
+let lastPointer = 'mouse', moveRAF = 0, lastMove = null;
 map.addEventListener('pointerdown', e => {
   lastPointer = e.pointerType;
-  const el = e.target.closest('.st i'); if (!el || e.pointerType === 'touch' || e.button !== 0) return;
-  const i = +el.dataset.i, strand = el.parentElement.classList.contains('dn') ? '-' : '+';
-  if (e.shiftKey && SV.sel) { setSel(SV.anchor != null ? SV.anchor : SV.sel.a, i, SV.sel.strand); renderSelBar(true); return; }
+  if (e.target.closest('.bar') || e.pointerType === 'touch' || e.button !== 0) return;
+  const hit = baseFromPoint(e.clientX, e.clientY); if (!hit || !hit.onText) return;
+  if (e.shiftKey && SV.sel) { setSel(SV.anchor != null ? SV.anchor : SV.sel.a, hit.i, SV.sel.strand); return; }
   e.preventDefault();
-  SV.anchor = i; SV.dragging = true; SV.touchPending = false;
-  setSel(i, i, strand);
+  SV.anchor = hit.i; SV.dragging = true; SV.touchPending = false;
+  setSel(hit.i, hit.i, hit.strand, false);
   try { map.setPointerCapture(e.pointerId); } catch (x) {}
 });
 map.addEventListener('pointermove', e => {
   if (!SV.dragging) return;
-  const el = baseAt(e.clientX, e.clientY);
-  if (el) setSel(SV.anchor, +el.dataset.i, SV.sel.strand);
+  lastMove = [e.clientX, e.clientY];
+  if (moveRAF) return;
+  moveRAF = requestAnimationFrame(() => {
+    moveRAF = 0; if (!SV.dragging || !lastMove) return;
+    const hit = baseFromPoint(lastMove[0], lastMove[1], SV.sel.strand);
+    const moving = SV.sel.a === SV.anchor ? SV.sel.b : SV.sel.a;
+    if (hit && hit.i !== moving) setSel(SV.anchor, hit.i, SV.sel.strand, false);
+  });
 });
-const endDrag = () => { if (!SV.dragging) return; SV.dragging = false; renderSelBar(true); };
+const endDrag = () => { if (!SV.dragging) return; SV.dragging = false; cancelAnimationFrame(moveRAF); moveRAF = 0; renderPanel(false); clearTimeout(panelT); panelT = setTimeout(() => renderPanel(true), 0); };
 map.addEventListener('pointerup', endDrag);
 map.addEventListener('pointercancel', endDrag);
 map.addEventListener('click', e => {
   const bar = e.target.closest('.bar');
-  if (bar) { sel = bar.dataset.oid; save(); renderAll(true); window.scrollTo(0, 0); return; }
+  if (bar) { go(bar.dataset.oid); return; }
   if (lastPointer !== 'touch') return;
-  const el = e.target.closest('.st i'); if (!el) return;
-  const i = +el.dataset.i, strand = el.parentElement.classList.contains('dn') ? '-' : '+';
-  if (SV.touchPending && SV.sel) { SV.touchPending = false; setSel(SV.anchor, i, SV.sel.strand); renderSelBar(true); }
-  else { SV.anchor = i; SV.touchPending = true; setSel(i, i, strand); }
+  const hit = baseFromPoint(e.clientX, e.clientY); if (!hit || !hit.onText) return;
+  if (SV.touchPending && SV.sel) { SV.touchPending = false; setSel(SV.anchor, hit.i, SV.sel.strand); }
+  else { SV.anchor = hit.i; SV.touchPending = true; setSel(hit.i, hit.i, hit.strand); }
 });
-$('selbar').addEventListener('input', e => { if (e.target.id === 'sel-name') SV.nameDirty = true; });
-$('selbar').addEventListener('keydown', e => { if (e.target.id === 'sel-name' && e.key === 'Enter') saveSel(false); });
-$('selbar').addEventListener('click', e => {
+
+const panel = $('selpanel');
+panel.addEventListener('input', e => { if (e.target.id === 'sel-name') SV.nameDirty = true; });
+panel.addEventListener('keydown', e => { if (e.target.id === 'sel-name' && e.key === 'Enter') saveSel(true); });
+panel.addEventListener('change', e => { if (e.target.id === 'sp-partner') { SV.partnerId = e.target.value; renderPanel(true); } });
+panel.addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]');
+  if (t) { SV.tab = t.dataset.tab; store.set('selTab', SV.tab); renderPanel(true); return; }
+  const nb = e.target.closest('[data-nudge]');
+  if (nb) { const [end, d] = nb.dataset.nudge.split(',').map(Number); nudgeSel(end, d); return; }
   const b = e.target.closest('[data-sb]'); if (!b) return;
   const act = b.dataset.sb;
   if (act === 'clear') clearSel();
-  else if (act === 'flip') { setSel(SV.sel.a, SV.sel.b, SV.sel.strand === '+' ? '-' : '+'); renderSelBar(true); }
+  else if (act === 'flip') setSel(SV.sel.a, SV.sel.b, SV.sel.strand === '+' ? '-' : '+');
   else if (act === 'copy') copy(selSeq(), 'Copied 5′→3′');
   else if (act === 'save') saveSel(false);
-  else if (act === 'analyze') openDraftFromSel();
+  else if (act === 'open') saveSel(true);
 });
 $('frag-body').addEventListener('click', e => {
   const bp = e.target.closest('[data-blpair]');
   if (bp) {
-    const [f, r] = bp.dataset.blpair.split(','); sel = f; partner = r; closed.delete('blast'); save(); renderAll(true);
+    const [f, r] = bp.dataset.blpair.split(','); partner = r; closed.delete('blast'); go(f);
     const pane = document.querySelector('[data-pane=blast]'); if (pane) pane.scrollIntoView({ block: 'start', behavior: reduceMotion() ? 'auto' : 'smooth' });
     return;
   }
   const b = e.target.closest('[data-fa]'); if (!b) return;
   const x = byId(b.dataset.oid); if (!x) return;
-  if (b.dataset.fa === 'open') { sel = x.id; save(); renderAll(true); window.scrollTo(0, 0); return; }
-  const h = findOn(x, cur()); if (h) { setSel(h.a, h.b, h.strand); renderSelBar(true); scrollToSel(); }
+  if (b.dataset.fa === 'open') { go(x.id); return; }
+  const h = findOn(x, cur()); if (h) { setSel(h.a, h.b, h.strand); scrollToSel(); }
 });
 let roT = null;
-if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(roT); roT = setTimeout(() => { if (!$('seqview').hidden) renderSeqMap(false); else if (cur()) renderMap($('o-map'), cur().seq, { maxBlocks: 10 }); }, 120); }).observe($('s-map'));
-window.addEventListener('resize', () => { clearTimeout(roT); roT = setTimeout(() => { if (!$('seqview').hidden) renderSeqMap(false); else if (cur()) renderMap($('o-map'), cur().seq, { maxBlocks: 10 }); }, 150); });
-
+const relayout = () => {
+  document.documentElement.style.setProperty('--toph', ($('top') ? $('top').getBoundingClientRect().height : 64) + 'px');
+  if (!$('seqview').hidden) renderSeqMap(false); else if (cur()) renderMap($('o-map'), cur().seq, { maxBlocks: 10 });
+};
+if (window.ResizeObserver) new ResizeObserver(() => { clearTimeout(roT); roT = setTimeout(relayout, 120); }).observe($('s-map'));
+window.addEventListener('resize', () => { clearTimeout(roT); roT = setTimeout(relayout, 150); });
 /* ---------- events: oligo bench ---------- */
 $('seq').addEventListener('input', e => { readSeqInput(e.target.value, cur(), $('msg'), $('name')); schedule(); });
 $('name').addEventListener('input', e => { cur().name = e.target.value; schedule(); });
@@ -843,7 +1020,8 @@ $('del').onclick = e => {
   if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Confirm delete'; return; }
   const gone = cur(); lib = lib.filter(o => o.id !== gone.id);
   if (!lib.length) lib.push({ id: uid(), kind: 'oligo', name: 'New oligo', seq: '', role: 'F' });
-  sel = (gone.parent && byId(gone.parent)) ? gone.parent : lib[0].id; save(); renderAll(true);
+  const target = (gone.parent && byId(gone.parent)) ? gone.parent : (backTo && byId(backTo)) ? backTo : lib[0].id;
+  sel = target; save(); renderAll(true);
 };
 $('oligoview').addEventListener('click', e => {
   if (e.target.id === 'to-seq') {
@@ -857,12 +1035,12 @@ $('oligoview').addEventListener('click', e => {
   if (dr) {
     const act = dr.dataset.dr;
     if (act === 'save') saveDraft();
-    else if (act === 'discard') { const back = draft && draft.parent; draft = null; sel = back && byId(back) ? back : lib[0].id; save(); renderAll(true); }
-    else if (act === 'back') { const p = byId(draft.parent), h = p && findOn(draft, p); if (h) SV.pending = { a: h.a, b: h.b, strand: h.strand }; sel = draft.parent; save(); renderAll(true); }
+    else if (act === 'discard') { const back = (draft && draft.parent && byId(draft.parent)) ? draft.parent : (backTo && byId(backTo)) ? backTo : lib[0].id; draft = null; sel = back; save(); renderAll(true); }
+    else if (act === 'back') { const p = byId(draft.parent); if (p && !VS.has(p.id)) { const h = findOn(draft, p); if (h) SV.pending = { a: h.a, b: h.b, strand: h.strand }; } sel = draft.parent; save(); renderAll(true); }
     return;
   }
   const g = e.target.closest('[data-goto]');
-  if (g) { SV.pending = { a: +g.dataset.a, b: +g.dataset.b, strand: g.dataset.s }; sel = g.dataset.goto; save(); renderAll(true); }
+  if (g) { if (!VS.has(g.dataset.goto)) SV.pending = { a: +g.dataset.a, b: +g.dataset.b, strand: g.dataset.s }; sel = g.dataset.goto; save(); renderAll(true); }
 });
 $('panes').addEventListener('click', e => {
   const b = e.target.closest('button[data-act]'); if (!b) return;
@@ -883,8 +1061,8 @@ $('panes').addEventListener('drop', e => {
 $('panes').addEventListener('dragend', () => { dragId = null; document.querySelectorAll('.pane.drag-over').forEach(x => x.classList.remove('drag-over')); });
 
 /* ---------- events: library & import ---------- */
-$('lib').addEventListener('click', e => { const it = e.target.closest('.item'); if (!it) return; sel = it.dataset.id; save(); renderAll(true); });
-$('new').onclick = () => { draft = { id: DRAFT, kind: 'oligo', draft: true, name: 'New oligo', seq: '', role: 'F' }; sel = DRAFT; renderAll(true); $('seq').focus(); };
+$('lib').addEventListener('click', e => { const it = e.target.closest('.item'); if (!it) return; if (it.dataset.id !== sel) go(it.dataset.id); });
+$('new').onclick = () => { const f = cur(); if (f && f.kind === 'seq' && !$('seqview').hidden) rememberSeq(f.id); backTo = sel; draft = { id: DRAFT, kind: 'oligo', draft: true, name: 'New oligo', seq: '', role: 'F' }; sel = DRAFT; renderAll(true); $('seq').focus(); };
 $('new-seq').onclick = () => { const o = { id: uid(), kind: 'seq', name: 'New sequence', seq: '' }; lib.unshift(o); sel = o.id; save(); renderAll(true); $('s-seq').focus(); };
 $('export').onclick = () => copy(lib.map(o => `>${o.name || 'Untitled'}\n${(o.seq.match(/.{1,70}/g) || []).join('\n')}`).join('\n'), 'Library copied as FASTA');
 $('import').onclick = () => { $('imp-t').textContent = 'Paste sequences'; $('imp-note').hidden = false; $('imp-go').hidden = false; $('imp').hidden = false; $('imp-txt').value = ''; $('imp-txt').focus(); };
@@ -926,5 +1104,5 @@ wireBlast();
 if (!lib.some(o => o.id === sel)) sel = lib[0].id;
 renderAll(true);
 save();
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { mapKey = ''; renderAll(false); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { mapKey = ''; PAL = null; renderAll(false); });
 })();
